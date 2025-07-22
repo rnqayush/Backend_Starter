@@ -404,6 +404,68 @@ const hotelSchema = new mongoose.Schema({
     default: false
   },
 
+  // Offers and Promotions
+  offers: [{
+    title: {
+      type: String,
+      required: true
+    },
+    description: String,
+    discountType: {
+      type: String,
+      enum: ['percentage', 'fixed', 'package', 'free-nights'],
+      required: true
+    },
+    discountValue: {
+      type: Number,
+      required: true
+    },
+    validFrom: {
+      type: Date,
+      required: true
+    },
+    validUntil: {
+      type: Date,
+      required: true
+    },
+    terms: [String],
+    applicableRoomTypes: [String],
+    minimumStay: {
+      type: Number,
+      default: 1
+    },
+    maximumStay: Number,
+    advanceBookingDays: {
+      type: Number,
+      default: 0
+    },
+    maxRedemptions: {
+      type: Number,
+      default: null // null means unlimited
+    },
+    currentRedemptions: {
+      type: Number,
+      default: 0
+    },
+    blackoutDates: [{
+      startDate: Date,
+      endDate: Date,
+      reason: String
+    }],
+    priority: {
+      type: Number,
+      default: 0
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+
   // Analytics
   analytics: {
     views: {
@@ -638,4 +700,3 @@ hotelSchema.methods.calculatePrice = function(checkIn, checkOut, guests = 1) {
 };
 
 export default mongoose.model('Hotel', hotelSchema);
-

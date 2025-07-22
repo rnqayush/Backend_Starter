@@ -1,71 +1,111 @@
 import express from 'express';
+import {
+  getVendors,
+  createVendor,
+  getVendor,
+  updateVendor,
+  deleteVendor,
+  updateBasicInfo,
+  addMedia,
+  updateMedia,
+  deleteMedia,
+  addService,
+  updateService,
+  deleteService,
+  addPackage,
+  updatePackage,
+  deletePackage,
+  addTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  getFAQs,
+  addFAQ,
+  updateFAQ,
+  deleteFAQ,
+  getOffers,
+  addOffer,
+  updateOffer,
+  deleteOffer,
+  getVendorDashboard
+} from '../controllers/wedding/vendorController.js';
+
 import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
 
 // Public routes - Wedding Vendor Directory
-router.get('/vendors', async (req, res) => {
-  res.json({
-    success: true,
-    data: [],
-    message: 'Wedding vendor directory functionality coming soon'
-  });
-});
-
-router.get('/vendors/:id', async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Wedding vendor profile functionality coming soon'
-  });
-});
-
-router.get('/vendors/search', async (req, res) => {
-  res.json({
-    success: true,
-    data: [],
-    message: 'Wedding vendor search functionality coming soon'
-  });
-});
+router.get('/vendors', getVendors);
+router.get('/vendors/search', getVendors); // Same as getVendors with filters
+router.get('/vendors/:id', getVendor);
+router.get('/vendors/:id/faqs', getFAQs);
+router.get('/vendors/:id/offers', getOffers);
 
 // Protected routes
 router.use(protect);
 
-// Vendor management
-router.post('/vendors', authorize('vendor'), async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Wedding vendor creation functionality coming soon'
-  });
-});
+// ===== VENDOR MANAGEMENT =====
+router.route('/vendors')
+  .post(authorize('vendor'), createVendor);
 
-router.put('/vendors/:id', authorize('vendor'), async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Wedding vendor update functionality coming soon'
-  });
-});
+router.route('/vendors/:id')
+  .put(authorize('vendor'), updateVendor)
+  .delete(authorize('vendor'), deleteVendor);
 
-// Portfolio management
-router.get('/vendors/:id/portfolio', async (req, res) => {
-  res.json({
-    success: true,
-    data: [],
-    message: 'Wedding vendor portfolio functionality coming soon'
-  });
-});
+// ===== BASIC INFORMATION CRUD =====
+router.put('/vendors/:id/basic-info', authorize('vendor'), updateBasicInfo);
 
-router.post('/vendors/:id/portfolio', authorize('vendor'), async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Wedding vendor portfolio upload functionality coming soon'
-  });
-});
+// ===== PHOTO AND MEDIA CRUD =====
+router.route('/vendors/:id/media')
+  .post(authorize('vendor'), addMedia);
 
-// Booking management
+router.route('/vendors/:id/media/:mediaId')
+  .put(authorize('vendor'), updateMedia)
+  .delete(authorize('vendor'), deleteMedia);
+
+// ===== SERVICES OFFERED CRUD =====
+router.route('/vendors/:id/services')
+  .post(authorize('vendor'), addService);
+
+router.route('/vendors/:id/services/:serviceId')
+  .put(authorize('vendor'), updateService)
+  .delete(authorize('vendor'), deleteService);
+
+// ===== PACKAGES AND PRICING CRUD =====
+router.route('/vendors/:id/packages')
+  .post(authorize('vendor'), addPackage);
+
+router.route('/vendors/:id/packages/:packageId')
+  .put(authorize('vendor'), updatePackage)
+  .delete(authorize('vendor'), deletePackage);
+
+// ===== TESTIMONIALS CRUD =====
+router.route('/vendors/:id/testimonials')
+  .post(authorize('vendor'), addTestimonial);
+
+router.route('/vendors/:id/testimonials/:testimonialId')
+  .put(authorize('vendor'), updateTestimonial)
+  .delete(authorize('vendor'), deleteTestimonial);
+
+// ===== FAQ CRUD =====
+router.route('/vendors/:id/faqs')
+  .post(authorize('vendor'), addFAQ);
+
+router.route('/vendors/:id/faqs/:faqId')
+  .put(authorize('vendor'), updateFAQ)
+  .delete(authorize('vendor'), deleteFAQ);
+
+// ===== OFFERS CRUD =====
+router.route('/vendors/:id/offers')
+  .post(authorize('vendor'), addOffer);
+
+router.route('/vendors/:id/offers/:offerId')
+  .put(authorize('vendor'), updateOffer)
+  .delete(authorize('vendor'), deleteOffer);
+
+// ===== VENDOR DASHBOARD =====
+router.get('/vendor/dashboard', authorize('vendor'), getVendorDashboard);
+
+// Booking management (placeholder for future implementation)
 router.get('/bookings', async (req, res) => {
   res.json({
     success: true,
@@ -82,19 +122,4 @@ router.post('/bookings', async (req, res) => {
   });
 });
 
-// Vendor dashboard
-router.get('/vendor/dashboard', authorize('vendor'), async (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      totalBookings: 0,
-      totalRevenue: 0,
-      upcomingEvents: [],
-      recentInquiries: []
-    },
-    message: 'Wedding vendor dashboard functionality coming soon'
-  });
-});
-
 export default router;
-

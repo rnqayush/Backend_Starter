@@ -26,6 +26,16 @@ import {
   exportEnquiries
 } from '../controllers/automobile/enquiryController.js';
 
+import {
+  getInventoryOverview,
+  getInventoryVehicles,
+  updateInventoryStatus,
+  bulkUpdateInventoryStatus,
+  getInventoryAlerts,
+  exportInventory,
+  getInventoryValueReport
+} from '../controllers/automobile/vehicleInventoryController.js';
+
 import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
@@ -172,46 +182,17 @@ router.get('/analytics/dashboard', authorize('vendor'), async (req, res) => {
   });
 });
 
-// Vehicle inventory management
-router.get('/inventory', authorize('vendor'), async (req, res) => {
-  const vehicles = await Vehicle.find({ dealer: req.user.id })
-    .sort({ createdAt: -1 })
-    .select('make model year price availability status analytics createdAt');
+// ===== INVENTORY MANAGEMENT =====
 
-  res.json({
-    success: true,
-    data: vehicles,
-    message: 'Inventory retrieved successfully'
-  });
-});
+// Inventory Overview and Reports
+router.get('/inventory', authorize('vendor'), getInventoryOverview);
+router.get('/inventory/vehicles', authorize('vendor'), getInventoryVehicles);
+router.get('/inventory/alerts', authorize('vendor'), getInventoryAlerts);
+router.get('/inventory/export', authorize('vendor'), exportInventory);
+router.get('/inventory/value-report', authorize('vendor'), getInventoryValueReport);
 
-router.put('/inventory/:id/availability', authorize('vendor'), async (req, res) => {
-  const { status, quantity, expectedDelivery } = req.body;
-  
-  const vehicle = await Vehicle.findOne({
-    _id: req.params.id,
-    dealer: req.user.id
-  });
-
-  if (!vehicle) {
-    return res.status(404).json({
-      success: false,
-      message: 'Vehicle not found'
-    });
-  }
-
-  if (status) vehicle.availability.status = status;
-  if (quantity !== undefined) vehicle.availability.quantity = quantity;
-  if (expectedDelivery) vehicle.availability.expectedDelivery = expectedDelivery;
-
-  await vehicle.save();
-
-  res.json({
-    success: true,
-    data: vehicle,
-    message: 'Vehicle availability updated successfully'
-  });
-});
+// Inventory Status Management
+router.put('/inventory/:id/status', authorize('vendor'), updateInventoryStatus);
+router.put('/inventory/bulk-status', authorize('vendor'), bulkUpdateInventoryStatus);
 
 export default router;
-

@@ -1,4 +1,25 @@
 import express from 'express';
+import {
+  updateHeroSection,
+  updateAboutSection,
+  updateServicesSection,
+  addService,
+  updateService,
+  deleteService,
+  addTeamMember,
+  updateTeamMember,
+  deleteTeamMember,
+  updateContactSection,
+  addGalleryImages,
+  updateGalleryImage,
+  deleteGalleryImage,
+  addPortfolioItem,
+  updatePortfolioItem,
+  deletePortfolioItem,
+  updateSkillsAndExperience,
+  getWebsiteContent
+} from '../controllers/business/websiteContentController.js';
+
 import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
@@ -55,6 +76,58 @@ router.delete('/:id', authorize('vendor'), async (req, res) => {
   });
 });
 
+// ===== BUSINESS CONTENT MANAGEMENT =====
+
+// Get all website content
+router.get('/:id/content', getWebsiteContent);
+
+// Hero Section
+router.put('/:id/content/hero', authorize('vendor'), updateHeroSection);
+
+// About Section
+router.put('/:id/content/about', authorize('vendor'), updateAboutSection);
+
+// Services Section
+router.put('/:id/content/services', authorize('vendor'), updateServicesSection);
+router.route('/:id/content/services')
+  .post(authorize('vendor'), addService);
+
+router.route('/:id/content/services/:serviceId')
+  .put(authorize('vendor'), updateService)
+  .delete(authorize('vendor'), deleteService);
+
+// Team Section
+router.route('/:id/content/team')
+  .post(authorize('vendor'), addTeamMember);
+
+router.route('/:id/content/team/:memberId')
+  .put(authorize('vendor'), updateTeamMember)
+  .delete(authorize('vendor'), deleteTeamMember);
+
+// Contact Section
+router.put('/:id/content/contact', authorize('vendor'), updateContactSection);
+
+// Gallery Section
+router.route('/:id/content/gallery')
+  .post(authorize('vendor'), addGalleryImages);
+
+router.route('/:id/content/gallery/:imageId')
+  .put(authorize('vendor'), updateGalleryImage)
+  .delete(authorize('vendor'), deleteGalleryImage);
+
+// ===== FREELANCE SPECIFIC FEATURES =====
+
+// Portfolio Management (for freelancers)
+router.route('/:id/content/portfolio')
+  .post(authorize('vendor'), addPortfolioItem);
+
+router.route('/:id/content/portfolio/:portfolioId')
+  .put(authorize('vendor'), updatePortfolioItem)
+  .delete(authorize('vendor'), deletePortfolioItem);
+
+// Skills and Experience (for freelancers)
+router.put('/:id/content/skills', authorize('vendor'), updateSkillsAndExperience);
+
 // Page management
 router.get('/:id/pages', authorize('vendor'), async (req, res) => {
   res.json({
@@ -80,23 +153,6 @@ router.put('/:id/pages/:pageId', authorize('vendor'), async (req, res) => {
   });
 });
 
-// Content management
-router.get('/:id/content', authorize('vendor'), async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Content management functionality coming soon'
-  });
-});
-
-router.put('/:id/content', authorize('vendor'), async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Content update functionality coming soon'
-  });
-});
-
 // Template management
 router.get('/templates', async (req, res) => {
   res.json({
@@ -115,6 +171,13 @@ router.get('/templates', async (req, res) => {
         category: 'agency',
         preview: '/templates/creative-agency/preview.jpg',
         description: 'Creative template for agencies and freelancers'
+      },
+      {
+        id: 'freelancer-portfolio',
+        name: 'Freelancer Portfolio',
+        category: 'freelancer',
+        preview: '/templates/freelancer-portfolio/preview.jpg',
+        description: 'Professional portfolio template for freelancers'
       }
     ],
     message: 'Template listing functionality coming soon'
@@ -169,4 +232,3 @@ router.post('/:id/unpublish', authorize('vendor'), async (req, res) => {
 });
 
 export default router;
-
