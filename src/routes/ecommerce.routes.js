@@ -50,6 +50,14 @@ import {
   cleanupExpiredCarts
 } from '../controllers/ecommerce/cartController.js';
 
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  getCategoryTree
+} from '../controllers/ecommerce/categoryController.js';
+
 import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
@@ -121,6 +129,13 @@ router.post('/orders/:id/refund', authorize('vendor'), processRefund);
 // Analytics and reporting
 router.get('/orders/analytics', authorize('vendor'), getOrderAnalytics);
 router.get('/orders/export', authorize('vendor'), exportOrders);
+
+// ===== CATEGORY MANAGEMENT =====
+router.get('/categories', getCategories);
+router.get('/categories/tree', getCategoryTree);
+router.post('/categories', authorize('vendor'), createCategory);
+router.put('/categories/:id', authorize('vendor'), updateCategory);
+router.delete('/categories/:id', authorize('vendor'), deleteCategory);
 
 // Admin routes
 router.get('/carts/abandoned', authorize('admin'), getAbandonedCarts);
@@ -321,4 +336,3 @@ router.get('/analytics/sales', authorize('vendor'), async (req, res) => {
 });
 
 export default router;
-

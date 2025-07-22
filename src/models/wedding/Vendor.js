@@ -408,6 +408,75 @@ const vendorSchema = new mongoose.Schema({
     }]
   },
 
+  // FAQs
+  faqs: [{
+    question: {
+      type: String,
+      required: true
+    },
+    answer: {
+      type: String,
+      required: true
+    },
+    category: String,
+    order: {
+      type: Number,
+      default: 0
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+
+  // Offers and Promotions
+  offers: [{
+    title: {
+      type: String,
+      required: true
+    },
+    description: String,
+    discountType: {
+      type: String,
+      enum: ['percentage', 'fixed', 'package'],
+      required: true
+    },
+    discountValue: {
+      type: Number,
+      required: true
+    },
+    validFrom: {
+      type: Date,
+      required: true
+    },
+    validUntil: {
+      type: Date,
+      required: true
+    },
+    terms: [String],
+    applicableServices: [String],
+    maxRedemptions: {
+      type: Number,
+      default: null // null means unlimited
+    },
+    currentRedemptions: {
+      type: Number,
+      default: 0
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+
   // SEO
   seo: {
     title: String,
@@ -633,4 +702,3 @@ vendorSchema.methods.blockDates = function(startDate, endDate, reason = 'Booked'
 };
 
 export default mongoose.model('WeddingVendor', vendorSchema);
-
