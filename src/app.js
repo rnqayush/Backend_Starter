@@ -12,8 +12,10 @@ import notFound from './middlewares/notFound.js';
 // Import routes
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
+import userProfileRoutes from './routes/userProfile.routes.js';
+import fileRoutes from './routes/file.routes.js';
+import automobileRoutes from './routes/automobile.routes.js';
 import ecommerceRoutes from './routes/tenants/ecommerce.routes.js';
-import automobileRoutes from './routes/tenants/automobile.routes.js';
 import hotelRoutes from './routes/tenants/hotel.routes.js';
 import weddingRoutes from './routes/tenants/wedding.routes.js';
 import businessRoutes from './routes/tenants/business.routes.js';
@@ -68,8 +70,10 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/users', userProfileRoutes);
+app.use('/api/files', fileRoutes);
+app.use('/api/automobiles', automobileRoutes);
 app.use('/api/ecommerce', ecommerceRoutes);
-app.use('/api/automobile', automobileRoutes);
 app.use('/api/hotel', hotelRoutes);
 app.use('/api/wedding', weddingRoutes);
 app.use('/api/business', businessRoutes);
@@ -81,4 +85,3 @@ app.use(notFound);
 app.use(errorHandler);
 
 export default app;
-
