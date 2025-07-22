@@ -86,27 +86,135 @@ A production-ready multi-tenant backend platform built with Node.js, Express.js,
 
 ## 📚 API Documentation
 
-### Authentication Endpoints
+### 🔐 Authentication & User Management
+
+#### Core Authentication
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/refresh-token` - Refresh JWT token
+- `POST /api/auth/forgot-password` - Request password reset
+- `POST /api/auth/reset-password/:token` - Reset password with token
+- `GET /api/auth/verify-email/:token` - Verify email address
+- `POST /api/auth/resend-verification` - Resend verification email
 - `GET /api/auth/me` - Get current user profile
-- `GET /api/auth/logout` - User logout
 
-### User Management
-- `GET /api/users` - Get all users (Admin only)
-- `GET /api/users/:id` - Get user by ID
-- `PUT /api/users/:id` - Update user
-- `DELETE /api/users/:id` - Delete user (Admin only)
+#### User Profile Management
+- `GET /api/users/profile` - Get user profile
+- `PUT /api/users/profile` - Update user profile
+- `POST /api/users/avatar` - Upload user avatar
+- `DELETE /api/users/avatar` - Delete user avatar
+- `GET /api/users/preferences` - Get user preferences
+- `PUT /api/users/preferences` - Update user preferences
+- `POST /api/users/change-password` - Change password
+- `POST /api/users/switch-role` - Switch user role
+- `GET /api/users/roles` - Get available roles
+- `GET /api/users/analytics` - Get user analytics
 
-### Business Modules
-- `GET /api/ecommerce/ping` - Test ecommerce module
-- `GET /api/automobile/ping` - Test automobile module
-- `GET /api/hotel/ping` - Test hotel module
-- `GET /api/wedding/ping` - Test wedding module
-- `GET /api/business/ping` - Test business module
+### 📁 File Management & CDN
 
-### Health Check
+#### File Upload & Management
+- `POST /api/files/upload` - Upload single file
+- `POST /api/files/upload/multiple` - Upload multiple files
+- `DELETE /api/files/:fileId` - Delete file
+- `GET /api/files/:fileId/metadata` - Get file metadata
+- `POST /api/files/resize` - Resize image
+- `POST /api/files/optimize` - Optimize image
+
+#### Media Library
+- `GET /api/files/media/library` - Get media library (paginated)
+- `POST /api/files/media/organize` - Organize media files
+- `DELETE /api/files/media/:mediaId` - Delete media file
+- `PUT /api/files/media/:mediaId/metadata` - Update media metadata
+
+### 🚗 Automobile Module
+
+#### Vehicle Management
+- `GET /api/automobiles/vehicles` - List vehicles with filters
+- `POST /api/automobiles/vehicles` - Create new vehicle (Dealer)
+- `GET /api/automobiles/vehicles/:id` - Get vehicle details
+- `PUT /api/automobiles/vehicles/:id` - Update vehicle (Dealer)
+- `DELETE /api/automobiles/vehicles/:id` - Delete vehicle (Dealer)
+- `POST /api/automobiles/vehicles/:id/images` - Add vehicle images
+- `DELETE /api/automobiles/vehicles/:id/images/:imageId` - Delete vehicle image
+- `GET /api/automobiles/vehicles/:id/analytics` - Get vehicle analytics
+- `POST /api/automobiles/vehicles/:id/calculate-emi` - Calculate EMI
+- `POST /api/automobiles/vehicles/compare` - Compare vehicles
+- `GET /api/automobiles/vehicles/popular` - Get popular vehicles
+- `GET /api/automobiles/vehicles/search` - Search vehicles
+
+#### Enquiry Management
+- `POST /api/automobiles/enquiries` - Create enquiry
+- `GET /api/automobiles/enquiries` - List enquiries
+- `GET /api/automobiles/enquiries/:id` - Get enquiry details
+- `PUT /api/automobiles/enquiries/:id` - Update enquiry (Dealer)
+- `POST /api/automobiles/enquiries/:id/respond` - Respond to enquiry
+- `POST /api/automobiles/enquiries/:id/schedule-test-drive` - Schedule test drive
+- `GET /api/automobiles/enquiries/overdue` - Get overdue enquiries
+- `GET /api/automobiles/enquiries/statistics` - Get enquiry statistics
+- `GET /api/automobiles/enquiries/export` - Export enquiries
+
+#### Test Drive & Analytics
+- `GET /api/automobiles/test-drives` - List test drives (Dealer)
+- `PUT /api/automobiles/test-drives/:id` - Update test drive status
+- `GET /api/automobiles/analytics/dashboard` - Dealer dashboard analytics
+- `GET /api/automobiles/inventory` - Vehicle inventory management
+- `PUT /api/automobiles/inventory/:id/availability` - Update vehicle availability
+
+### 🛒 E-commerce Module (Coming Soon)
+- Product management
+- Shopping cart & checkout
+- Order management
+- Seller dashboard
+- Reviews & ratings
+
+### 🏨 Hotel Module (Coming Soon)
+- Hotel & room management
+- Booking system
+- Pricing management
+- Guest management
+
+### 💒 Wedding Module (Coming Soon)
+- Vendor management
+- Portfolio management
+- Service booking
+- Event planning
+
+### 🏢 Business Website Builder (Coming Soon)
+- Template management
+- Website creation
+- Content management
+- Analytics
+
+### 🔍 Search & Discovery (Coming Soon)
+- Universal search
+- Location-based services
+- Auto-complete suggestions
+
+### 📱 Notification System (Coming Soon)
+- Push notifications
+- Email services
+- SMS notifications
+
+### 💳 Payment Processing (Coming Soon)
+- Payment gateway integration
+- Subscription management
+- Refund processing
+
+### 📊 Analytics & Reporting (Coming Soon)
+- Platform analytics
+- Business intelligence
+- Report exports
+
+### 👨‍💼 Admin Panel (Coming Soon)
+- User management
+- Content moderation
+- Platform settings
+
+### 🏥 Health & Infrastructure
 - `GET /health` - Application health status
+- `GET /api/health/database` - Database connectivity
+- `GET /api/health/redis` - Cache connectivity (when implemented)
 
 ## 🔐 Authentication
 
@@ -212,4 +320,3 @@ This project is licensed under the MIT License.
 ## 📞 Support
 
 For support and questions, please create an issue in the repository.
-
