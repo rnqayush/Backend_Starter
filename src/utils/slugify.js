@@ -1,6 +1,6 @@
 import slugify from 'slugify';
 
-export const createSlug = (text, options = {}) => {
+export const generateSlug = (text, options = {}) => {
   const defaultOptions = {
     lower: true,
     strict: true,
@@ -23,5 +23,5 @@ export const createUniqueSlug = async (text, Model, field = 'slug') => {
   return slug;
 };
 
-export default { createSlug, createUniqueSlug };
+export default { generateSlug, createUniqueSlug };
 
