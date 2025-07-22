@@ -15,10 +15,10 @@ import userRoutes from './routes/user.routes.js';
 import userProfileRoutes from './routes/userProfile.routes.js';
 import fileRoutes from './routes/file.routes.js';
 import automobileRoutes from './routes/automobile.routes.js';
-import ecommerceRoutes from './routes/tenants/ecommerce.routes.js';
-import hotelRoutes from './routes/tenants/hotel.routes.js';
-import weddingRoutes from './routes/tenants/wedding.routes.js';
-import businessRoutes from './routes/tenants/business.routes.js';
+import ecommerceRoutes from './routes/ecommerce.routes.js';
+import hotelRoutes from './routes/hotel.routes.js';
+import weddingRoutes from './routes/wedding.routes.js';
+import businessRoutes from './routes/business.routes.js';
 
 const app = express();
 
@@ -74,9 +74,9 @@ app.use('/api/users', userProfileRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/automobiles', automobileRoutes);
 app.use('/api/ecommerce', ecommerceRoutes);
-app.use('/api/hotel', hotelRoutes);
-app.use('/api/wedding', weddingRoutes);
-app.use('/api/business', businessRoutes);
+app.use('/api/hotels', hotelRoutes);
+app.use('/api/weddings', weddingRoutes);
+app.use('/api/websites', businessRoutes);
 
 // 404 handler
 app.use(notFound);
