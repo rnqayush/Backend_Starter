@@ -7,6 +7,9 @@ import { generateSlug } from '../../utils/slugify.js';
 // @route   GET /api/weddings/vendors
 // @access  Public
 export const getVendors = asyncHandler(async (req, res, next) => {
+  // Quick check for total vendors in database
+  const totalVendorsInDB = await WeddingVendor.countDocuments();
+  console.log('Total vendors in database:', totalVendorsInDB);
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
   const skip = (page - 1) * limit;
@@ -46,6 +49,11 @@ export const getVendors = asyncHandler(async (req, res, next) => {
     .select('-reviews -__v');
 
   const total = await WeddingVendor.countDocuments(searchQuery.getQuery());
+
+  // Debug logging
+  console.log('Search Query:', searchQuery.getQuery());
+  console.log('Total vendors found:', total);
+  console.log('Vendors returned:', vendors.length);
 
   sendSuccess(res, {
     vendors,
@@ -851,4 +859,3 @@ export const getVendorDashboard = asyncHandler(async (req, res, next) => {
     analytics
   }, 'Vendor dashboard data retrieved successfully');
 });
-
