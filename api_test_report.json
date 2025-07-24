@@ -1,0 +1,295 @@
+{
+  "summary": {
+    "totalTests": 31,
+    "passedTests": 22,
+    "failedTests": 9,
+    "successRate": "70.97%",
+    "timestamp": "2025-07-24T16:05:52.680Z"
+  },
+  "testResults": [
+    {
+      "timestamp": "2025-07-24T16:05:50.208Z",
+      "endpoint": "/test/ping",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "API ping successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"API working\",\n  \"timestamp\": \"2025-07-24T16:05:50.200Z\",\n  \"data\": {\n    \"message\": \"Multivendor Backend API is running successfully!\",\n    \"timestamp\": \"2025-07-24T16:05:50.199Z\",\n    \"environment\": \"development\",\n    \"version\": \"1.0.0\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:50.214Z",
+      "endpoint": "/test/health",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Health check passed",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Health check passed\",\n  \"timestamp\": \"2025-07-24T16:05:50.212Z\",\n  \"data\": {\n    \"uptime\": 24.209916693,\n    \"message\": \"OK\",\n    \"timestamp\": \"2025-07-24T16:05:50.212Z\",\n    \"environment\": \"development\",\n    \"memory\": {\n      \"rss\": 173510656,\n      \"heapTotal\": 28725248,\n      \"heapUsed\": 25697352,\n      \"external\": 20759575,\n      \"arrayBuffers\": 18287670\n    },\n    \"cpu\": {\n      \"user\": 1560000,\n      \"system\": 160000\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:50.219Z",
+      "endpoint": "/test/db",
+      "method": "GET",
+      "status": 500,
+      "success": false,
+      "message": "Database connection failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Database connection test failed\",\n  \"timestamp\": \"2025-07-24T16:05:50.217Z\",\n  \"data\": {\n    \"error\": \"Cannot read properties of undefined (reading 'readyState')\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:50.618Z",
+      "endpoint": "/auth/register",
+      "method": "POST",
+      "status": 201,
+      "success": true,
+      "message": "Customer registration successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"User registered successfully\",\n  \"timestamp\": \"2025-07-24T16:05:50.616Z\",\n  \"data\": {\n    \"user\": {\n      \"name\": \"John Customer\",\n      \"email\": \"customer@test.com\",\n      \"role\": \"customer\",\n      \"isActive\": true,\n      \"isDeleted\": false,\n      \"_id\": \"688259de485db14692d1a123\",\n      \"createdAt\": \"2025-07-24T16:05:50.264Z\",\n      \"updatedAt\": \"2025-07-24T16:05:50.264Z\",\n      \"__v\": 0\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODI1OWRlNDg1ZGIxNDY5MmQxYTEyMyIsImVtYWlsIjoiY3VzdG9tZXJAdGVzdC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3NTMzNzMxNTAsImV4cCI6MTc1Mzk3Nzk1MH0.ZOl-gB0i7Y8uHvZ1Eo-2GQqQkfPjrbNuxHqqXJJJqt8\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:50.965Z",
+      "endpoint": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "success": true,
+      "message": "Customer login successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"timestamp\": \"2025-07-24T16:05:50.963Z\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"688259de485db14692d1a123\",\n      \"name\": \"John Customer\",\n      \"email\": \"customer@test.com\",\n      \"role\": \"customer\",\n      \"isActive\": true,\n      \"isDeleted\": false,\n      \"createdAt\": \"2025-07-24T16:05:50.264Z\",\n      \"updatedAt\": \"2025-07-24T16:05:50.958Z\",\n      \"__v\": 0,\n      \"lastLogin\": \"2025-07-24T16:05:50.956Z\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODI1OWRlNDg1ZGIxNDY5MmQxYTEyMyIsImVtYWlsIjoiY3VzdG9tZXJAdGVzdC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3NTMzNzMxNTAsImV4cCI6MTc1Mzk3Nzk1MH0.ZOl-gB0i7Y8uHvZ1Eo-2GQqQkfPjrbNuxHqqXJJJqt8\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:50.977Z",
+      "endpoint": "/auth/me",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get current user successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"User profile retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:50.976Z\",\n  \"data\": {\n    \"_id\": \"688259de485db14692d1a123\",\n    \"name\": \"John Customer\",\n    \"email\": \"customer@test.com\",\n    \"role\": \"customer\",\n    \"isActive\": true,\n    \"isDeleted\": false,\n    \"createdAt\": \"2025-07-24T16:05:50.264Z\",\n    \"updatedAt\": \"2025-07-24T16:05:50.958Z\",\n    \"__v\": 0,\n    \"lastLogin\": \"2025-07-24T16:05:50.956Z\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:50.997Z",
+      "endpoint": "/auth/profile",
+      "method": "PUT",
+      "status": 200,
+      "success": true,
+      "message": "Profile update successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Profile updated successfully\",\n  \"timestamp\": \"2025-07-24T16:05:50.995Z\",\n  \"data\": {\n    \"_id\": \"688259de485db14692d1a123\",\n    \"name\": \"John Updated Customer\",\n    \"email\": \"customer@test.com\",\n    \"role\": \"customer\",\n    \"isActive\": true,\n    \"isDeleted\": false,\n    \"createdAt\": \"2025-07-24T16:05:50.264Z\",\n    \"updatedAt\": \"2025-07-24T16:05:50.988Z\",\n    \"__v\": 0,\n    \"lastLogin\": \"2025-07-24T16:05:50.956Z\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:51.684Z",
+      "endpoint": "/auth/change-password",
+      "method": "PUT",
+      "status": 200,
+      "success": true,
+      "message": "Password change successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Password changed successfully\",\n  \"timestamp\": \"2025-07-24T16:05:51.682Z\"\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.038Z",
+      "endpoint": "/vendor/register",
+      "method": "POST",
+      "status": 201,
+      "success": true,
+      "message": "Vendor registration successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor registered successfully. Awaiting approval.\",\n  \"timestamp\": \"2025-07-24T16:05:52.034Z\",\n  \"data\": {\n    \"vendor\": {\n      \"userId\": \"688259df485db14692d1a12f\",\n      \"businessName\": \"Test Business\",\n      \"category\": \"hotel\",\n      \"description\": \"Test business description\",\n      \"contactInfo\": {\n        \"phone\": \"+1234567890\",\n        \"website\": \"https://testbusiness.com\"\n      },\n      \"status\": \"pending\",\n      \"rating\": {\n        \"average\": 0,\n        \"count\": 0\n      },\n      \"isActive\": true,\n      \"isDeleted\": false,\n      \"_id\": \"688259e0485db14692d1a131\",\n      \"createdAt\": \"2025-07-24T16:05:52.022Z\",\n      \"updatedAt\": \"2025-07-24T16:05:52.022Z\",\n      \"__v\": 0,\n      \"user\": {\n        \"_id\": \"688259df485db14692d1a12f\",\n        \"name\": \"Jane Vendor\",\n        \"email\": \"vendor@test.com\",\n        \"role\": \"vendor\",\n        \"isActive\": true,\n        \"isDeleted\": false,\n        \"createdAt\": \"2025-07-24T16:05:51.695Z\",\n        \"updatedAt\": \"2025-07-24T16:05:51.695Z\",\n        \"__v\": 0\n      },\n      \"id\": \"688259e0485db14692d1a131\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODI1OWRmNDg1ZGIxNDY5MmQxYTEyZiIsImVtYWlsIjoidmVuZG9yQHRlc3QuY29tIiwicm9sZSI6InZlbmRvciIsImlhdCI6MTc1MzM3MzE1MiwiZXhwIjoxNzUzOTc3OTUyfQ.6tc1pO-kl0qKIN6rTfQCNk8DyqK71KVOV_4nMPGYWmg\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.381Z",
+      "endpoint": "/vendor/login",
+      "method": "POST",
+      "status": 200,
+      "success": true,
+      "message": "Vendor login successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor login successful\",\n  \"timestamp\": \"2025-07-24T16:05:52.379Z\",\n  \"data\": {\n    \"vendor\": {\n      \"contactInfo\": {\n        \"phone\": \"+1234567890\",\n        \"website\": \"https://testbusiness.com\"\n      },\n      \"rating\": {\n        \"average\": 0,\n        \"count\": 0\n      },\n      \"_id\": \"688259e0485db14692d1a131\",\n      \"userId\": \"688259df485db14692d1a12f\",\n      \"businessName\": \"Test Business\",\n      \"category\": \"hotel\",\n      \"description\": \"Test business description\",\n      \"status\": \"pending\",\n      \"isActive\": true,\n      \"isDeleted\": false,\n      \"createdAt\": \"2025-07-24T16:05:52.022Z\",\n      \"updatedAt\": \"2025-07-24T16:05:52.022Z\",\n      \"__v\": 0,\n      \"user\": {\n        \"_id\": \"688259df485db14692d1a12f\",\n        \"name\": \"Jane Vendor\",\n        \"email\": \"vendor@test.com\",\n        \"role\": \"vendor\",\n        \"isActive\": true,\n        \"isDeleted\": false,\n        \"createdAt\": \"2025-07-24T16:05:51.695Z\",\n        \"updatedAt\": \"2025-07-24T16:05:51.695Z\",\n        \"__v\": 0\n      },\n      \"id\": \"688259e0485db14692d1a131\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODI1OWRmNDg1ZGIxNDY5MmQxYTEyZiIsImVtYWlsIjoidmVuZG9yQHRlc3QuY29tIiwicm9sZSI6InZlbmRvciIsImlhdCI6MTc1MzM3MzE1MiwiZXhwIjoxNzUzOTc3OTUyfQ.6tc1pO-kl0qKIN6rTfQCNk8DyqK71KVOV_4nMPGYWmg\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.388Z",
+      "endpoint": "/vendor/profile",
+      "method": "GET",
+      "status": 400,
+      "success": false,
+      "message": "Get vendor profile failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Invalid resource ID format\",\n  \"timestamp\": \"2025-07-24T16:05:52.385Z\",\n  \"error\": {\n    \"stack\": \"CastError: Cast to ObjectId failed for value \\\"profile\\\" (type string) at path \\\"_id\\\" for model \\\"Vendor\\\"\\n    at SchemaObjectId.cast (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/schema/objectId.js:251:11)\\n    at SchemaType.applySetters (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/schemaType.js:1258:12)\\n    at SchemaType.castForQuery (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/schemaType.js:1676:17)\\n    at cast (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/cast.js:390:32)\\n    at Query.cast (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:5055:12)\\n    at Query._castConditions (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:2351:10)\\n    at model.Query._findOne (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:2674:8)\\n    at model.Query.exec (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:4604:80)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\\n    at async file:///tmp/rnqayush/Backend_Starter/controllers/vendorController.js:269:18\",\n    \"details\": {\n      \"stringValue\": \"\\\"profile\\\"\",\n      \"valueType\": \"string\",\n      \"kind\": \"ObjectId\",\n      \"value\": \"profile\",\n      \"path\": \"_id\",\n      \"reason\": {},\n      \"name\": \"CastError\",\n      \"message\": \"Cast to ObjectId failed for value \\\"profile\\\" (type string) at path \\\"_id\\\" for model \\\"Vendor\\\"\"\n    }\n  },\n  \"request\": {\n    \"method\": \"GET\",\n    \"url\": \"/api/vendor/profile\",\n    \"ip\": \"::ffff:127.0.0.1\",\n    \"userAgent\": \"axios/1.11.0\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.411Z",
+      "endpoint": "/vendor/profile",
+      "method": "PUT",
+      "status": 200,
+      "success": true,
+      "message": "Vendor profile update successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor profile updated successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.409Z\",\n  \"data\": {\n    \"contactInfo\": {\n      \"phone\": \"+1234567890\",\n      \"website\": \"https://testbusiness.com\"\n    },\n    \"rating\": {\n      \"average\": 0,\n      \"count\": 0\n    },\n    \"_id\": \"688259e0485db14692d1a131\",\n    \"userId\": \"688259df485db14692d1a12f\",\n    \"businessName\": \"Updated Test Business\",\n    \"category\": \"hotel\",\n    \"description\": \"Updated business description\",\n    \"status\": \"pending\",\n    \"isActive\": true,\n    \"isDeleted\": false,\n    \"createdAt\": \"2025-07-24T16:05:52.022Z\",\n    \"updatedAt\": \"2025-07-24T16:05:52.404Z\",\n    \"__v\": 0,\n    \"user\": {\n      \"_id\": \"688259df485db14692d1a12f\",\n      \"name\": \"Jane Vendor\",\n      \"email\": \"vendor@test.com\",\n      \"role\": \"vendor\",\n      \"isActive\": true,\n      \"isDeleted\": false,\n      \"createdAt\": \"2025-07-24T16:05:51.695Z\",\n      \"updatedAt\": \"2025-07-24T16:05:52.376Z\",\n      \"__v\": 0,\n      \"lastLogin\": \"2025-07-24T16:05:52.376Z\"\n    },\n    \"id\": \"688259e0485db14692d1a131\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.416Z",
+      "endpoint": "/vendor/dashboard",
+      "method": "GET",
+      "status": 400,
+      "success": false,
+      "message": "Vendor dashboard failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Invalid resource ID format\",\n  \"timestamp\": \"2025-07-24T16:05:52.414Z\",\n  \"error\": {\n    \"stack\": \"CastError: Cast to ObjectId failed for value \\\"dashboard\\\" (type string) at path \\\"_id\\\" for model \\\"Vendor\\\"\\n    at SchemaObjectId.cast (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/schema/objectId.js:251:11)\\n    at SchemaType.applySetters (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/schemaType.js:1258:12)\\n    at SchemaType.castForQuery (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/schemaType.js:1676:17)\\n    at cast (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/cast.js:390:32)\\n    at Query.cast (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:5055:12)\\n    at Query._castConditions (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:2351:10)\\n    at model.Query._findOne (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:2674:8)\\n    at model.Query.exec (/tmp/rnqayush/Backend_Starter/node_modules/mongoose/lib/query.js:4604:80)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\\n    at async file:///tmp/rnqayush/Backend_Starter/controllers/vendorController.js:269:18\",\n    \"details\": {\n      \"stringValue\": \"\\\"dashboard\\\"\",\n      \"valueType\": \"string\",\n      \"kind\": \"ObjectId\",\n      \"value\": \"dashboard\",\n      \"path\": \"_id\",\n      \"reason\": {},\n      \"name\": \"CastError\",\n      \"message\": \"Cast to ObjectId failed for value \\\"dashboard\\\" (type string) at path \\\"_id\\\" for model \\\"Vendor\\\"\"\n    }\n  },\n  \"request\": {\n    \"method\": \"GET\",\n    \"url\": \"/api/vendor/dashboard\",\n    \"ip\": \"::ffff:127.0.0.1\",\n    \"userAgent\": \"axios/1.11.0\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.426Z",
+      "endpoint": "/vendor/{id}",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get vendor by ID successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.425Z\",\n  \"data\": {\n    \"contactInfo\": {\n      \"phone\": \"+1234567890\",\n      \"website\": \"https://testbusiness.com\"\n    },\n    \"rating\": {\n      \"average\": 0,\n      \"count\": 0\n    },\n    \"_id\": \"688259e0485db14692d1a131\",\n    \"userId\": \"688259df485db14692d1a12f\",\n    \"businessName\": \"Updated Test Business\",\n    \"category\": \"hotel\",\n    \"description\": \"Updated business description\",\n    \"status\": \"pending\",\n    \"isActive\": true,\n    \"isDeleted\": false,\n    \"createdAt\": \"2025-07-24T16:05:52.022Z\",\n    \"updatedAt\": \"2025-07-24T16:05:52.404Z\",\n    \"__v\": 0,\n    \"user\": {\n      \"_id\": \"688259df485db14692d1a12f\",\n      \"name\": \"Jane Vendor\",\n      \"email\": \"vendor@test.com\"\n    },\n    \"id\": \"688259e0485db14692d1a131\"\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.432Z",
+      "endpoint": "/admin/login",
+      "method": "POST",
+      "status": 401,
+      "success": false,
+      "message": "Admin login failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Invalid admin credentials\",\n  \"timestamp\": \"2025-07-24T16:05:52.430Z\"\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.443Z",
+      "endpoint": "/hotel",
+      "method": "POST",
+      "status": 403,
+      "success": false,
+      "message": "Hotel creation failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Vendor must be approved to create listings\",\n  \"timestamp\": \"2025-07-24T16:05:52.442Z\"\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.454Z",
+      "endpoint": "/hotel",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get all hotels successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Hotels retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.452Z\",\n  \"data\": {\n    \"hotels\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.470Z",
+      "endpoint": "/hotel/vendor/my-hotels",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get vendor hotels successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor hotels retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.469Z\",\n  \"data\": {\n    \"hotels\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.484Z",
+      "endpoint": "/hotel/vendor/stats",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get hotel stats successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Hotel statistics retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.483Z\",\n  \"data\": {\n    \"totalHotels\": 0,\n    \"activeHotels\": 0,\n    \"inactiveHotels\": 0,\n    \"averageRating\": 0\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.493Z",
+      "endpoint": "/ecommerce",
+      "method": "POST",
+      "status": 403,
+      "success": false,
+      "message": "Product creation failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Only approved ecommerce vendors can create products\",\n  \"timestamp\": \"2025-07-24T16:05:52.492Z\"\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.505Z",
+      "endpoint": "/ecommerce",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get all products successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Products retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.503Z\",\n  \"data\": {\n    \"products\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.526Z",
+      "endpoint": "/ecommerce/vendor/my-products",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get vendor products successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor products retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.524Z\",\n  \"data\": {\n    \"products\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.542Z",
+      "endpoint": "/automobile",
+      "method": "POST",
+      "status": 403,
+      "success": false,
+      "message": "Vehicle creation failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Only approved automobile vendors can create listings\",\n  \"timestamp\": \"2025-07-24T16:05:52.537Z\"\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.549Z",
+      "endpoint": "/automobile",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get all vehicles successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vehicles retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.547Z\",\n  \"data\": {\n    \"vehicles\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.569Z",
+      "endpoint": "/automobile/vendor/my-vehicles",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get vendor vehicles successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor vehicles retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.566Z\",\n  \"data\": {\n    \"vehicles\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.607Z",
+      "endpoint": "/wedding",
+      "method": "POST",
+      "status": 403,
+      "success": false,
+      "message": "Wedding service creation failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"Only approved wedding vendors can create services\",\n  \"timestamp\": \"2025-07-24T16:05:52.605Z\"\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.623Z",
+      "endpoint": "/wedding",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get all wedding services successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Wedding services retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.618Z\",\n  \"data\": {\n    \"services\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.637Z",
+      "endpoint": "/wedding/vendor/my-services",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get vendor wedding services successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Vendor wedding services retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.635Z\",\n  \"data\": {\n    \"services\": [],\n    \"pagination\": {\n      \"currentPage\": 1,\n      \"totalPages\": 0,\n      \"totalItems\": 0,\n      \"itemsPerPage\": 10\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.660Z",
+      "endpoint": "/homepage",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get homepage content successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Homepage content retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.659Z\",\n  \"data\": {\n    \"heroSection\": {\n      \"title\": \"Discover Amazing Businesses\",\n      \"subtitle\": \"Find the perfect hotel, shop, car, or wedding service for your needs\",\n      \"backgroundImage\": \"/images/hero-bg.jpg\",\n      \"ctaText\": \"Explore Now\",\n      \"ctaLink\": \"/search\"\n    },\n    \"featuredBusinesses\": [],\n    \"categories\": [\n      {\n        \"id\": \"hotel\",\n        \"name\": \"Hotels\",\n        \"description\": \"Find the perfect accommodation\",\n        \"icon\": \"hotel\",\n        \"count\": 0,\n        \"image\": \"/images/categories/hotel.jpg\",\n        \"link\": \"/hotels\"\n      },\n      {\n        \"id\": \"ecommerce\",\n        \"name\": \"Shopping\",\n        \"description\": \"Discover amazing products\",\n        \"icon\": \"shopping-bag\",\n        \"count\": 0,\n        \"image\": \"/images/categories/shopping.jpg\",\n        \"link\": \"/shop\"\n      },\n      {\n        \"id\": \"automobile\",\n        \"name\": \"Automobiles\",\n        \"description\": \"Buy, sell, or rent vehicles\",\n        \"icon\": \"car\",\n        \"count\": 0,\n        \"image\": \"/images/categories/automobile.jpg\",\n        \"link\": \"/automobiles\"\n      },\n      {\n        \"id\": \"wedding\",\n        \"name\": \"Weddings\",\n        \"description\": \"Plan your perfect wedding\",\n        \"icon\": \"heart\",\n        \"count\": 0,\n        \"image\": \"/images/categories/wedding.jpg\",\n        \"link\": \"/weddings\"\n      }\n    ],\n    \"testimonials\": [\n      {\n        \"id\": 1,\n        \"name\": \"Sarah Johnson\",\n        \"role\": \"Happy Customer\",\n        \"content\": \"Found the perfect hotel for my vacation through this platform. The booking process was seamless!\",\n        \"rating\": 5,\n        \"avatar\": \"/images/avatars/sarah.jpg\"\n      },\n      {\n        \"id\": 2,\n        \"name\": \"Mike Chen\",\n        \"role\": \"Business Owner\",\n        \"content\": \"As a vendor, this platform has helped me reach so many more customers. Highly recommended!\",\n        \"rating\": 5,\n        \"avatar\": \"/images/avatars/mike.jpg\"\n      },\n      {\n        \"id\": 3,\n        \"name\": \"Emily Davis\",\n        \"role\": \"Wedding Planner\",\n        \"content\": \"The wedding services section is amazing. Found all the vendors I needed in one place.\",\n        \"rating\": 5,\n        \"avatar\": \"/images/avatars/emily.jpg\"\n      }\n    ],\n    \"stats\": {\n      \"totalBusinesses\": 0,\n      \"totalCustomers\": 2,\n      \"totalVendors\": 0,\n      \"totalBookings\": 1250,\n      \"totalReviews\": 3420\n    }\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.671Z",
+      "endpoint": "/homepage/stats",
+      "method": "GET",
+      "status": 200,
+      "success": true,
+      "message": "Get category stats successful",
+      "data": "{\n  \"success\": true,\n  \"message\": \"Category statistics retrieved successfully\",\n  \"timestamp\": \"2025-07-24T16:05:52.669Z\",\n  \"data\": {\n    \"hotels\": 0,\n    \"ecommerce\": 0,\n    \"automobiles\": 0,\n    \"weddings\": 0,\n    \"totalBusinesses\": 0,\n    \"totalVendors\": 0,\n    \"totalUsers\": 2\n  }\n}"
+    },
+    {
+      "timestamp": "2025-07-24T16:05:52.679Z",
+      "endpoint": "/homepage/search",
+      "method": "GET",
+      "status": 500,
+      "success": false,
+      "message": "Global search failed",
+      "data": "{\n  \"success\": false,\n  \"message\": \"text index required for $text query\",\n  \"timestamp\": \"2025-07-24T16:05:52.678Z\",\n  \"error\": {\n    \"stack\": \"MongoServerError: text index required for $text query\\n    at Connection.sendCommand (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/cmap/connection.js:305:27)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\\n    at async Connection.command (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/cmap/connection.js:333:26)\\n    at async Server.command (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/sdam/server.js:171:29)\\n    at async FindOperation.execute (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/operations/find.js:36:16)\\n    at async tryOperation (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/operations/execute_operation.js:207:20)\\n    at async executeOperation (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/operations/execute_operation.js:75:16)\\n    at async FindCursor._initialize (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/cursor/find_cursor.js:61:26)\\n    at async FindCursor.cursorInit (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/cursor/abstract_cursor.js:633:27)\\n    at async FindCursor.fetchBatch (/tmp/rnqayush/Backend_Starter/node_modules/mongodb/lib/cursor/abstract_cursor.js:667:13)\",\n    \"details\": {\n      \"errorLabelSet\": {},\n      \"errorResponse\": {\n        \"ok\": 0,\n        \"errmsg\": \"text index required for $text query\",\n        \"code\": 27,\n        \"codeName\": \"IndexNotFound\"\n      },\n      \"ok\": 0,\n      \"code\": 27,\n      \"codeName\": \"IndexNotFound\"\n    }\n  },\n  \"request\": {\n    \"method\": \"GET\",\n    \"url\": \"/api/homepage/search?q=test&category=hotel\",\n    \"ip\": \"::ffff:127.0.0.1\",\n    \"userAgent\": \"axios/1.11.0\"\n  }\n}"
+    }
+  ],
+  "authTokens": {
+    "customer": "Generated",
+    "vendor": "Generated",
+    "admin": "Not generated"
+  }
+}

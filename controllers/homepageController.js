@@ -1,4 +1,4 @@
-import asyncHandler from '../utils/asyncHandler.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 import { formatResponse } from '../utils/responseFormatter.js';
 import User from '../models/User.js';
 import Vendor from '../models/Vendor.js';
@@ -332,4 +332,3 @@ export const globalSearch = asyncHandler(async (req, res) => {
     }
   ));
 });
-
