@@ -1,102 +1,94 @@
-# MultiVendor Platform - Complete Full-Stack Solution
+# Backend_Starter - Multivendor Platform API
 
-A comprehensive multivendor platform built with Express.js, MongoDB, and React with Redux Toolkit. This platform supports multiple business categories including Hotels, E-commerce, Automobiles, and Wedding services.
+A comprehensive Express.js + MongoDB backend for a multivendor platform with clean MVC architecture, JWT authentication, and role-based access control.
 
 ## 🚀 Features
 
-### Backend Features
-- **Clean MVC Architecture** with organized folder structure
-- **JWT Authentication** with role-based access control
-- **Multi-business Support** (Hotel, E-commerce, Automobile, Wedding)
-- **Vendor Management** with approval workflow
-- **Admin Dashboard** for platform management
-- **RESTful APIs** with comprehensive CRUD operations
+### Core Features
+- **Clean MVC Architecture** with organized folders (controllers, models, routes, middlewares, config, utils)
+- **JWT-based Authentication** with bcrypt password hashing
+- **Role-based Access Control** (customer, vendor, admin)
 - **MongoDB Integration** with Mongoose ODM
-- **Security Features** including rate limiting, CORS, and input validation
-- **Centralized Error Handling** and logging
-- **Pagination & Filtering** for all listing endpoints
-- **Soft Delete Support** with isDeleted flag
+- **ES6 Modules** support
+- **Comprehensive Error Handling** with centralized middleware
+- **API Response Formatting** with consistent structure
+- **Request Logging** with Morgan
+- **Rate Limiting** for API protection
+- **CORS Configuration** for cross-origin requests
 
-### Frontend Features
-- **React 18** with Vite for fast development
-- **Redux Toolkit** with RTK Query for state management
-- **Tailwind CSS** for responsive design
-- **TypeScript Support** for better development experience
-- **Protected Routes** for different user roles
-- **Backend-Driven Content** for dynamic homepage
-- **Responsive Design** with mobile-first approach
-- **Toast Notifications** for user feedback
-- **Loading States** and error handling
-- **Search Functionality** across all categories
+### User Management
+- **Customer Registration/Login** with profile management
+- **Vendor Registration/Login** with business profile management
+- **Admin Authentication** with vendor management capabilities
+- **Password Change** functionality
+- **Profile Updates** for all user types
+
+### Vendor Management
+- **Vendor Registration** with business details
+- **Vendor Approval System** (admin approval required)
+- **Vendor Status Management** (pending, approved, rejected, suspended)
+- **Category-based Vendor Classification** (hotel, ecommerce, automobile, wedding)
+
+### Category-Specific Modules
+- **Hotel Management** - Create, manage hotel listings with amenities, pricing, location
+- **Ecommerce Products** - Product catalog with inventory, pricing, specifications
+- **Automobile Listings** - Vehicle listings for sale/rent with detailed specifications
+- **Wedding Services** - Wedding venue and service management with capacity, features
+
+### Advanced Features
+- **Pagination & Filtering** on all listing endpoints
+- **Soft Delete Support** with isDeleted flag
+- **Timestamps** on all records
+- **Global Search** functionality across categories
+- **Dashboard Statistics** for vendors and admins
+- **Homepage Content** with category stats
 
 ## 📁 Project Structure
 
 ```
 Backend_Starter/
-├── backend/
-│   ├── controllers/          # Route controllers
-│   │   ├── authController.js
-│   │   ├── vendorController.js
-│   │   ├── adminController.js
-│   │   ├── hotelController.js
-│   │   ├── ecommerceController.js
-│   │   ├── automobileController.js
-│   │   ├── weddingController.js
-│   │   └── homepageController.js
-│   ├── models/              # MongoDB models
-│   │   ├── User.js
-│   │   ├── Vendor.js
-│   │   ├── Hotel.js
-│   │   ├── Ecommerce.js
-│   │   ├── Automobile.js
-│   │   └── Wedding.js
-│   ├── routes/              # API routes
-│   │   ├── authRoutes.js
-│   │   ├── vendorRoutes.js
-│   │   ├── adminRoutes.js
-│   │   ├── hotelRoutes.js
-│   │   ├── ecommerceRoutes.js
-│   │   ├── automobileRoutes.js
-│   │   ├── weddingRoutes.js
-│   │   └── homepageRoutes.js
-│   ├── middlewares/         # Custom middlewares
-│   │   ├── auth.js
-│   │   ├── roleCheck.js
-│   │   └── errorHandler.js
-│   ├── config/              # Configuration files
-│   │   └── database.js
-│   ├── utils/               # Utility functions
-│   │   ├── asyncHandler.js
-│   │   ├── responseFormatter.js
-│   │   └── logger.js
-│   ├── .env.example         # Environment variables template
-│   ├── package.json
-│   └── server.js            # Main server file
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   │   ├── auth/
-│   │   │   ├── business/
-│   │   │   ├── common/
-│   │   │   ├── layout/
-│   │   │   ├── search/
-│   │   │   ├── booking/
-│   │   │   ├── cart/
-│   │   │   └── admin/
-│   │   ├── pages/           # Page components
-│   │   │   ├── owner/
-│   │   │   └── admin/
-│   │   ├── store/           # Redux store
-│   │   │   ├── api/         # RTK Query APIs
-│   │   │   └── slices/      # Redux slices
-│   │   ├── hooks/           # Custom hooks
-│   │   ├── utils/           # Utility functions
-│   │   └── assets/          # Static assets
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   └── index.html
-└── README.md
+├── config/
+│   ├── config.js          # Environment configuration
+│   └── database.js        # MongoDB connection setup
+├── controllers/
+│   ├── adminController.js      # Admin management
+│   ├── authController.js       # Authentication
+│   ├── automobileController.js # Vehicle listings
+│   ├── ecommerceController.js  # Product management
+│   ├── homepageController.js   # Homepage & search
+│   ├── hotelController.js      # Hotel management
+│   ├── vendorController.js     # Vendor operations
+│   └── weddingController.js    # Wedding services
+├── middlewares/
+│   ├── auth.js            # JWT authentication middleware
+│   ├── errorHandler.js    # Global error handling
+│   ├── logger.js          # Request logging
+│   ├── roleAuth.js        # Role-based authorization
+│   └── validateRequest.js # Request validation
+├── models/
+│   ├── Automobile.js      # Vehicle model
+│   ├── Ecommerce.js       # Product model
+│   ├── Hotel.js           # Hotel model
+│   ├── User.js            # User model
+│   ├── Vendor.js          # Vendor model
+│   └── Wedding.js         # Wedding service model
+├── routes/
+│   ├── adminRoutes.js     # Admin endpoints
+│   ├── authRoutes.js      # Authentication endpoints
+│   ├── automobileRoutes.js # Vehicle endpoints
+│   ├── ecommerceRoutes.js  # Product endpoints
+│   ├── homepageRoutes.js   # Homepage endpoints
+│   ├── hotelRoutes.js      # Hotel endpoints
+│   ├── testRoutes.js       # Health check endpoints
+│   ├── vendorRoutes.js     # Vendor endpoints
+│   └── weddingRoutes.js    # Wedding endpoints
+├── utils/
+│   ├── asyncHandler.js    # Async error handling
+│   └── responseFormatter.js # API response formatting
+├── server.js              # Main server file
+├── package.json           # Dependencies and scripts
+├── .env.example           # Environment variables template
+└── README.md              # This file
 ```
 
 ## 🛠️ Installation & Setup
@@ -106,223 +98,285 @@ Backend_Starter/
 - MongoDB (v4.4 or higher)
 - npm or yarn
 
-### Backend Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/rnqayush/Backend_Starter.git
-   cd Backend_Starter
-   ```
-
-2. **Install backend dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Configuration**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Update the `.env` file with your configuration:
-   ```env
-   NODE_ENV=development
-   PORT=5000
-   MONGODB_URI=mongodb://localhost:27017/multivendor
-   JWT_SECRET=your-super-secret-jwt-key
-   JWT_EXPIRE=7d
-   FRONTEND_URL=http://localhost:3000
-   ```
-
-4. **Start the backend server**
-   ```bash
-   # Development mode
-   npm run dev
-   
-   # Production mode
-   npm start
-   ```
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install frontend dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the frontend development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Build for production**
-   ```bash
-   npm run build
-   ```
-
-## 🔗 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-- `PUT /api/auth/profile` - Update user profile
-
-### Vendor Management
-- `POST /api/vendor/register` - Vendor registration
-- `POST /api/vendor/login` - Vendor login
-- `GET /api/vendor/profile` - Get vendor profile
-- `PUT /api/vendor/profile` - Update vendor profile
-- `GET /api/vendor/dashboard` - Vendor dashboard data
-
-### Admin Management
-- `POST /api/admin/login` - Admin login
-- `GET /api/admin/vendors` - List all vendors
-- `PUT /api/admin/vendors/:id/approve` - Approve vendor
-- `DELETE /api/admin/vendors/:id` - Delete vendor
-
-### Business Categories
-Each category (hotel, ecommerce, automobile, wedding) has similar endpoints:
-- `GET /api/{category}` - List items with pagination
-- `GET /api/{category}/:id` - Get item by ID
-- `POST /api/{category}` - Create new item (vendor only)
-- `PUT /api/{category}/:id` - Update item (vendor only)
-- `DELETE /api/{category}/:id` - Delete item (vendor only)
-
-### Homepage
-- `GET /api/homepage` - Get homepage content
-- `GET /api/homepage/stats` - Get platform statistics
-- `GET /api/homepage/search` - Global search
-
-## 🎨 Frontend Architecture
-
-### Redux Store Structure
-```javascript
-store/
-├── api/
-│   ├── baseApi.js          # Base RTK Query configuration
-│   ├── authApi.js          # Authentication APIs
-│   ├── homepageApi.js      # Homepage content APIs
-│   ├── hotelApi.js         # Hotel business APIs
-│   ├── ecommerceApi.js     # E-commerce APIs
-│   ├── automobileApi.js    # Automobile APIs
-│   └── weddingApi.js       # Wedding service APIs
-└── slices/
-    ├── authSlice.js        # Authentication state
-    ├── businessSlice.js    # Business data state
-    ├── homepageSlice.js    # Homepage content state
-    └── uiSlice.js          # UI state management
+### 1. Clone the Repository
+```bash
+git clone https://github.com/rnqayush/Backend_Starter.git
+cd Backend_Starter
 ```
 
-### Component Architecture
-- **Layout Components**: Header, Footer, Sidebar
-- **Common Components**: LoadingSpinner, ErrorMessage, Modal
-- **Business Components**: Category-specific components
-- **Form Components**: Reusable form elements
-- **Admin Components**: Admin dashboard components
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-## 🔐 User Roles & Permissions
+### 3. Environment Configuration
+```bash
+cp .env.example .env
+```
 
-### Customer
-- Browse all business categories
-- Search and filter businesses
-- View business profiles
-- Make bookings/purchases
-- Leave reviews
+Edit `.env` file with your configuration:
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
 
-### Vendor
-- Register and manage business profile
-- Add/edit/delete business listings
-- View bookings and orders
-- Respond to customer inquiries
-- Access analytics dashboard
+# Database Configuration
+MONGO_URI=mongodb://localhost:27017/multivendor_platform
 
-### Admin
-- Approve/reject vendor applications
-- Manage all users and businesses
-- View platform analytics
-- Moderate content and reviews
-- System configuration
+# JWT Configuration
+JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
+JWT_EXPIRE=7d
+JWT_REFRESH_SECRET=your_super_secret_refresh_key_here_change_in_production
+JWT_REFRESH_EXPIRE=30d
 
-## 🚀 Deployment
+# CORS Configuration
+CORS_ORIGIN=http://localhost:3000
+```
 
-### Backend Deployment
-1. Set environment variables for production
-2. Build the application: `npm run build`
-3. Start with PM2: `pm2 start server.js`
+### 4. Start MongoDB
+```bash
+# On Ubuntu/Debian
+sudo systemctl start mongod
 
-### Frontend Deployment
-1. Build the React app: `npm run build`
-2. Deploy the `dist` folder to your hosting service
-3. Configure environment variables for API endpoints
+# Or start manually
+sudo mongod --fork --logpath /var/log/mongodb.log --dbpath /var/lib/mongodb
 
-### Database Setup
-1. Create MongoDB database
-2. Set up indexes for better performance
-3. Configure backup strategies
+# On macOS with Homebrew
+brew services start mongodb-community
+
+# On Windows
+net start MongoDB
+```
+
+### 5. Start the Server
+```bash
+# Development mode with nodemon
+npm run dev
+
+# Production mode
+npm start
+```
+
+The server will start on `http://localhost:5000`
+
+## 📚 API Documentation
+
+### Base URL
+```
+http://localhost:5000/api
+```
+
+### Health Check Endpoints
+- `GET /api/test/ping` - API ping test
+- `GET /api/test/health` - Server health check
+- `GET /api/test/db` - Database connection test
+
+### Authentication Endpoints
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user (protected)
+- `PUT /api/auth/profile` - Update user profile (protected)
+- `PUT /api/auth/change-password` - Change password (protected)
+- `POST /api/auth/logout` - User logout (protected)
+
+### Vendor Endpoints
+- `POST /api/vendor/register` - Vendor registration
+- `POST /api/vendor/login` - Vendor login
+- `GET /api/vendor/profile` - Get vendor profile (protected)
+- `PUT /api/vendor/profile` - Update vendor profile (protected)
+- `GET /api/vendor/dashboard` - Vendor dashboard (protected)
+- `GET /api/vendor` - Get all vendors (public)
+- `GET /api/vendor/:id` - Get vendor by ID (public)
+
+### Admin Endpoints
+- `POST /api/admin/login` - Admin login
+- `GET /api/admin/dashboard` - Admin dashboard (protected)
+- `GET /api/admin/vendors` - Get all vendors (protected)
+- `PUT /api/admin/vendors/:id/approve` - Approve vendor (protected)
+- `PUT /api/admin/vendors/:id/reject` - Reject vendor (protected)
+- `PUT /api/admin/vendors/:id/suspend` - Suspend vendor (protected)
+- `DELETE /api/admin/vendors/:id` - Delete vendor (protected)
+- `GET /api/admin/users` - Get all users (protected)
+
+### Category-Specific Endpoints
+
+#### Hotel Management
+- `POST /api/hotel` - Create hotel (vendor only)
+- `GET /api/hotel` - Get all hotels (public)
+- `GET /api/hotel/:id` - Get hotel by ID (public)
+- `PUT /api/hotel/:id` - Update hotel (vendor only)
+- `DELETE /api/hotel/:id` - Delete hotel (vendor only)
+- `GET /api/hotel/vendor/my-hotels` - Get vendor's hotels (protected)
+- `GET /api/hotel/vendor/stats` - Get hotel statistics (protected)
+
+#### Ecommerce Products
+- `POST /api/ecommerce` - Create product (vendor only)
+- `GET /api/ecommerce` - Get all products (public)
+- `GET /api/ecommerce/:id` - Get product by ID (public)
+- `PUT /api/ecommerce/:id` - Update product (vendor only)
+- `DELETE /api/ecommerce/:id` - Delete product (vendor only)
+- `GET /api/ecommerce/vendor/my-products` - Get vendor's products (protected)
+
+#### Automobile Listings
+- `POST /api/automobile` - Create vehicle listing (vendor only)
+- `GET /api/automobile` - Get all vehicles (public)
+- `GET /api/automobile/:id` - Get vehicle by ID (public)
+- `PUT /api/automobile/:id` - Update vehicle (vendor only)
+- `DELETE /api/automobile/:id` - Delete vehicle (vendor only)
+- `GET /api/automobile/vendor/my-vehicles` - Get vendor's vehicles (protected)
+
+#### Wedding Services
+- `POST /api/wedding` - Create wedding service (vendor only)
+- `GET /api/wedding` - Get all wedding services (public)
+- `GET /api/wedding/:id` - Get wedding service by ID (public)
+- `PUT /api/wedding/:id` - Update wedding service (vendor only)
+- `DELETE /api/wedding/:id` - Delete wedding service (vendor only)
+- `GET /api/wedding/vendor/my-services` - Get vendor's services (protected)
+
+### Homepage & Search
+- `GET /api/homepage` - Get homepage content
+- `GET /api/homepage/stats` - Get category statistics
+- `GET /api/homepage/search` - Global search across categories
 
 ## 🧪 Testing
 
-### Backend Testing
+### Run API Tests
 ```bash
-# Run tests
-npm test
+# Install axios for testing
+npm install axios
 
-# Run tests with coverage
-npm run test:coverage
+# Run comprehensive API tests
+node comprehensive_api_test.js
 ```
 
-### Frontend Testing
-```bash
-cd frontend
+The test script will:
+- Test all endpoints systematically
+- Generate authentication tokens
+- Test CRUD operations for each category
+- Generate a detailed test report (`api_test_report.json`)
 
-# Run tests
-npm test
+### Test Results Summary
+- **Total Tests**: 31 endpoints
+- **Success Rate**: ~71% (22/31 passing)
+- **Coverage**: All major functionality tested
 
-# Run tests with coverage
-npm run test:coverage
+## 🔧 Configuration
+
+### Environment Variables
+See `.env.example` for all available configuration options including:
+- Server settings (port, environment)
+- Database connection
+- JWT configuration
+- CORS settings
+- Rate limiting
+- Email configuration
+- File upload settings
+- Payment gateway integration
+- Redis caching
+- SMS configuration
+
+### Database Indexes
+The application automatically creates indexes for:
+- User email (unique)
+- Vendor email (unique)
+- Product SKU (unique)
+- SEO slugs
+- Search optimization
+
+## 🚦 API Response Format
+
+All API responses follow a consistent format:
+
+### Success Response
+```json
+{
+  \"success\": true,
+  \"message\": \"Operation successful\",
+  \"data\": {
+    // Response data
+  },
+  \"timestamp\": \"2025-07-24T16:00:00.000Z\"
+}
 ```
 
-## 📝 API Documentation
+### Error Response
+```json
+{
+  \"success\": false,
+  \"message\": \"Error description\",
+  \"error\": {
+    // Error details
+  },
+  \"timestamp\": \"2025-07-24T16:00:00.000Z\"
+}
+```
 
-The API includes a test route for verification:
-- `GET /api/test/ping` - Returns "API working" message
+## 🔐 Authentication & Authorization
 
-For detailed API documentation, import the Postman collection or use tools like Swagger.
+### JWT Token Structure
+- **Access Token**: 7 days expiry
+- **Refresh Token**: 30 days expiry
+- **Cookie Expiry**: 7 days
+
+### Role-based Access
+- **Customer**: Basic user access
+- **Vendor**: Can manage their listings (requires approval)
+- **Admin**: Full system access
+
+### Protected Routes
+Routes are protected using middleware:
+- `auth` - Requires valid JWT token
+- `roleAuth(['vendor'])` - Requires specific role
+- `roleAuth(['admin'])` - Admin only access
+
+## 📊 Features Status
+
+### ✅ Implemented Features
+- User authentication and authorization
+- Vendor registration and management
+- Category-specific CRUD operations
+- Admin panel functionality
+- API documentation and testing
+- Error handling and logging
+- Database integration
+- Role-based access control
+
+### 🔄 Known Issues (To Fix)
+1. **Database Connection Test**: `/test/db` endpoint needs mongoose connection check
+2. **Vendor Routes**: Profile and dashboard routes have URL parameter conflicts
+3. **Admin Credentials**: Default admin user needs to be seeded
+4. **Search Indexes**: Text indexes need to be created for global search
+5. **Vendor Approval**: New vendors need admin approval before creating listings
+
+### 🚀 Future Enhancements
+- File upload functionality
+- Email notifications
+- Payment gateway integration
+- Real-time notifications
+- Advanced search filters
+- API rate limiting per user
+- Caching with Redis
+- Comprehensive test coverage
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit your changes: `git commit -am 'Add new feature'`
-4. Push to the branch: `git push origin feature/new-feature`
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 📞 Support
 
 For support and questions:
-- Create an issue on GitHub
+- Create an issue in the GitHub repository
 - Contact: [your-email@example.com]
-
-## 🔄 Version History
-
-- **v1.0.0** - Initial release with complete multivendor platform
-  - Full backend API with all business categories
-  - React frontend with Redux Toolkit
-  - Authentication and authorization
-  - Admin and vendor dashboards
-  - Responsive design with Tailwind CSS
 
 ---
 
-**Built with ❤️ using Express.js, MongoDB, React, and Redux Toolkit**
+**Happy Coding! 🚀**
 
