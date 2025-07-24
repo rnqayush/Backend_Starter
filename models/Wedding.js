@@ -156,6 +156,84 @@ const weddingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Review',
   }],
+  // Testimonials section
+  testimonials: [{
+    clientName: {
+      type: String,
+      required: true,
+      maxlength: [100, 'Client name cannot exceed 100 characters'],
+    },
+    clientImage: String,
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: 5,
+    },
+    testimonial: {
+      type: String,
+      required: true,
+      maxlength: [1000, 'Testimonial cannot exceed 1000 characters'],
+    },
+    eventDate: Date,
+    eventType: String, // e.g., 'wedding', 'engagement', 'reception'
+    date: { type: Date, default: Date.now },
+    featured: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+  }],
+  // FAQ section
+  faqs: [{
+    question: {
+      type: String,
+      required: true,
+      maxlength: [200, 'Question cannot exceed 200 characters'],
+    },
+    answer: {
+      type: String,
+      required: true,
+      maxlength: [1000, 'Answer cannot exceed 1000 characters'],
+    },
+    category: String, // e.g., 'booking', 'pricing', 'services'
+    order: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true },
+  }],
+  // Offers section
+  offers: [{
+    title: {
+      type: String,
+      required: true,
+      maxlength: [100, 'Offer title cannot exceed 100 characters'],
+    },
+    description: {
+      type: String,
+      required: true,
+      maxlength: [500, 'Offer description cannot exceed 500 characters'],
+    },
+    discountType: {
+      type: String,
+      enum: ['percentage', 'fixed_amount', 'package_deal'],
+      default: 'percentage',
+    },
+    discountValue: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    validFrom: {
+      type: Date,
+      required: true,
+    },
+    validUntil: {
+      type: Date,
+      required: true,
+    },
+    terms: [String], // Terms and conditions
+    minBookingAmount: Number,
+    maxDiscount: Number, // For percentage discounts
+    applicableServices: [String], // Which services this offer applies to
+    isActive: { type: Boolean, default: true },
+    featured: { type: Boolean, default: false },
+  }],
   tags: [String],
   isActive: { type: Boolean, default: true },
   isDeleted: { type: Boolean, default: false },
@@ -220,4 +298,3 @@ weddingSchema.methods.addUnavailableDate = function(date) {
 const Wedding = mongoose.model('Wedding', weddingSchema);
 
 export default Wedding;
-

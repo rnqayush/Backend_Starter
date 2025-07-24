@@ -7,6 +7,15 @@ import {
   updateWeddingService,
   deleteWeddingService,
   getVendorWeddingServices,
+  addTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  addFAQ,
+  updateFAQ,
+  deleteFAQ,
+  addOffer,
+  updateOffer,
+  deleteOffer,
 } from '../controllers/weddingController.js';
 import { protect } from '../middlewares/auth.js';
 import { authorize } from '../middlewares/roleAuth.js';
@@ -48,5 +57,19 @@ router.put('/:id', authorize('vendor'), updateWeddingService);
 router.delete('/:id', authorize('vendor'), deleteWeddingService);
 router.get('/vendor/my-services', authorize('vendor'), getVendorWeddingServices);
 
-export default router;
+// Testimonials management
+router.post('/:id/testimonials', authorize('vendor'), addTestimonial);
+router.put('/:id/testimonials/:testimonialId', authorize('vendor'), updateTestimonial);
+router.delete('/:id/testimonials/:testimonialId', authorize('vendor'), deleteTestimonial);
 
+// FAQ management
+router.post('/:id/faqs', authorize('vendor'), addFAQ);
+router.put('/:id/faqs/:faqId', authorize('vendor'), updateFAQ);
+router.delete('/:id/faqs/:faqId', authorize('vendor'), deleteFAQ);
+
+// Offers management
+router.post('/:id/offers', authorize('vendor'), addOffer);
+router.put('/:id/offers/:offerId', authorize('vendor'), updateOffer);
+router.delete('/:id/offers/:offerId', authorize('vendor'), deleteOffer);
+
+export default router;
