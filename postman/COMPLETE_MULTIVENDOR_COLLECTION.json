@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Complete Multivendor Backend API Collection",
-    "description": "Comprehensive Postman collection for all controllers and endpoints in the multivendor platform",
-    "version": "1.0.0",
+    "name": "🚀 Complete Multivendor Backend API Collection",
+    "description": "Comprehensive Postman collection for all controllers and endpoints in the multivendor platform - Everything in one collection!",
+    "version": "2.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -16,57 +16,109 @@
       "key": "authToken",
       "value": "",
       "type": "string",
-      "description": "JWT authentication token"
+      "description": "JWT authentication token - automatically saved on login"
     },
     {
       "key": "userId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "User ID for testing user-specific endpoints"
     },
     {
       "key": "fileId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "File ID for file management endpoints"
     },
     {
       "key": "websiteId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Website ID for business/website endpoints"
+    },
+    {
+      "key": "serviceId",
+      "value": "",
+      "type": "string",
+      "description": "Service ID for business services"
+    },
+    {
+      "key": "teamMemberId",
+      "value": "",
+      "type": "string",
+      "description": "Team member ID for team management"
     },
     {
       "key": "vehicleId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Vehicle ID for automobile endpoints"
+    },
+    {
+      "key": "enquiryId",
+      "value": "",
+      "type": "string",
+      "description": "Enquiry ID for automobile enquiries"
+    },
+    {
+      "key": "inventoryId",
+      "value": "",
+      "type": "string",
+      "description": "Inventory ID for automobile inventory"
     },
     {
       "key": "productId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Product ID for ecommerce endpoints"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string",
+      "description": "Category ID for ecommerce categories"
     },
     {
       "key": "orderId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Order ID for ecommerce orders"
     },
     {
       "key": "hotelId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Hotel ID for hotel endpoints"
     },
     {
       "key": "roomId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Room ID for hotel rooms"
     },
     {
       "key": "bookingId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Booking ID for hotel/wedding bookings"
     },
     {
       "key": "vendorId",
       "value": "",
-      "type": "string"
+      "type": "string",
+      "description": "Vendor ID for wedding vendor endpoints"
+    },
+    {
+      "key": "packageId",
+      "value": "",
+      "type": "string",
+      "description": "Package ID for wedding packages"
+    },
+    {
+      "key": "resetToken",
+      "value": "",
+      "type": "string",
+      "description": "Password reset token"
     }
   ],
   "item": [
