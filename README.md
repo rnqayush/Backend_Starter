@@ -1,386 +1,347 @@
-# 🚀 Express.js + MongoDB Multivendor Backend
+# Multivendor Backend API
 
-A comprehensive, production-ready multivendor platform backend built with Express.js and MongoDB. Features clean MVC architecture, JWT authentication, role-based access control, and category-specific business logic.
+A comprehensive Express.js + MongoDB backend for a multivendor platform supporting multiple business categories including hotels, ecommerce, automobiles, and wedding services.
 
-## ✨ Features
+## 🚀 Features
 
-### 🔐 **Authentication & Authorization**
-- JWT-based authentication with refresh tokens
-- Password hashing using bcrypt
-- Role-based access control (admin, vendor, customer)
-- Protected routes with middleware
-- Email verification system
-
-### 👥 **User Management**
-- Multi-role user system
-- Comprehensive user profiles with preferences
-- Business information management
-- Subscription and analytics tracking
-- Admin user management
-
-### 🏪 **Vendor System**
-- Vendor registration with business type validation
-- Category-specific business logic (hotel, ecommerce, automobile, wedding)
-- Product/service management per category
-- Vendor dashboard with analytics
-- Business verification system
-
-### 📦 **Product Management** (Ecommerce)
-- Complete product CRUD operations
-- Inventory management with stock tracking
-- Image and media management
-- Product reviews and ratings
-- SEO optimization fields
-- Bulk operations support
-
-### 🛒 **Order & Cart System**
-- Shopping cart management
-- Order processing and tracking
-- Payment status management
-- Return and refund processing
-- Order analytics
-
-### 🏨 **Hotel Management**
-- Room management with availability
-- Booking system
-- Amenities and services
-- Pricing and packages
-- Guest management
-
-### 🚗 **Automobile Management**
-- Vehicle listings
-- Specifications and features
-- Booking and rental system
-- Maintenance tracking
-
-### 💒 **Wedding Services**
-- Service packages
-- Venue management
-- Booking and event planning
-- Vendor coordination
-
-### 🛠️ **Technical Features**
-- Clean MVC architecture
-- Centralized error handling
-- Response formatting utilities
-- Async error handling
-- File upload support
-- Pagination and filtering
-- Soft delete functionality
-- Comprehensive logging
+- **Clean MVC Architecture** with organized folder structure
+- **JWT Authentication** with role-based access control
+- **Multi-category Support** (Hotel, Ecommerce, Automobile, Wedding)
+- **Vendor Management** with approval system
+- **Admin Dashboard** with comprehensive controls
+- **Pagination & Filtering** for all listing endpoints
+- **Soft Delete** functionality across all models
+- **Input Validation** using express-validator
+- **Error Handling** with centralized middleware
+- **Security** with helmet, CORS, and rate limiting
+- **Logging** with Morgan middleware
+- **ES6 Modules** support
 
 ## 📁 Project Structure
 
 ```
-src/
+Backend_Starter/
 ├── config/
 │   ├── database.js          # MongoDB connection
-│   └── cloudinary.js        # File upload configuration
+│   └── config.js            # Environment configuration
 ├── controllers/
 │   ├── authController.js    # Authentication logic
-│   ├── userController.js    # User management
-│   ├── ecommerce/           # Ecommerce-specific controllers
-│   ├── hotel/               # Hotel-specific controllers
-│   ├── automobile/          # Automobile-specific controllers
-│   └── wedding/             # Wedding-specific controllers
+│   ├── vendorController.js  # Vendor management
+│   ├── adminController.js   # Admin operations
+│   ├── hotelController.js   # Hotel category
+│   ├── ecommerceController.js # Ecommerce category
+│   ├── automobileController.js # Automobile category
+│   └── weddingController.js # Wedding category
+├── middlewares/
+│   ├── auth.js              # JWT authentication
+│   ├── roleAuth.js          # Role-based authorization
+│   ├── errorHandler.js      # Error handling
+│   ├── logger.js            # Request logging
+│   └── validateRequest.js   # Input validation
 ├── models/
 │   ├── User.js              # User model
-│   ├── ecommerce/           # Ecommerce models
-│   ├── hotel/               # Hotel models
-│   ├── automobile/          # Automobile models
-│   └── wedding/             # Wedding models
+│   ├── Vendor.js            # Vendor model
+│   ├── Hotel.js             # Hotel model
+│   ├── Ecommerce.js         # Ecommerce model
+│   ├── Automobile.js        # Automobile model
+│   └── Wedding.js           # Wedding model
 ├── routes/
-│   ├── auth.routes.js       # Authentication routes
-│   ├── user.routes.js       # User management routes
-│   ├── ecommerce.routes.js  # Ecommerce routes
-│   ├── hotel.routes.js      # Hotel routes
-│   ├── automobile.routes.js # Automobile routes
-│   └── wedding.routes.js    # Wedding routes
-├── middlewares/
-│   ├── auth.js              # Authentication middleware
-│   ├── errorHandler.js      # Error handling middleware
-│   ├── logger.js            # Logging middleware
-│   └── upload.js            # File upload middleware
+│   ├── authRoutes.js        # Authentication routes
+│   ├── vendorRoutes.js      # Vendor routes
+│   ├── adminRoutes.js       # Admin routes
+│   ├── hotelRoutes.js       # Hotel routes
+│   ├── ecommerceRoutes.js   # Ecommerce routes
+│   ├── automobileRoutes.js  # Automobile routes
+│   ├── weddingRoutes.js     # Wedding routes
+│   └── testRoutes.js        # Test/health routes
 ├── utils/
-│   ├── asyncHandler.js      # Async error handler
-│   ├── response.js          # Response formatter
-│   ├── slugify.js           # URL slug generator
-│   └── email.js             # Email utilities
-└── server.js                # Application entry point
+│   ├── responseFormatter.js # API response formatting
+│   ├── asyncHandler.js      # Async error handling
+│   └── pagination.js        # Pagination utilities
+├── .env.example             # Environment variables template
+├── package.json             # Dependencies and scripts
+├── server.js                # Application entry point
+└── README.md                # This file
 ```
 
-## 🚀 Quick Start
+## 🛠️ Installation & Setup
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- MongoDB (v4.4 or higher)
+- MongoDB (local or cloud)
 - npm or yarn
 
-### Installation
+### 1. Clone the repository
+```bash
+git clone <repository-url>
+cd Backend_Starter
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/rnqayush/Backend_Starter.git
-   cd Backend_Starter
-   ```
+### 2. Install dependencies
+```bash
+npm install
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 3. Environment Setup
+Copy the example environment file and configure your settings:
+```bash
+cp .env.example .env
+```
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Update `.env` with your configuration:
-   ```env
-   NODE_ENV=development
-   PORT=5000
-   
-   # Database
-   MONGO_URI=mongodb://localhost:27017/multivendor_db
-   
-   # JWT
-   JWT_SECRET=your_super_secret_jwt_key_here
-   JWT_EXPIRE=7d
-   JWT_REFRESH_SECRET=your_refresh_secret_here
-   JWT_REFRESH_EXPIRE=30d
-   
-   # Email (Optional)
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_EMAIL=your_email@gmail.com
-   SMTP_PASSWORD=your_app_password
-   FROM_EMAIL=noreply@yourapp.com
-   FROM_NAME=YourApp
-   
-   # Cloudinary (Optional)
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_api_key
-   CLOUDINARY_API_SECRET=your_api_secret
-   ```
+Edit `.env` with your configuration:
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
 
-4. **Start MongoDB**
-   ```bash
-   # On macOS with Homebrew
-   brew services start mongodb-community
-   
-   # On Ubuntu/Debian
-   sudo systemctl start mongod
-   
-   # Or run directly
-   mongod --dbpath /data/db
-   ```
+# Database Configuration
+MONGODB_URI=mongodb://localhost:27017/multivendor_db
 
-5. **Run the application**
-   ```bash
-   # Development mode with nodemon
-   npm run dev
-   
-   # Production mode
-   npm start
-   ```
+# JWT Configuration
+JWT_SECRET=your_super_secret_jwt_key_here
+JWT_EXPIRE=7d
 
-6. **Test the API**
-   ```bash
-   curl http://localhost:5000/health
-   # Should return: {"status":"OK","timestamp":"...","uptime":...}
-   ```
+# Admin Configuration
+ADMIN_EMAIL=admin@multivendor.com
+ADMIN_PASSWORD=admin123
+
+# CORS Configuration
+FRONTEND_URL=http://localhost:3000
+```
+
+### 4. Start the server
+
+**Development mode:**
+```bash
+npm run dev
+```
+
+**Production mode:**
+```bash
+npm start
+```
+
+The server will start on `http://localhost:5000`
 
 ## 📚 API Documentation
 
+### Base URL
+```
+http://localhost:5000/api
+```
+
 ### Authentication Endpoints
 
-#### Register User
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "role": "vendor",
-  "businessType": "ecommerce"
-}
-```
-
-#### Login User
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-#### Get Current User
-```http
-GET /api/auth/me
-Authorization: Bearer <your_jwt_token>
-```
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| POST | `/auth/register` | Register new user | Public |
+| POST | `/auth/login` | User login | Public |
+| GET | `/auth/me` | Get current user | Private |
+| PUT | `/auth/profile` | Update profile | Private |
+| PUT | `/auth/change-password` | Change password | Private |
+| POST | `/auth/logout` | Logout user | Private |
 
 ### Vendor Endpoints
 
-#### Create Product (Ecommerce)
-```http
-POST /api/ecommerce/products
-Authorization: Bearer <vendor_token>
-Content-Type: application/json
-
-{
-  "name": "Sample Product",
-  "description": "Product description",
-  "category": "electronics",
-  "sku": "PROD-001",
-  "price": {
-    "regular": 99.99
-  },
-  "inventory": {
-    "quantity": 50
-  },
-  "storeName": "My Store"
-}
-```
-
-#### Get Vendor Products
-```http
-GET /api/ecommerce/seller/products
-Authorization: Bearer <vendor_token>
-```
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| POST | `/vendor/register` | Register as vendor | Public |
+| POST | `/vendor/login` | Vendor login | Public |
+| GET | `/vendor/profile` | Get vendor profile | Vendor |
+| PUT | `/vendor/profile` | Update vendor profile | Vendor |
+| GET | `/vendor/dashboard` | Vendor dashboard | Vendor |
+| GET | `/vendor/:id` | Get vendor by ID | Public |
 
 ### Admin Endpoints
 
-#### Get All Users
-```http
-GET /api/users
-Authorization: Bearer <admin_token>
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| POST | `/admin/login` | Admin login | Public |
+| GET | `/admin/dashboard` | Admin dashboard | Admin |
+| GET | `/admin/vendors` | Get all vendors | Admin |
+| PUT | `/admin/vendors/:id/approve` | Approve vendor | Admin |
+| PUT | `/admin/vendors/:id/reject` | Reject vendor | Admin |
+| PUT | `/admin/vendors/:id/suspend` | Suspend vendor | Admin |
+| DELETE | `/admin/vendors/:id` | Delete vendor | Admin |
+| GET | `/admin/users` | Get all users | Admin |
+
+### Category-Specific Endpoints
+
+Each category (hotel, ecommerce, automobile, wedding) follows the same pattern:
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| GET | `/{category}` | Get all items | Public |
+| GET | `/{category}/:id` | Get item by ID | Public |
+| POST | `/{category}` | Create new item | Vendor |
+| PUT | `/{category}/:id` | Update item | Vendor (Owner) |
+| DELETE | `/{category}/:id` | Delete item | Vendor (Owner) |
+| GET | `/{category}/vendor/my-{items}` | Get vendor's items | Vendor |
+
+### Test Endpoints
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| GET | `/test/ping` | API status check | Public |
+| GET | `/test/health` | Health check | Public |
+| GET | `/test/db` | Database connection test | Public |
+
+## 🔐 User Roles
+
+### Customer
+- Basic user registration and authentication
+- Can browse all categories
+- Can view vendor profiles
+
+### Vendor
+- Register with business details
+- Create and manage category-specific listings
+- Access to vendor dashboard
+- Requires admin approval
+
+### Admin
+- Full system access
+- Vendor approval/rejection
+- User management
+- System statistics
+
+## 🏷️ Categories
+
+### Hotel
+- Hotel listings with rooms, amenities, pricing
+- Location-based search
+- Star rating system
+- Booking policies
+
+### Ecommerce
+- Product catalog with inventory management
+- Category and subcategory organization
+- SKU management
+- Shipping configuration
+
+### Automobile
+- Vehicle listings (sale/rent/lease)
+- Make, model, year filtering
+- Condition and feature specifications
+- Location-based search
+
+### Wedding
+- Wedding service providers
+- Multiple service types (venue, catering, photography, etc.)
+- Portfolio management
+- Availability calendar
+
+## 🔍 Query Parameters
+
+Most listing endpoints support these query parameters:
+
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 10, max: 100)
+- `search` - Search term
+- `sortBy` - Field to sort by
+- `sortOrder` - Sort direction (asc/desc)
+- Category-specific filters (price, location, etc.)
+
+## 📝 Response Format
+
+All API responses follow this consistent format:
+
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "data": {
+    // Response data
+  },
+  "meta": {
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 5,
+      "totalItems": 50,
+      "itemsPerPage": 10
+    }
+  }
+}
 ```
 
-#### Delete User
-```http
-DELETE /api/users/:id
-Authorization: Bearer <admin_token>
-```
+## 🛡️ Security Features
 
-## 🏗️ Architecture
+- **JWT Authentication** with secure token generation
+- **Password Hashing** using bcrypt
+- **Rate Limiting** to prevent abuse
+- **CORS** configuration for cross-origin requests
+- **Helmet** for security headers
+- **Input Validation** for all endpoints
+- **Soft Delete** to maintain data integrity
 
-### MVC Pattern
-- **Models**: Define data structure and business logic
-- **Views**: JSON API responses (no traditional views)
-- **Controllers**: Handle request/response logic
+## 🚦 Error Handling
 
-### Middleware Stack
-1. **CORS**: Cross-origin resource sharing
-2. **Body Parser**: JSON request parsing
-3. **Logger**: Request logging with Morgan
-4. **Auth**: JWT token validation
-5. **Error Handler**: Centralized error management
+The API includes comprehensive error handling:
 
-### Database Design
-- **Users**: Central user management with roles
-- **Category-specific models**: Separate models for each business type
-- **Relationships**: Proper referencing between models
-- **Indexing**: Optimized queries with database indexes
+- **Validation Errors** (400) - Invalid input data
+- **Authentication Errors** (401) - Invalid or missing token
+- **Authorization Errors** (403) - Insufficient permissions
+- **Not Found Errors** (404) - Resource not found
+- **Server Errors** (500) - Internal server errors
 
-## 🔧 Configuration
+## 📊 Logging
 
-### Environment Variables
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NODE_ENV` | Environment mode | `development` |
-| `PORT` | Server port | `5000` |
-| `MONGO_URI` | MongoDB connection string | Required |
-| `JWT_SECRET` | JWT signing secret | Required |
-| `JWT_EXPIRE` | JWT expiration time | `7d` |
-
-### Database Configuration
-The application uses MongoDB with Mongoose ODM. Connection is established in `src/config/database.js`.
-
-### File Upload Configuration
-Cloudinary is used for file uploads. Configure in `src/config/cloudinary.js`.
+Request logging includes:
+- HTTP method and URL
+- Response status and time
+- User information (if authenticated)
+- Error details in development mode
 
 ## 🧪 Testing
 
-### Manual Testing
-Use the provided curl commands or tools like Postman to test the API endpoints.
+Test the API using the provided endpoints:
 
-### Health Check
 ```bash
-curl http://localhost:5000/health
-```
+# Test API status
+curl http://localhost:5000/api/test/ping
 
-### Test User Registration
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "test123",
-    "role": "vendor",
-    "businessType": "ecommerce"
-  }'
+# Test database connection
+curl http://localhost:5000/api/test/db
+
+# Test health check
+curl http://localhost:5000/api/test/health
 ```
 
 ## 🚀 Deployment
 
-### Production Setup
-1. Set `NODE_ENV=production`
-2. Use a production MongoDB instance
-3. Configure proper CORS origins
-4. Set up SSL/TLS certificates
-5. Use a process manager like PM2
+### Environment Variables for Production
+Ensure these are set in production:
+- `NODE_ENV=production`
+- `MONGODB_URI` - Production database URL
+- `JWT_SECRET` - Strong secret key
+- `FRONTEND_URL` - Production frontend URL
 
-### Docker Deployment
-```dockerfile
-FROM node:16-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 5000
-CMD ["npm", "start"]
+### PM2 Deployment
+```bash
+npm install -g pm2
+pm2 start server.js --name "multivendor-api"
+pm2 startup
+pm2 save
 ```
-
-### Environment-specific Configurations
-- **Development**: Hot reloading with nodemon
-- **Production**: Optimized for performance and security
-- **Testing**: Isolated test database
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-## 📝 License
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
-## 🆘 Support
+## 📞 Support
 
-For support and questions:
-- Create an issue on GitHub
-- Check the documentation
-- Review the API examples
-
-## 🎯 Roadmap
-
-- [ ] WebSocket integration for real-time features
-- [ ] Advanced analytics dashboard
-- [ ] Multi-language support
-- [ ] Advanced search with Elasticsearch
-- [ ] Microservices architecture migration
-- [ ] GraphQL API support
+For support and questions, please contact the development team or create an issue in the repository.
 
 ---
 
-**Built with ❤️ using Express.js and MongoDB**
+**Happy Coding! 🎉**
 
