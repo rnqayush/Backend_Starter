@@ -1,7 +1,7 @@
 import asyncHandler from '../../utils/asyncHandler.js';
 import { sendSuccess, sendError } from '../../utils/response.js';
 import WeddingVendor from '../../models/wedding/Vendor.js';
-import { generateSlug } from '../../utils/slugify.js';
+import { createSlug } from '../../utils/slugify.js';
 
 // @desc    Get all wedding vendors with filters
 // @route   GET /api/weddings/vendors
@@ -82,7 +82,7 @@ export const createVendor = asyncHandler(async (req, res, next) => {
 
   // Generate slug if not provided
   if (!vendorData.slug) {
-    vendorData.slug = generateSlug(vendorData.businessName);
+    vendorData.slug = createSlug(vendorData.businessName);
   }
 
   const vendor = await WeddingVendor.create(vendorData);

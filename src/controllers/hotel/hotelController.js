@@ -2,7 +2,7 @@ import asyncHandler from '../../utils/asyncHandler.js';
 import { sendSuccess, sendError } from '../../utils/response.js';
 import Hotel from '../../models/hotel/Hotel.js';
 import Room from '../../models/hotel/Room.js';
-import { generateSlug } from '../../utils/slugify.js';
+import { createSlug } from '../../utils/slugify.js';
 
 // @desc    Get all hotels with filters
 // @route   GET /api/hotels
@@ -75,7 +75,7 @@ export const createHotel = asyncHandler(async (req, res, next) => {
 
   // Generate slug if not provided
   if (!hotelData.slug) {
-    hotelData.slug = generateSlug(hotelData.name);
+    hotelData.slug = createSlug(hotelData.name);
   }
 
   const hotel = await Hotel.create(hotelData);
@@ -412,4 +412,3 @@ export const getOwnerDashboard = asyncHandler(async (req, res, next) => {
     }
   }, 'Owner dashboard data retrieved successfully');
 });
-
