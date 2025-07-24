@@ -551,22 +551,23 @@ vendorSchema.index({ 'analytics.views': -1 });
 
 // Virtual fields
 vendorSchema.virtual('averageRating').get(function() {
-  if (this.reviews.length === 0) return 0;
+  if (!this.reviews || this.reviews.length === 0) return 0;
   const sum = this.reviews.reduce((acc, review) => acc + review.rating.overall, 0);
   return (sum / this.reviews.length).toFixed(1);
 });
 
 vendorSchema.virtual('totalReviews').get(function() {
-  return this.reviews.length;
+  return this.reviews ? this.reviews.length : 0;
 });
 
 vendorSchema.virtual('primaryImage').get(function() {
+  if (!this.portfolio || !this.portfolio.images || this.portfolio.images.length === 0) return null;
   const primary = this.portfolio.images.find(img => img.isPrimary);
   return primary || this.portfolio.images[0];
 });
 
 vendorSchema.virtual('isAvailable').get(function() {
-  return this.availability.status === 'available' && this.status === 'published';
+  return this.availability && this.availability.status === 'available' && this.status === 'published';
 });
 
 // Pre-save middleware
