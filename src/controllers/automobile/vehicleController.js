@@ -2,7 +2,7 @@ import asyncHandler from '../../utils/asyncHandler.js';
 import { sendSuccess, sendError } from '../../utils/response.js';
 import Vehicle from '../../models/automobile/Vehicle.js';
 import Enquiry from '../../models/automobile/Enquiry.js';
-import { generateSlug } from '../../utils/slugify.js';
+import { createSlug } from '../../utils/slugify.js';
 
 // @desc    Get all vehicles with filters
 // @route   GET /api/automobiles/vehicles
@@ -101,7 +101,7 @@ export const createVehicle = asyncHandler(async (req, res, next) => {
 
   // Generate slug if not provided
   if (!vehicleData.slug) {
-    vehicleData.slug = generateSlug(`${vehicleData.year} ${vehicleData.make} ${vehicleData.model}`);
+    vehicleData.slug = createSlug(`${vehicleData.year} ${vehicleData.make} ${vehicleData.model}`);
   }
 
   // Set dealer information from user profile
@@ -454,4 +454,3 @@ export const searchVehicles = asyncHandler(async (req, res, next) => {
     filters
   }, 'Vehicle search completed successfully');
 });
-

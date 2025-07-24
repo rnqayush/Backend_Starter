@@ -644,8 +644,13 @@ vendorSchema.statics.searchVendors = function(filters = {}) {
     query.where('featured', true);
   }
 
-  // Status filter
-  query.where('status', filters.status || 'published');
+  // Status filter - if no status specified, show published and draft vendors
+  if (filters.status) {
+    query.where('status', filters.status);
+  } else {
+    // For public API, show both published and draft vendors by default
+    query.where('status').in(['published', 'draft']);
+  }
 
   return query;
 };

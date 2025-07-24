@@ -336,13 +336,13 @@ productSchema.virtual('discountPercentage').get(function() {
 });
 
 productSchema.virtual('averageRating').get(function() {
-  if (this.reviews.length === 0) return 0;
+  if (!this.reviews || this.reviews.length === 0) return 0;
   const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
   return (sum / this.reviews.length).toFixed(1);
 });
 
 productSchema.virtual('totalReviews').get(function() {
-  return this.reviews.length;
+  return this.reviews ? this.reviews.length : 0;
 });
 
 productSchema.virtual('isInStock').get(function() {
@@ -471,4 +471,3 @@ productSchema.methods.addReview = function(reviewData) {
 };
 
 export default mongoose.model('Product', productSchema);
-

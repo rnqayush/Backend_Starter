@@ -1,12 +1,15 @@
 import asyncHandler from '../../utils/asyncHandler.js';
 import { sendSuccess, sendError } from '../../utils/response.js';
 import WeddingVendor from '../../models/wedding/Vendor.js';
-import { generateSlug } from '../../utils/slugify.js';
+import { createSlug } from '../../utils/slugify.js';
 
 // @desc    Get all wedding vendors with filters
 // @route   GET /api/weddings/vendors
 // @access  Public
 export const getVendors = asyncHandler(async (req, res, next) => {
+  // Quick check for total vendors in database
+  const totalVendorsInDB = await WeddingVendor.countDocuments();
+  console.log('Total vendors in database:', totalVendorsInDB);
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
   const skip = (page - 1) * limit;
@@ -47,6 +50,11 @@ export const getVendors = asyncHandler(async (req, res, next) => {
 
   const total = await WeddingVendor.countDocuments(searchQuery.getQuery());
 
+  // Debug logging
+  console.log('Search Query:', searchQuery.getQuery());
+  console.log('Total vendors found:', total);
+  console.log('Vendors returned:', vendors.length);
+
   sendSuccess(res, {
     vendors,
     pagination: {
@@ -74,7 +82,7 @@ export const createVendor = asyncHandler(async (req, res, next) => {
 
   // Generate slug if not provided
   if (!vendorData.slug) {
-    vendorData.slug = generateSlug(vendorData.businessName);
+    vendorData.slug = createSlug(vendorData.businessName);
   }
 
   const vendor = await WeddingVendor.create(vendorData);
@@ -851,4 +859,3 @@ export const getVendorDashboard = asyncHandler(async (req, res, next) => {
     analytics
   }, 'Vendor dashboard data retrieved successfully');
 });
-

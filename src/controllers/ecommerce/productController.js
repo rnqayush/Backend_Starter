@@ -1,7 +1,8 @@
+import mongoose from 'mongoose';
 import asyncHandler from '../../utils/asyncHandler.js';
 import { sendSuccess, sendError } from '../../utils/response.js';
 import Product from '../../models/ecommerce/Product.js';
-import { generateSlug } from '../../utils/slugify.js';
+import { createSlug } from '../../utils/slugify.js';
 
 // @desc    Get all products with filters
 // @route   GET /api/ecommerce/products
@@ -90,7 +91,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 
   // Generate slug if not provided
   if (!productData.slug) {
-    productData.slug = generateSlug(productData.name);
+    productData.slug = createSlug(productData.name);
   }
 
   // Generate SKU if not provided
@@ -388,7 +389,7 @@ export const getSellerProducts = asyncHandler(async (req, res, next) => {
 
   // Get seller statistics
   const stats = await Product.aggregate([
-    { $match: { seller: mongoose.Types.ObjectId(req.user.id) } },
+    { $match: { seller: new mongoose.Types.ObjectId(req.user.id) } },
     {
       $group: {
         _id: null,
@@ -587,4 +588,3 @@ export const searchProducts = asyncHandler(async (req, res, next) => {
     filters
   }, 'Product search completed successfully');
 });
-
