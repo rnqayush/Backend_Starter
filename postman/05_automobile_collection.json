@@ -1,0 +1,729 @@
+{
+  "info": {
+    "name": "05. Automobile Module",
+    "description": "Vehicle management, inventory, and enquiry endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vehicleId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "enquiryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "inventoryId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Vehicle Management",
+      "item": [
+        {
+          "name": "Get All Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles?page=1&limit=10&brand=toyota&type=sedan",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "brand",
+                  "value": "toyota"
+                },
+                {
+                  "key": "type",
+                  "value": "sedan"
+                }
+              ]
+            },
+            "description": "Get all vehicles with filtering and pagination (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Popular Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/popular?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "popular"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Get popular vehicles (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/search?q=toyota&minPrice=20000&maxPrice=50000&year=2023",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "toyota"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "20000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "50000"
+                },
+                {
+                  "key": "year",
+                  "value": "2023"
+                }
+              ]
+            },
+            "description": "Search vehicles with advanced filters (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Vehicle by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Get specific vehicle details (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Compare Vehicles",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleIds\": [\"vehicleId1\", \"vehicleId2\", \"vehicleId3\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/compare",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "compare"]
+            },
+            "description": "Compare multiple vehicles (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Vehicle (Vendor)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"year\": 2024,\n  \"type\": \"sedan\",\n  \"price\": 35000,\n  \"mileage\": 0,\n  \"condition\": \"new\",\n  \"fuelType\": \"gasoline\",\n  \"transmission\": \"automatic\",\n  \"engine\": {\n    \"size\": \"2.5L\",\n    \"cylinders\": 4,\n    \"horsepower\": 203\n  },\n  \"features\": [\"Air Conditioning\", \"Bluetooth\", \"Backup Camera\", \"Cruise Control\"],\n  \"description\": \"Brand new Toyota Camry with all modern features\",\n  \"images\": [\"camry1.jpg\", \"camry2.jpg\", \"camry3.jpg\"],\n  \"location\": {\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\"\n  },\n  \"contact\": {\n    \"phone\": \"+1-555-123-4567\",\n    \"email\": \"sales@dealership.com\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles"]
+            },
+            "description": "Create a new vehicle listing (vendor only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Vehicle (Vendor)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 33000,\n  \"mileage\": 100,\n  \"description\": \"Updated Toyota Camry with slight mileage\",\n  \"features\": [\"Air Conditioning\", \"Bluetooth\", \"Backup Camera\", \"Cruise Control\", \"Heated Seats\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Update vehicle details (vendor only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Vehicle (Vendor)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Delete vehicle listing (vendor only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Vehicles (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/my-vehicles?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "my-vehicles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get vehicles owned by current vendor"
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Vehicle Status (Vendor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"sold\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/{{vehicleId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "{{vehicleId}}", "status"]
+            },
+            "description": "Update vehicle status (available, sold, reserved)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Vehicle Statistics (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/vehicles/{{vehicleId}}/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "vehicles", "{{vehicleId}}", "stats"]
+            },
+            "description": "Get vehicle view and enquiry statistics"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vehicle Inventory",
+      "item": [
+        {
+          "name": "Get Inventory",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory?page=1&limit=10&status=available",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "available"
+                }
+              ]
+            },
+            "description": "Get inventory items for vendor"
+          },
+          "response": []
+        },
+        {
+          "name": "Add to Inventory",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleId\": \"{{vehicleId}}\",\n  \"quantity\": 5,\n  \"location\": \"Lot A\",\n  \"purchasePrice\": 30000,\n  \"sellingPrice\": 35000,\n  \"notes\": \"Recently acquired inventory\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory"]
+            },
+            "description": "Add vehicle to inventory"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Inventory Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3,\n  \"sellingPrice\": 33000,\n  \"location\": \"Lot B\",\n  \"notes\": \"Moved to premium lot\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory/{{inventoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory", "{{inventoryId}}"]
+            },
+            "description": "Update inventory item details"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove from Inventory",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory/{{inventoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory", "{{inventoryId}}"]
+            },
+            "description": "Remove item from inventory"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory", "stats"]
+            },
+            "description": "Get inventory statistics and analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Low Stock Alert",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory/low-stock?threshold=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory", "low-stock"],
+              "query": [
+                {
+                  "key": "threshold",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Get items with low stock"
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Update Inventory",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"updates\": [\n    {\n      \"inventoryId\": \"inv1\",\n      \"quantity\": 5,\n      \"sellingPrice\": 32000\n    },\n    {\n      \"inventoryId\": \"inv2\",\n      \"quantity\": 3,\n      \"sellingPrice\": 45000\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/inventory/bulk-update",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "inventory", "bulk-update"]
+            },
+            "description": "Update multiple inventory items at once"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Enquiries Management",
+      "item": [
+        {
+          "name": "Create Enquiry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleId\": \"{{vehicleId}}\",\n  \"customerName\": \"John Customer\",\n  \"customerEmail\": \"customer@example.com\",\n  \"customerPhone\": \"+1-555-987-6543\",\n  \"message\": \"I'm interested in this vehicle. Can we schedule a test drive?\",\n  \"enquiryType\": \"test_drive\",\n  \"preferredContactTime\": \"morning\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries"]
+            },
+            "description": "Create a new enquiry (public)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Enquiries (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries?page=1&limit=10&status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            },
+            "description": "Get all enquiries for vendor"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enquiry by ID (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/{{enquiryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "{{enquiryId}}"]
+            },
+            "description": "Get specific enquiry details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Enquiry Status (Vendor)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"contacted\",\n  \"response\": \"Customer contacted via phone. Test drive scheduled for tomorrow.\",\n  \"notes\": \"Customer seems very interested. Potential sale.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/{{enquiryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "{{enquiryId}}"]
+            },
+            "description": "Update enquiry status and add response"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Enquiry (Vendor)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/{{enquiryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "{{enquiryId}}"]
+            },
+            "description": "Delete an enquiry"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enquiries by Vehicle (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/vehicle/{{vehicleId}}?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "vehicle", "{{vehicleId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all enquiries for a specific vehicle"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enquiry Statistics (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/stats?period=month",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "stats"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get enquiry statistics and analytics"
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Update Enquiries (Vendor)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enquiryIds\": [\"enq1\", \"enq2\", \"enq3\"],\n  \"status\": \"contacted\",\n  \"notes\": \"Bulk contacted via email campaign\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/bulk-update",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "bulk-update"]
+            },
+            "description": "Update multiple enquiries at once"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Enquiries (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/enquiries/export?format=csv&status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "enquiries", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "csv"
+                },
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            },
+            "description": "Export enquiries to CSV or Excel"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+

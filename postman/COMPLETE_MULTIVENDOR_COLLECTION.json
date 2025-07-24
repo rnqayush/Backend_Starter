@@ -1,0 +1,745 @@
+{
+  "info": {
+    "name": "Complete Multivendor Backend API Collection",
+    "description": "Comprehensive Postman collection for all controllers and endpoints in the multivendor platform",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string",
+      "description": "Base URL for the API server"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT authentication token"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "fileId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "websiteId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vehicleId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "hotelId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "roomId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vendorId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "description": "User authentication and authorization endpoints",
+      "item": [
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "User Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.collectionVariables.set('authToken', response.token);",
+                  "        console.log('Auth token saved:', response.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with email and password"
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current authenticated user details"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout current user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Users Management",
+      "description": "User management and profile endpoints",
+      "item": [
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ]
+            },
+            "description": "Get all users with pagination (Admin only)"
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Get current user's profile"
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Profile Name\",\n  \"phone\": \"+1234567890\",\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profile"]
+            },
+            "description": "Update current user's profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📁 Files Management",
+      "description": "File upload and management endpoints",
+      "item": [
+        {
+          "name": "Upload File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "file", "type": "file", "src": []},
+                {"key": "category", "value": "image", "type": "text"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/files/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "files", "upload"]
+            },
+            "description": "Upload a single file"
+          }
+        },
+        {
+          "name": "Get All Files",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/files?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "files"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ]
+            },
+            "description": "Get all files with pagination"
+          }
+        },
+        {
+          "name": "Delete File",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{authToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/{{fileId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "files", "{{fileId}}"]
+            },
+            "description": "Delete a file"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🌐 Business/Websites",
+      "description": "Website content management and business profile endpoints",
+      "item": [
+        {
+          "name": "Public Routes",
+          "item": [
+            {
+              "name": "View Website by Domain",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/websites/view/example.com",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "websites", "view", "example.com"]
+                },
+                "description": "Public route to view website by domain"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Website Management",
+          "item": [
+            {
+              "name": "Get All Websites",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/websites?page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "websites"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "10"}
+                  ]
+                },
+                "description": "Get all websites for the authenticated vendor"
+              }
+            },
+            {
+              "name": "Create Website",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"My Business Website\",\n  \"domain\": \"mybusiness.com\",\n  \"description\": \"Professional business website\",\n  \"category\": \"business\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/websites",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "websites"]
+                },
+                "description": "Create a new website"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🚗 Automobile",
+      "description": "Vehicle management, inventory, and enquiry endpoints",
+      "item": [
+        {
+          "name": "Vehicle Management",
+          "item": [
+            {
+              "name": "Get All Vehicles",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/automobiles/vehicles?page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "automobiles", "vehicles"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "10"}
+                  ]
+                },
+                "description": "Get all vehicles with filtering (public)"
+              }
+            },
+            {
+              "name": "Create Vehicle (Vendor)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"year\": 2024,\n  \"price\": 35000,\n  \"condition\": \"new\",\n  \"description\": \"Brand new Toyota Camry\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/automobiles/vehicles",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "automobiles", "vehicles"]
+                },
+                "description": "Create a new vehicle listing (vendor only)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enquiries",
+          "item": [
+            {
+              "name": "Create Enquiry",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vehicleId\": \"{{vehicleId}}\",\n  \"customerName\": \"John Customer\",\n  \"customerEmail\": \"customer@example.com\",\n  \"message\": \"Interested in this vehicle\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/automobiles/enquiries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "automobiles", "enquiries"]
+                },
+                "description": "Create a new enquiry (public)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🛒 Ecommerce",
+      "description": "Product, cart, and order management endpoints",
+      "item": [
+        {
+          "name": "Products",
+          "item": [
+            {
+              "name": "Get All Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/ecommerce/products?page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "ecommerce", "products"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "10"}
+                  ]
+                },
+                "description": "Get all products (public)"
+              }
+            },
+            {
+              "name": "Create Product (Vendor)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Smartphone XYZ\",\n  \"description\": \"Latest smartphone\",\n  \"price\": 699.99,\n  \"category\": \"electronics\",\n  \"stock\": 50\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/ecommerce/products",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "ecommerce", "products"]
+                },
+                "description": "Create a new product (vendor only)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cart",
+          "item": [
+            {
+              "name": "Get Cart",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/ecommerce/cart",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "ecommerce", "cart"]
+                },
+                "description": "Get user's cart"
+              }
+            },
+            {
+              "name": "Add to Cart",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/ecommerce/cart/add",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "ecommerce", "cart", "add"]
+                },
+                "description": "Add product to cart"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Orders",
+          "item": [
+            {
+              "name": "Create Order",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/ecommerce/orders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "ecommerce", "orders"]
+                },
+                "description": "Create order from cart"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🏨 Hotels",
+      "description": "Hotel management and booking endpoints",
+      "item": [
+        {
+          "name": "Hotels",
+          "item": [
+            {
+              "name": "Get All Hotels",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/hotels?page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "hotels"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "10"}
+                  ]
+                },
+                "description": "Get all hotels (public)"
+              }
+            },
+            {
+              "name": "Create Hotel (Vendor)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Grand Plaza Hotel\",\n  \"description\": \"Luxury hotel\",\n  \"address\": {\n    \"city\": \"New York\",\n    \"state\": \"NY\"\n  },\n  \"rating\": 4.5\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/hotels",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "hotels"]
+                },
+                "description": "Create a new hotel (vendor only)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bookings",
+          "item": [
+            {
+              "name": "Create Booking",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"{{hotelId}}\",\n  \"checkInDate\": \"2024-03-01\",\n  \"checkOutDate\": \"2024-03-05\",\n  \"guests\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/hotels/bookings",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "hotels", "bookings"]
+                },
+                "description": "Create a new booking"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "💒 Weddings",
+      "description": "Wedding vendor management and booking endpoints",
+      "item": [
+        {
+          "name": "Wedding Vendors",
+          "item": [
+            {
+              "name": "Get All Wedding Vendors",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/weddings/vendors?page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "weddings", "vendors"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "10"}
+                  ]
+                },
+                "description": "Get all wedding vendors (public)"
+              }
+            },
+            {
+              "name": "Create Wedding Vendor Profile (Vendor)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"},
+                  {"key": "Authorization", "value": "Bearer {{authToken}}"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessName\": \"Dream Wedding Photography\",\n  \"category\": \"photographer\",\n  \"description\": \"Professional wedding photography\",\n  \"pricing\": {\n    \"startingPrice\": 2500\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/weddings/vendors",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "weddings", "vendors"]
+                },
+                "description": "Create wedding vendor profile (vendor only)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Wedding Bookings",
+          "item": [
+            {
+              "name": "Create Booking Inquiry",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {"key": "Content-Type", "value": "application/json"}
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vendorId\": \"{{vendorId}}\",\n  \"weddingDate\": \"2024-06-15\",\n  \"clientDetails\": {\n    \"bride\": {\n      \"name\": \"Jane Smith\",\n      \"email\": \"jane@example.com\"\n    },\n    \"groom\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\"\n    }\n  },\n  \"budget\": 5000\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/weddings/bookings/inquiry",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "weddings", "bookings", "inquiry"]
+                },
+                "description": "Create booking inquiry (public)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔧 Health & Utilities",
+      "description": "System health and utility endpoints",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check API server health status"
+          }
+        },
+        {
+          "name": "API Ping",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ping",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ping"]
+            },
+            "description": "Simple API ping test"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script",
+          "console.log('Making request to:', pm.request.url.toString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response has proper headers', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});"
+        ]
+      }
+    }
+  ]
+}

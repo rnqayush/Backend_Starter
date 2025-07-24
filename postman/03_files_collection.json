@@ -1,0 +1,307 @@
+{
+  "info": {
+    "name": "03. Files Module",
+    "description": "File upload and management endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "fileId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "File Upload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "category",
+              "value": "image",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": "Sample image upload",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/files/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "upload"]
+        },
+        "description": "Upload a single file"
+      },
+      "response": []
+    },
+    {
+      "name": "Multiple Files Upload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "files",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "files",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "category",
+              "value": "gallery",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/files/upload/multiple",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "upload", "multiple"]
+        },
+        "description": "Upload multiple files at once"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Files",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/files?page=1&limit=10&category=image",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "category",
+              "value": "image"
+            }
+          ]
+        },
+        "description": "Get all files with pagination and filtering"
+      },
+      "response": []
+    },
+    {
+      "name": "Get File by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/files/{{fileId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "{{fileId}}"]
+        },
+        "description": "Get specific file details by ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Update File Details",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"filename\": \"updated-filename.jpg\",\n  \"description\": \"Updated file description\",\n  \"category\": \"product\",\n  \"tags\": [\"product\", \"featured\", \"main\"]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/files/{{fileId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "{{fileId}}"]
+        },
+        "description": "Update file metadata"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete File",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/files/{{fileId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "{{fileId}}"]
+        },
+        "description": "Delete a file"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Files by Category",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/files/category/image?page=1&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "category", "image"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Get files filtered by category"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Files",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/files/search?q=product&category=image",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "product"
+            },
+            {
+              "key": "category",
+              "value": "image"
+            }
+          ]
+        },
+        "description": "Search files by filename or description"
+      },
+      "response": []
+    },
+    {
+      "name": "Get File Download URL",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/files/{{fileId}}/download",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "{{fileId}}", "download"]
+        },
+        "description": "Get secure download URL for a file"
+      },
+      "response": []
+    },
+    {
+      "name": "Bulk Delete Files",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fileIds\": [\"fileId1\", \"fileId2\", \"fileId3\"]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/files/bulk-delete",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "files", "bulk-delete"]
+        },
+        "description": "Delete multiple files at once"
+      },
+      "response": []
+    }
+  ]
+}
+

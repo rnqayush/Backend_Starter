@@ -1,0 +1,616 @@
+{
+  "info": {
+    "name": "04. Business/Websites Module",
+    "description": "Website content management and business profile endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "websiteId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "serviceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "teamMemberId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Public Routes",
+      "item": [
+        {
+          "name": "View Website by Domain",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/view/example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "view", "example.com"]
+            },
+            "description": "Public route to view website by domain (no auth required)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Website Management",
+      "item": [
+        {
+          "name": "Get All Websites",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all websites for the authenticated vendor"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Website",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Business Website\",\n  \"domain\": \"mybusiness.com\",\n  \"subdomain\": \"mybusiness\",\n  \"description\": \"Professional business website\",\n  \"category\": \"business\",\n  \"template\": \"modern\",\n  \"settings\": {\n    \"theme\": \"blue\",\n    \"layout\": \"standard\",\n    \"showContactForm\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites"]
+            },
+            "description": "Create a new website"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Website by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}"]
+            },
+            "description": "Get specific website details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Website",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Business Website\",\n  \"description\": \"Updated professional business website\",\n  \"settings\": {\n    \"theme\": \"green\",\n    \"layout\": \"modern\",\n    \"showContactForm\": true,\n    \"showTestimonials\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}"]
+            },
+            "description": "Update website details"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Website",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}"]
+            },
+            "description": "Delete a website"
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Website",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/publish",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "publish"]
+            },
+            "description": "Publish a website to make it live"
+          },
+          "response": []
+        },
+        {
+          "name": "Unpublish Website",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/unpublish",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "unpublish"]
+            },
+            "description": "Unpublish a website"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Content Management",
+      "item": [
+        {
+          "name": "Get Website Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content"]
+            },
+            "description": "Get all content for a website"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Hero Section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Welcome to Our Business\",\n  \"subtitle\": \"Professional services you can trust\",\n  \"description\": \"We provide top-quality services to help your business grow\",\n  \"backgroundImage\": \"hero-bg.jpg\",\n  \"ctaText\": \"Get Started\",\n  \"ctaLink\": \"/contact\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/hero",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "hero"]
+            },
+            "description": "Update hero section content"
+          },
+          "response": []
+        },
+        {
+          "name": "Update About Section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"About Our Company\",\n  \"description\": \"We are a leading company in our industry with over 10 years of experience\",\n  \"mission\": \"To provide exceptional services to our clients\",\n  \"vision\": \"To be the most trusted company in our field\",\n  \"values\": [\"Quality\", \"Integrity\", \"Innovation\", \"Customer Focus\"],\n  \"image\": \"about-us.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/about",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "about"]
+            },
+            "description": "Update about section content"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Contact Info",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"contact@mybusiness.com\",\n  \"phone\": \"+1-555-123-4567\",\n  \"address\": {\n    \"street\": \"123 Business St\",\n    \"city\": \"Business City\",\n    \"state\": \"BC\",\n    \"zipCode\": \"12345\",\n    \"country\": \"USA\"\n  },\n  \"socialMedia\": {\n    \"facebook\": \"https://facebook.com/mybusiness\",\n    \"twitter\": \"https://twitter.com/mybusiness\",\n    \"linkedin\": \"https://linkedin.com/company/mybusiness\",\n    \"instagram\": \"https://instagram.com/mybusiness\"\n  },\n  \"businessHours\": {\n    \"monday\": \"9:00 AM - 5:00 PM\",\n    \"tuesday\": \"9:00 AM - 5:00 PM\",\n    \"wednesday\": \"9:00 AM - 5:00 PM\",\n    \"thursday\": \"9:00 AM - 5:00 PM\",\n    \"friday\": \"9:00 AM - 5:00 PM\",\n    \"saturday\": \"10:00 AM - 2:00 PM\",\n    \"sunday\": \"Closed\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "contact"]
+            },
+            "description": "Update contact information"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services Management",
+      "item": [
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "services"]
+            },
+            "description": "Get all services for a website"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Web Development\",\n  \"description\": \"Custom web development services\",\n  \"price\": 5000,\n  \"duration\": \"2-4 weeks\",\n  \"features\": [\"Responsive Design\", \"SEO Optimized\", \"Mobile Friendly\"],\n  \"image\": \"web-dev-service.jpg\",\n  \"category\": \"development\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "services"]
+            },
+            "description": "Add a new service"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Web Development\",\n  \"description\": \"Premium custom web development services\",\n  \"price\": 7500,\n  \"duration\": \"3-6 weeks\",\n  \"features\": [\"Responsive Design\", \"SEO Optimized\", \"Mobile Friendly\", \"E-commerce Integration\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/services/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "services", "{{serviceId}}"]
+            },
+            "description": "Update an existing service"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/services/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "services", "{{serviceId}}"]
+            },
+            "description": "Delete a service"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Team Management",
+      "item": [
+        {
+          "name": "Get All Team Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/team",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "team"]
+            },
+            "description": "Get all team members for a website"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Team Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith\",\n  \"position\": \"Senior Developer\",\n  \"bio\": \"Experienced developer with 8+ years in web development\",\n  \"image\": \"john-smith.jpg\",\n  \"email\": \"john@mybusiness.com\",\n  \"socialMedia\": {\n    \"linkedin\": \"https://linkedin.com/in/johnsmith\",\n    \"twitter\": \"https://twitter.com/johnsmith\"\n  },\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\", \"MongoDB\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/team",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "team"]
+            },
+            "description": "Add a new team member"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Team Member",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith\",\n  \"position\": \"Lead Developer\",\n  \"bio\": \"Experienced lead developer with 10+ years in web development\",\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\", \"MongoDB\", \"AWS\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/team/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "team", "{{teamMemberId}}"]
+            },
+            "description": "Update team member details"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Team Member",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/team/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "team", "{{teamMemberId}}"]
+            },
+            "description": "Delete a team member"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gallery & Portfolio",
+      "item": [
+        {
+          "name": "Get Gallery Images",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/gallery",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "gallery"]
+            },
+            "description": "Get all gallery images"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Gallery Images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"images\": [\n    {\n      \"url\": \"gallery1.jpg\",\n      \"caption\": \"Our office space\",\n      \"category\": \"office\"\n    },\n    {\n      \"url\": \"gallery2.jpg\",\n      \"caption\": \"Team meeting\",\n      \"category\": \"team\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/gallery",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "gallery"]
+            },
+            "description": "Add images to gallery"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Portfolio Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/portfolio",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "portfolio"]
+            },
+            "description": "Get all portfolio items"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Portfolio Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"E-commerce Website\",\n  \"description\": \"Modern e-commerce platform built with React and Node.js\",\n  \"image\": \"portfolio-ecommerce.jpg\",\n  \"category\": \"web-development\",\n  \"technologies\": [\"React\", \"Node.js\", \"MongoDB\", \"Stripe\"],\n  \"projectUrl\": \"https://example-ecommerce.com\",\n  \"completedDate\": \"2024-01-15\",\n  \"client\": \"ABC Company\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/websites/{{websiteId}}/content/portfolio",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "websites", "{{websiteId}}", "content", "portfolio"]
+            },
+            "description": "Add a new portfolio item"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+
