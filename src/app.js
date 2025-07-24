@@ -18,7 +18,7 @@ import automobileRoutes from './routes/automobile.routes.js';
 import ecommerceRoutes from './routes/ecommerce.routes.js';
 import hotelRoutes from './routes/hotel.routes.js';
 import weddingRoutes from './routes/wedding.routes.js';
-import businessRoutes from './routes/business.routes.js';
+import businessRoutes, { publicRouter as businessPublicRoutes } from './routes/business.routes.js';
 
 const app = express();
 
@@ -76,6 +76,7 @@ app.use('/api/automobiles', automobileRoutes);
 app.use('/api/ecommerce', ecommerceRoutes);
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/weddings', weddingRoutes);
+app.use('/api/websites', businessPublicRoutes); // Public business routes (no auth) - must come first
 app.use('/api/websites', businessRoutes);
 
 // 404 handler

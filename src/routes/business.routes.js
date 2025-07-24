@@ -24,19 +24,9 @@ import { protect, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-// Public routes - Website viewing
-router.get('/:domain', async (req, res) => {
-  res.json({
-    success: true,
-    data: {},
-    message: 'Website viewing functionality coming soon'
-  });
-});
-
-// Protected routes
+// Protected routes - Website management (must come before public domain route)
 router.use(protect);
 
-// Website management
 router.get('/', authorize('vendor'), async (req, res) => {
   res.json({
     success: true,
@@ -230,5 +220,22 @@ router.post('/:id/unpublish', authorize('vendor'), async (req, res) => {
     message: 'Website unpublishing functionality coming soon'
   });
 });
+
+// ===== PUBLIC ROUTES =====
+
+// Create a separate router instance for public routes (no auth required)
+const publicRouter = express.Router();
+
+// Public route - Website viewing by domain (must use specific pattern to avoid conflicts)
+publicRouter.get('/view/:domain', async (req, res) => {
+  res.json({
+    success: true,
+    data: {},
+    message: 'Website viewing functionality coming soon'
+  });
+});
+
+// Export both routers - main app should mount public routes separately
+export { publicRouter };
 
 export default router;
