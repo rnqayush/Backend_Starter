@@ -17,6 +17,7 @@ import hotelRoutes from './routes/hotelRoutes.js';
 import ecommerceRoutes from './routes/ecommerceRoutes.js';
 import automobileRoutes from './routes/automobileRoutes.js';
 import weddingRoutes from './routes/weddingRoutes.js';
+import homepageRoutes from './routes/homepageRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 
 // Initialize Express app
@@ -75,6 +76,7 @@ app.use('/api/hotel', hotelRoutes);
 app.use('/api/ecommerce', ecommerceRoutes);
 app.use('/api/automobile', automobileRoutes);
 app.use('/api/wedding', weddingRoutes);
+app.use('/api/homepage', homepageRoutes);
 
 // Handle undefined routes
 app.all('*', (req, res) => {
@@ -118,4 +120,3 @@ process.on('SIGTERM', () => {
 });
 
 export default app;
-
