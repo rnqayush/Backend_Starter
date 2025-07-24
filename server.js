@@ -17,6 +17,8 @@ import hotelRoutes from './routes/hotelRoutes.js';
 import ecommerceRoutes from './routes/ecommerceRoutes.js';
 import automobileRoutes from './routes/automobileRoutes.js';
 import weddingRoutes from './routes/weddingRoutes.js';
+import businessRoutes from './routes/businessRoutes.js';
+import freelanceRoutes from './routes/freelanceRoutes.js';
 import homepageRoutes from './routes/homepageRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 
@@ -76,6 +78,8 @@ app.use('/api/hotel', hotelRoutes);
 app.use('/api/ecommerce', ecommerceRoutes);
 app.use('/api/automobile', automobileRoutes);
 app.use('/api/wedding', weddingRoutes);
+app.use('/api/business', businessRoutes);
+app.use('/api/freelance', freelanceRoutes);
 app.use('/api/homepage', homepageRoutes);
 
 // Handle undefined routes
