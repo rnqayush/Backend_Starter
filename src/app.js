@@ -67,6 +67,15 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test ping route
+app.get('/api/test/ping', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'API is working!',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
