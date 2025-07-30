@@ -1,0 +1,428 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Multi-Business Platform API",
+    "description": "A comprehensive backend API supporting hotels, ecommerce, weddings, automobiles, and business websites",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@yourdomain.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's full name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "description": "User's password"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["customer", "business_owner", "admin", "super_admin"],
+            "description": "User's role"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone number"
+          }
+        }
+      },
+      "Business": {
+        "type": "object",
+        "required": ["name", "slug", "description", "type"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Business name"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Business URL slug"
+          },
+          "description": {
+            "type": "string",
+            "description": "Business description"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["hotel", "ecommerce", "wedding", "automobile", "business"],
+            "description": "Business type"
+          }
+        }
+      },
+      "Hotel": {
+        "type": "object",
+        "required": ["business", "name", "description"],
+        "properties": {
+          "business": {
+            "type": "string",
+            "description": "Business ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Hotel name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Hotel description"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["budget", "mid-range", "luxury", "boutique", "resort", "business"]
+          },
+          "starRating": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "required": ["business", "name", "description", "category", "sku"],
+        "properties": {
+          "business": {
+            "type": "string",
+            "description": "Business ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description"
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category"
+          },
+          "sku": {
+            "type": "string",
+            "description": "Product SKU"
+          }
+        }
+      },
+      "Booking": {
+        "type": "object",
+        "required": ["business", "bookingType", "customer"],
+        "properties": {
+          "business": {
+            "type": "string",
+            "description": "Business ID"
+          },
+          "bookingType": {
+            "type": "string",
+            "enum": ["hotel", "wedding", "service"]
+          },
+          "customer": {
+            "type": "string",
+            "description": "Customer ID"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      },
+      "Success": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "tags": ["Authentication"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user data"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/hotels": {
+      "get": {
+        "summary": "Get all hotels",
+        "tags": ["Hotels"],
+        "responses": {
+          "200": {
+            "description": "List of hotels"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create hotel",
+        "tags": ["Hotels"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Hotel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Hotel created successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "Get all products",
+        "tags": ["Products"],
+        "responses": {
+          "200": {
+            "description": "List of products"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create product",
+        "tags": ["Products"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "get": {
+        "summary": "Get user bookings",
+        "tags": ["Bookings"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of bookings"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create booking",
+        "tags": ["Bookings"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Booking"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booking created successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization"
+    },
+    {
+      "name": "Hotels",
+      "description": "Hotel management"
+    },
+    {
+      "name": "Products",
+      "description": "Product management for ecommerce"
+    },
+    {
+      "name": "Bookings",
+      "description": "Booking management"
+    },
+    {
+      "name": "Orders",
+      "description": "Order management"
+    },
+    {
+      "name": "Vehicles",
+      "description": "Vehicle listings"
+    },
+    {
+      "name": "Weddings",
+      "description": "Wedding vendor management"
+    },
+    {
+      "name": "Business",
+      "description": "Business management"
+    }
+  ]
+}
+
