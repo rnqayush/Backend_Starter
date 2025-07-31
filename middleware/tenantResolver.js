@@ -29,7 +29,7 @@ const resolveTenant = async (req, res, next) => {
       if (!skipSubdomains.includes(subdomain) && subdomain !== host) {
         website = await Website.findOne({ 
           slug: subdomain, 
-          status: 'active' 
+          status: { $in: ['active', 'draft'] } 
         }).populate('owner', 'name email');
       }
     }
@@ -39,7 +39,7 @@ const resolveTenant = async (req, res, next) => {
       tenantIdentifier = req.headers['x-tenant-slug'];
       website = await Website.findOne({ 
         slug: tenantIdentifier, 
-        status: 'active' 
+        status: { $in: ['active', 'draft'] } 
       }).populate('owner', 'name email');
     }
 
@@ -53,8 +53,11 @@ const resolveTenant = async (req, res, next) => {
         settings: website.settings,
         isActive: website.status === 'active'
       };
+      // For backward compatibility with business controllers
+      req.website = website;
     } else {
       req.tenant = null;
+      req.website = null;
     }
 
     next();
@@ -175,4 +178,3 @@ module.exports = {
   requireTenantOwner,
   extractTenantSlug
 };
-

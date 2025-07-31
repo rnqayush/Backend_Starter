@@ -74,6 +74,12 @@ const errorHandler = (err, req, res, next) => {
     error = new AppError(message, 400, 'UNEXPECTED_FILE');
   }
 
+  // JSON parsing errors
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    const message = 'Invalid JSON format in request body';
+    error = new AppError(message, 400, 'INVALID_JSON');
+  }
+
   // Send error response
   res.status(error.statusCode || 500).json({
     success: false,
@@ -163,4 +169,3 @@ module.exports = {
   successResponse,
   paginatedResponse
 };
-
