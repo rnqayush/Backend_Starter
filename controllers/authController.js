@@ -18,7 +18,8 @@ class AuthController {
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      const errorMessages = errors.array().map(error => error.msg);
+      return next(new AppError(`Validation failed: ${errorMessages.join(', ')}`, 400, 'VALIDATION_ERROR'));
     }
 
     const { name, email, password } = req.body;
@@ -69,7 +70,8 @@ class AuthController {
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      const errorMessages = errors.array().map(error => error.msg);
+      return next(new AppError(`Validation failed: ${errorMessages.join(', ')}`, 400, 'VALIDATION_ERROR'));
     }
 
     const { email, password } = req.body;
@@ -361,4 +363,3 @@ class AuthController {
 }
 
 module.exports = new AuthController();
-
