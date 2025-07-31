@@ -144,10 +144,39 @@ const optionalAuth = async (req, res, next) => {
   }
 };
 
+/**
+ * Website context middleware
+ * Sets req.website from tenant context for backward compatibility
+ */
+const setWebsiteContext = (req, res, next) => {
+  if (req.tenant && req.tenant.website) {
+    req.website = req.tenant.website;
+  }
+  next();
+};
+
+/**
+ * Require website context middleware
+ * Ensures that a website context exists (from tenant)
+ */
+const requireWebsiteContext = (req, res, next) => {
+  if (!req.tenant || !req.tenant.website) {
+    return res.status(400).json({
+      success: false,
+      message: 'Website context required. Please provide website identifier via header (X-Tenant-Slug) or subdomain.',
+      errorCode: 'MISSING_WEBSITE_CONTEXT'
+    });
+  }
+  
+  req.website = req.tenant.website;
+  next();
+};
+
 module.exports = {
   authenticate,
   authorize,
   authorizeWebsiteOwner,
-  optionalAuth
+  optionalAuth,
+  setWebsiteContext,
+  requireWebsiteContext
 };
-

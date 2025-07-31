@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, param, query } = require('express-validator');
 const hotelController = require('../controllers/hotelController');
-const { authenticate, authorize, optionalAuth } = require('../middleware/auth');
+const { authenticate, authorize, optionalAuth, requireWebsiteContext } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -133,14 +133,14 @@ router.get('/:id', [
  * @desc    Create a new hotel
  * @access  Private
  */
-router.post('/', authenticate, createHotelValidation, hotelController.createHotel);
+router.post('/', authenticate, requireWebsiteContext, createHotelValidation, hotelController.createHotel);
 
 /**
  * @route   PUT /api/hotels/:id
  * @desc    Update hotel
  * @access  Private
  */
-router.put('/:id', authenticate, [
+router.put('/:id', authenticate, requireWebsiteContext, [
   param('id').isMongoId().withMessage('Invalid hotel ID'),
   ...updateHotelValidation
 ], hotelController.updateHotel);
@@ -150,7 +150,7 @@ router.put('/:id', authenticate, [
  * @desc    Delete hotel
  * @access  Private
  */
-router.delete('/:id', authenticate, [
+router.delete('/:id', authenticate, requireWebsiteContext, [
   param('id').isMongoId().withMessage('Invalid hotel ID')
 ], hotelController.deleteHotel);
 
@@ -159,7 +159,7 @@ router.delete('/:id', authenticate, [
  * @desc    Get hotel analytics
  * @access  Private
  */
-router.get('/:id/analytics', authenticate, [
+router.get('/:id/analytics', authenticate, requireWebsiteContext, [
   param('id').isMongoId().withMessage('Invalid hotel ID')
 ], hotelController.getHotelAnalytics);
 
@@ -168,7 +168,7 @@ router.get('/:id/analytics', authenticate, [
  * @desc    Add hotel amenity
  * @access  Private
  */
-router.post('/:id/amenities', authenticate, [
+router.post('/:id/amenities', authenticate, requireWebsiteContext, [
   param('id').isMongoId().withMessage('Invalid hotel ID'),
   ...amenityValidation
 ], hotelController.addAmenity);
@@ -178,10 +178,9 @@ router.post('/:id/amenities', authenticate, [
  * @desc    Remove hotel amenity
  * @access  Private
  */
-router.delete('/:id/amenities/:amenityId', authenticate, [
+router.delete('/:id/amenities/:amenityId', authenticate, requireWebsiteContext, [
   param('id').isMongoId().withMessage('Invalid hotel ID'),
   param('amenityId').isMongoId().withMessage('Invalid amenity ID')
 ], hotelController.removeAmenity);
 
 module.exports = router;
-
