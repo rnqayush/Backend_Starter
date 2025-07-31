@@ -14,6 +14,11 @@ const { resolveTenant } = require('./middleware/tenantResolver');
 // Import routes
 const authRoutes = require('./routes/auth');
 const websiteRoutes = require('./routes/website');
+const hotelRoutes = require('./routes/hotel');
+const ecommerceRoutes = require('./routes/ecommerce');
+const weddingRoutes = require('./routes/wedding');
+const automobileRoutes = require('./routes/automobile');
+const businessRoutes = require('./routes/business');
 
 /**
  * Multi-Tenant Website Builder Backend Server
@@ -110,12 +115,12 @@ class Server {
     this.app.use('/api/auth', authRoutes);
     this.app.use('/api/websites', websiteRoutes);
 
-    // Module routes will be added here
-    // this.app.use('/api/hotels', hotelRoutes);
-    // this.app.use('/api/ecommerce', ecommerceRoutes);
-    // this.app.use('/api/weddings', weddingRoutes);
-    // this.app.use('/api/automobiles', automobileRoutes);
-    // this.app.use('/api/business', businessRoutes);
+    // Business module routes
+    this.app.use('/api/hotels', hotelRoutes);
+    this.app.use('/api/ecommerce', ecommerceRoutes);
+    this.app.use('/api/wedding', weddingRoutes);
+    this.app.use('/api/automobile', automobileRoutes);
+    this.app.use('/api/business', businessRoutes);
 
     // Tenant-specific routes (for public-facing websites)
     // this.app.use('/:slug', tenantRoutes);
@@ -129,6 +134,11 @@ class Server {
           endpoints: {
             auth: '/api/auth',
             websites: '/api/websites',
+            hotels: '/api/hotels',
+            ecommerce: '/api/ecommerce',
+            wedding: '/api/wedding',
+            automobile: '/api/automobile',
+            business: '/api/business',
             health: '/health'
           }
         });
