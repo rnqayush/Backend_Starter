@@ -124,6 +124,21 @@ const formatValidationErrors = (errors) => {
 };
 
 /**
+ * Validation error response helper
+ * Handles express-validator validation errors consistently
+ */
+const handleValidationErrors = (req, res, errors) => {
+  const errorMessages = formatValidationErrors(errors.array());
+  
+  return res.status(400).json({
+    success: false,
+    message: 'Validation failed',
+    errorCode: 'VALIDATION_ERROR',
+    errors: errorMessages
+  });
+};
+
+/**
  * Success response helper
  * Standardizes success responses
  */
@@ -166,6 +181,7 @@ module.exports = {
   notFoundHandler,
   asyncHandler,
   formatValidationErrors,
+  handleValidationErrors,
   successResponse,
   paginatedResponse
 };
