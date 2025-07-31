@@ -280,11 +280,8 @@ const websiteSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Indexes for performance
+// Indexes for performance (removed duplicate indexes that are already defined with index: true)
 websiteSchema.index({ slug: 1 }, { unique: true });
-websiteSchema.index({ owner: 1 });
-websiteSchema.index({ type: 1 });
-websiteSchema.index({ status: 1 });
 websiteSchema.index({ 'domain.custom': 1 });
 websiteSchema.index({ 'domain.subdomain': 1 });
 websiteSchema.index({ createdAt: -1 });
@@ -404,4 +401,3 @@ websiteSchema.statics.findByOwnerAndType = function(ownerId, type) {
 };
 
 module.exports = mongoose.model('Website', websiteSchema);
-

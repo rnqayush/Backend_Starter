@@ -13,6 +13,7 @@ const { resolveTenant } = require('./middleware/tenantResolver');
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const websiteRoutes = require('./routes/website');
 
 /**
  * Multi-Tenant Website Builder Backend Server
@@ -107,6 +108,7 @@ class Server {
   initializeRoutes() {
     // API routes
     this.app.use('/api/auth', authRoutes);
+    this.app.use('/api/websites', websiteRoutes);
 
     // Module routes will be added here
     // this.app.use('/api/hotels', hotelRoutes);
@@ -126,6 +128,7 @@ class Server {
           message: 'API Documentation will be available here',
           endpoints: {
             auth: '/api/auth',
+            websites: '/api/websites',
             health: '/health'
           }
         });
@@ -242,4 +245,3 @@ const server = new Server();
 server.start();
 
 module.exports = server;
-

@@ -133,8 +133,7 @@ const userSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Indexes for performance
-userSchema.index({ email: 1 });
+// Indexes for performance (removed duplicate indexes that are already defined with index: true)
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1 });
 userSchema.index({ 'subscription.plan': 1 });
@@ -266,4 +265,3 @@ userSchema.statics.findActive = function() {
 };
 
 module.exports = mongoose.model('User', userSchema);
-
