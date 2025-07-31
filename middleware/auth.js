@@ -160,14 +160,25 @@ const setWebsiteContext = (req, res, next) => {
  * Ensures that a website context exists (from tenant)
  */
 const requireWebsiteContext = (req, res, next) => {
+  // Check if tenant exists and has a website
   if (!req.tenant || !req.tenant.website) {
     return res.status(400).json({
       success: false,
       message: 'Website context required. Please provide website identifier via header (X-Tenant-Slug) or subdomain.',
-      errorCode: 'MISSING_WEBSITE_CONTEXT'
+      errorCode: 'MISSING_WEBSITE_CONTEXT',
+      details: {
+        tenant: !!req.tenant,
+        website: !!(req.tenant && req.tenant.website),
+        availableMethods: [
+          'Add X-Tenant-Slug header with your website slug',
+          'Use subdomain: your-slug.yourdomain.com',
+          'Use URL parameter: /your-slug/api/...'
+        ]
+      }
     });
   }
   
+  // Set website context for backward compatibility
   req.website = req.tenant.website;
   next();
 };
