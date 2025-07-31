@@ -1,180 +1,245 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const morgan = require('morgan');
 const compression = require('compression');
+const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
-const hpp = require('hpp');
-const path = require('path');
-const http = require('http');
-const socketIo = require('socket.io');
-
-// Load environment variables
 require('dotenv').config();
+
+// Import core modules
+const database = require('./config/database');
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const { resolveTenant } = require('./middleware/tenantResolver');
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const hotelRoutes = require('./routes/hotels');
-const bookingRoutes = require('./routes/bookings');
-const productRoutes = require('./routes/products');
-const orderRoutes = require('./routes/orders');
-const weddingRoutes = require('./routes/weddings');
-const vehicleRoutes = require('./routes/vehicles');
-const businessRoutes = require('./routes/business');
-const blogRoutes = require('./routes/blogs');
-const mediaRoutes = require('./routes/media');
-const searchRoutes = require('./routes/search');
-const analyticsRoutes = require('./routes/analytics');
 
-// Import middleware
-const errorHandler = require('./middleware/errorHandler');
-const notFound = require('./middleware/notFound');
-
-// Import database connection
-const connectDB = require('./config/database');
-
-// Import socket handlers
-const socketHandler = require('./utils/socketHandler');
-
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
-});
-
-// Connect to database
-connectDB();
-
-// Security middleware
-app.use(helmet());
-app.use(mongoSanitize());
-app.use(xss());
-app.use(hpp());
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use('/api/', limiter);
-
-// CORS configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      process.env.CLIENT_URL || 'http://localhost:3000',
-      'http://localhost:3000',
-      'http://localhost:3001',
-    ];
+/**
+ * Multi-Tenant Website Builder Backend Server
+ * Modular architecture supporting Hotels, E-commerce, Weddings, Automobiles, and Business Services
+ */
+class Server {
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT || 5000;
     
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+    this.initializeMiddleware();
+    this.initializeRoutes();
+    this.initializeErrorHandling();
+  }
+
+  /**
+   * Initialize middleware
+   */
+  initializeMiddleware() {
+    // Security middleware
+    this.app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com"],
+          imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+          scriptSrc: ["'self'"],
+        },
+      },
+    }));
+
+    // CORS configuration
+    const corsOptions = {
+      origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-Slug']
+    };
+    this.app.use(cors(corsOptions));
+
+    // Rate limiting
+    const limiter = rateLimit({
+      windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
+      max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
+      message: {
+        success: false,
+        message: 'Too many requests from this IP, please try again later.',
+        errorCode: 'RATE_LIMIT_EXCEEDED'
+      },
+      standardHeaders: true,
+      legacyHeaders: false,
+    });
+    this.app.use('/api/', limiter);
+
+    // Body parsing middleware
+    this.app.use(express.json({ limit: '10mb' }));
+    this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+    // Compression middleware
+    this.app.use(compression());
+
+    // Logging middleware
+    if (process.env.NODE_ENV === 'development') {
+      this.app.use(morgan('dev'));
     } else {
-      callback(new Error('Not allowed by CORS'));
+      this.app.use(morgan('combined'));
     }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200
-};
 
-app.use(cors(corsOptions));
+    // Trust proxy (for deployment behind reverse proxy)
+    this.app.set('trust proxy', 1);
 
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+    // Tenant resolution middleware (applies to all routes)
+    this.app.use(resolveTenant);
 
-// Compression middleware
-app.use(compression());
+    // Health check endpoint
+    this.app.get('/health', (req, res) => {
+      res.status(200).json({
+        success: true,
+        message: 'Server is healthy',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        version: process.env.npm_package_version || '1.0.0'
+      });
+    });
+  }
 
-// Logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-} else {
-  app.use(morgan('combined'));
+  /**
+   * Initialize routes
+   */
+  initializeRoutes() {
+    // API routes
+    this.app.use('/api/auth', authRoutes);
+
+    // Module routes will be added here
+    // this.app.use('/api/hotels', hotelRoutes);
+    // this.app.use('/api/ecommerce', ecommerceRoutes);
+    // this.app.use('/api/weddings', weddingRoutes);
+    // this.app.use('/api/automobiles', automobileRoutes);
+    // this.app.use('/api/business', businessRoutes);
+
+    // Tenant-specific routes (for public-facing websites)
+    // this.app.use('/:slug', tenantRoutes);
+
+    // API documentation (in development)
+    if (process.env.NODE_ENV === 'development') {
+      // Swagger documentation will be added here
+      this.app.get('/api/docs', (req, res) => {
+        res.json({
+          message: 'API Documentation will be available here',
+          endpoints: {
+            auth: '/api/auth',
+            health: '/health'
+          }
+        });
+      });
+    }
+
+    // Root endpoint
+    this.app.get('/', (req, res) => {
+      res.json({
+        success: true,
+        message: 'Multi-Tenant Website Builder API',
+        version: '1.0.0',
+        documentation: process.env.NODE_ENV === 'development' ? '/api/docs' : null,
+        health: '/health'
+      });
+    });
+  }
+
+  /**
+   * Initialize error handling
+   */
+  initializeErrorHandling() {
+    // 404 handler
+    this.app.use(notFoundHandler);
+
+    // Global error handler
+    this.app.use(errorHandler);
+  }
+
+  /**
+   * Start the server
+   */
+  async start() {
+    try {
+      // Connect to database
+      await database.connect();
+
+      // Start server
+      this.server = this.app.listen(this.port, () => {
+        console.log(`
+🚀 Multi-Tenant Website Builder Server Started!
+📍 Environment: ${process.env.NODE_ENV || 'development'}
+🌐 Server running on port ${this.port}
+📊 Database: ${database.isConnected() ? '✅ Connected' : '❌ Disconnected'}
+🔗 API Base URL: http://localhost:${this.port}/api
+📖 Health Check: http://localhost:${this.port}/health
+${process.env.NODE_ENV === 'development' ? '📚 API Docs: http://localhost:' + this.port + '/api/docs' : ''}
+
+🏢 Supported Business Modules:
+   🏨 Hotels
+   🛒 E-commerce
+   💍 Weddings
+   🚗 Automobiles
+   🏢 Business Services
+        `);
+      });
+
+      // Graceful shutdown
+      this.setupGracefulShutdown();
+
+    } catch (error) {
+      console.error('❌ Failed to start server:', error.message);
+      process.exit(1);
+    }
+  }
+
+  /**
+   * Setup graceful shutdown
+   */
+  setupGracefulShutdown() {
+    const gracefulShutdown = async (signal) => {
+      console.log(`\n📡 Received ${signal}. Starting graceful shutdown...`);
+      
+      // Close server
+      if (this.server) {
+        this.server.close(async () => {
+          console.log('🔌 HTTP server closed');
+          
+          // Close database connection
+          await database.disconnect();
+          
+          console.log('✅ Graceful shutdown completed');
+          process.exit(0);
+        });
+      }
+
+      // Force close after 10 seconds
+      setTimeout(() => {
+        console.error('⚠️  Forced shutdown after timeout');
+        process.exit(1);
+      }, 10000);
+    };
+
+    // Listen for termination signals
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+    // Handle uncaught exceptions
+    process.on('uncaughtException', (error) => {
+      console.error('💥 Uncaught Exception:', error);
+      gracefulShutdown('UNCAUGHT_EXCEPTION');
+    });
+
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
+      gracefulShutdown('UNHANDLED_REJECTION');
+    });
+  }
 }
 
-// Static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Create and start server
+const server = new Server();
+server.start();
 
-// Socket.io setup
-socketHandler(io);
-
-// Make io accessible to routes
-app.use((req, res, next) => {
-  req.io = io;
-  next();
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'Multi-Business Platform API is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
-  });
-});
-
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/hotels', hotelRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/weddings', weddingRoutes);
-app.use('/api/vehicles', vehicleRoutes);
-app.use('/api/business', businessRoutes);
-app.use('/api/blogs', blogRoutes);
-app.use('/api/media', mediaRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/analytics', analyticsRoutes);
-
-// API Documentation
-if (process.env.NODE_ENV === 'development') {
-  const swaggerUi = require('swagger-ui-express');
-  const swaggerDocument = require('./docs/swagger.json');
-  
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-}
-
-// Error handling middleware (must be last)
-app.use(notFound);
-app.use(errorHandler);
-
-const PORT = process.env.PORT || 5000;
-
-server.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
-  console.log(`🏥 Health check available at http://localhost:${PORT}/health`);
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  // Close server & exit process
-  server.close(() => {
-    process.exit(1);
-  });
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-  console.log(`Error: ${err.message}`);
-  console.log('Shutting down the server due to uncaught exception');
-  process.exit(1);
-});
-
-module.exports = app;
+module.exports = server;
 
