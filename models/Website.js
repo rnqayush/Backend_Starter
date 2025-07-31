@@ -16,7 +16,6 @@ const websiteSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: [true, 'Website slug is required'],
     unique: true,
     lowercase: true,
     trim: true,
@@ -316,7 +315,7 @@ websiteSchema.virtual('typeData', {
 
 // Pre-save middleware to generate slug
 websiteSchema.pre('save', async function(next) {
-  if (this.isModified('name') && !this.slug) {
+  if (!this.slug || this.isModified('name')) {
     let baseSlug = slugify(this.name, {
       lower: true,
       strict: true,
@@ -326,10 +325,15 @@ websiteSchema.pre('save', async function(next) {
     let slug = baseSlug;
     let counter = 1;
     
-    // Ensure slug is unique
-    while (await this.constructor.findOne({ slug, _id: { $ne: this._id } })) {
+    // Ensure slug is unique (with safety limit to prevent infinite loops)
+    const maxAttempts = 100;
+    while (counter <= maxAttempts && await this.constructor.findOne({ slug, _id: { $ne: this._id } })) {
       slug = `${baseSlug}-${counter}`;
       counter++;
+    }
+    
+    if (counter > maxAttempts) {
+      throw new Error('Unable to generate unique slug after maximum attempts');
     }
     
     this.slug = slug;
