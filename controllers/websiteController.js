@@ -1,5 +1,5 @@
 const Website = require('../models/Website');
-const { asyncHandler, AppError, successResponse, paginatedResponse } = require('../middleware/errorHandler');
+const { asyncHandler, AppError, successResponse, paginatedResponse, handleValidationErrors } = require('../middleware/errorHandler');
 const { validationResult } = require('express-validator');
 
 /**
@@ -16,7 +16,7 @@ class WebsiteController {
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      return handleValidationErrors(req, res, errors);
     }
 
     const { name, description, type, slug } = req.body;
@@ -142,7 +142,7 @@ class WebsiteController {
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      return handleValidationErrors(req, res, errors);
     }
 
     const { id } = req.params;
@@ -334,4 +334,3 @@ class WebsiteController {
 }
 
 module.exports = new WebsiteController();
-

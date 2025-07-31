@@ -1,7 +1,7 @@
 const Hotel = require('../models/Hotel');
 const Room = require('../models/Room');
 const HotelBooking = require('../models/HotelBooking');
-const { asyncHandler, AppError, successResponse, paginatedResponse } = require('../middleware/errorHandler');
+const { asyncHandler, AppError, successResponse, paginatedResponse, handleValidationErrors } = require('../middleware/errorHandler');
 const { validationResult } = require('express-validator');
 
 /**
@@ -17,7 +17,7 @@ class HotelController {
   createHotel = asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      return handleValidationErrors(req, res, errors);
     }
 
     const hotelData = { ...req.body, website: req.website._id };
@@ -92,7 +92,7 @@ class HotelController {
   updateHotel = asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      return handleValidationErrors(req, res, errors);
     }
 
     const { id } = req.params;
@@ -327,4 +327,3 @@ class HotelController {
 }
 
 module.exports = new HotelController();
-
