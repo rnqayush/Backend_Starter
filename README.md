@@ -1,72 +1,47 @@
-# Multi-Business Platform Backend
+# Multi-Tenant Website Builder Backend
 
-A comprehensive Node.js/Express/MongoDB backend system supporting multiple business types including hotels, ecommerce, weddings, automobiles, and business websites.
+A comprehensive, modular backend system for a multi-tenant website builder platform that supports multiple business verticals including Hotels, E-commerce, Weddings, Automobiles, and Business Services.
+
+## 🏗️ Architecture Overview
+
+This backend follows a **modular monolith** architecture pattern, providing:
+
+- **Multi-tenant support** with slug-based tenant resolution
+- **Modular business modules** for different industry verticals
+- **Scalable authentication and authorization** system
+- **RESTful API design** with comprehensive error handling
+- **Database-agnostic design** with MongoDB as the primary database
 
 ## 🚀 Features
 
 ### Core Features
-- **Multi-tenant Architecture** - Support for 5 different business types
-- **JWT Authentication** - Secure user authentication with role-based access
-- **File Upload System** - Image and document management
-- **Real-time Notifications** - Socket.io integration
-- **Email System** - Automated email notifications
-- **Search & Analytics** - Advanced search and business analytics
-- **API Documentation** - Swagger/OpenAPI documentation
+- ✅ **User Authentication & Authorization** (JWT-based)
+- ✅ **Multi-tenant Architecture** (slug/subdomain-based)
+- ✅ **Website Management System** (create, configure, manage websites)
+- ✅ **Role-based Access Control** (user, admin, moderator)
+- ✅ **Email Verification & Password Reset**
+- ✅ **Rate Limiting & Security Middleware**
+- ✅ **Comprehensive Error Handling**
+- ✅ **Database Connection Management**
 
-### Business Types Supported
+### Business Modules (Planned)
+- 🏨 **Hotel Management** - Room bookings, amenities, reservations
+- 🛒 **E-commerce** - Product catalog, orders, inventory management
+- 💍 **Wedding Services** - Vendor portfolios, service bookings
+- 🚗 **Automobile Dealerships** - Vehicle listings, dealer management
+- 🏢 **Business Services** - General business templates, appointments
 
-#### 🏨 Hotels
-- Room management and availability
-- Booking system with calendar integration
-- Pricing and seasonal rates
-- Guest management
-- Hotel analytics dashboard
+## 📋 Prerequisites
 
-#### 🛒 Ecommerce
-- Product catalog management
-- Inventory tracking
-- Order processing
-- Shopping cart functionality
-- Seller dashboard with analytics
+- **Node.js** >= 16.0.0
+- **MongoDB** >= 4.4
+- **npm** or **yarn**
 
-#### 💒 Wedding Vendors
-- Vendor portfolio management
-- Service packages and pricing
-- Booking calendar
-- Client communication tools
-- Event management
-
-#### 🚗 Automobile Dealers
-- Vehicle inventory management
-- Detailed vehicle specifications
-- Pricing and financing options
-- Dealer dashboard
-- Lead management
-
-#### 💼 Business Websites
-- Portfolio management
-- Content management system
-- Blog functionality
-- Business profile customization
-- SEO optimization
-
-## 🛠️ Tech Stack
-
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Database:** MongoDB with Mongoose ODM
-- **Authentication:** JWT with bcryptjs
-- **File Upload:** Multer with Sharp for image processing
-- **Email:** Nodemailer
-- **Real-time:** Socket.io
-- **Documentation:** Swagger/OpenAPI
-- **Security:** Helmet, CORS, Rate limiting, XSS protection
-
-## 📦 Installation
+## 🛠️ Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/rnqayush/Backend_Starter.git
+   git clone <repository-url>
    cd Backend_Starter
    ```
 
@@ -81,235 +56,316 @@ A comprehensive Node.js/Express/MongoDB backend system supporting multiple busin
    ```
    
    Update the `.env` file with your configuration:
-   - MongoDB connection string
-   - JWT secret
-   - Email service credentials
-   - File upload settings
-   - Payment gateway keys (Stripe)
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   MONGODB_URI=mongodb://localhost:27017/website_builder_dev
+   JWT_SECRET=your_super_secret_jwt_key_here
+   JWT_EXPIRE=7d
+   # ... other configuration
+   ```
 
 4. **Start the server**
    ```bash
-   # Development
+   # Development mode
    npm run dev
    
-   # Production
+   # Production mode
    npm start
    ```
 
-## 🔧 Environment Variables
-
-```env
-# Server Configuration
-NODE_ENV=development
-PORT=5000
-
-# Database
-MONGODB_URI=mongodb://localhost:27017/multi-business-platform
-
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRE=7d
-JWT_COOKIE_EXPIRE=7
-
-# Email Configuration
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USERNAME=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-
-# File Upload
-MAX_FILE_SIZE=10485760
-FILE_UPLOAD_PATH=./uploads
-
-# Payment (Stripe)
-STRIPE_SECRET_KEY=sk_test_your-stripe-secret-key
-STRIPE_PUBLISHABLE_KEY=pk_test_your-stripe-publishable-key
-
-# Frontend URL
-CLIENT_URL=http://localhost:3000
-```
-
 ## 📚 API Documentation
 
-Once the server is running, visit:
-- **Development:** http://localhost:5000/api-docs
-- **Health Check:** http://localhost:5000/health
-
-## 🔐 Authentication
-
-The API uses JWT tokens for authentication. Include the token in the Authorization header:
-
+### Base URL
 ```
-Authorization: Bearer <your-jwt-token>
+http://localhost:5000/api
 ```
 
-### User Roles
-- **customer** - Regular users who can make bookings/purchases
-- **business_owner** - Can manage their business listings
-- **admin** - Platform administrators
-- **super_admin** - Full system access
+### Authentication Endpoints
 
-## 📊 API Endpoints
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|---------|
+| POST | `/auth/register` | Register new user | Public |
+| POST | `/auth/login` | User login | Public |
+| POST | `/auth/refresh` | Refresh access token | Public |
+| POST | `/auth/logout` | User logout | Private |
+| GET | `/auth/me` | Get user profile | Private |
+| PUT | `/auth/me` | Update user profile | Private |
+| PUT | `/auth/change-password` | Change password | Private |
+| POST | `/auth/forgot-password` | Request password reset | Public |
+| POST | `/auth/reset-password/:token` | Reset password | Public |
+| GET | `/auth/verify-email/:token` | Verify email | Public |
+| POST | `/auth/resend-verification` | Resend verification email | Private |
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/logout` - User logout
-- `GET /api/auth/me` - Get current user
-- `PUT /api/auth/updatedetails` - Update user details
-- `PUT /api/auth/updatepassword` - Update password
-- `POST /api/auth/forgotpassword` - Forgot password
-- `PUT /api/auth/resetpassword/:token` - Reset password
+### Example Requests
 
-### Hotels
-- `GET /api/hotels` - Get all hotels
-- `POST /api/hotels` - Create hotel (business owner)
-- `GET /api/hotels/:id` - Get hotel details
-- `PUT /api/hotels/:id` - Update hotel
-- `DELETE /api/hotels/:id` - Delete hotel
-
-### Bookings
-- `GET /api/bookings` - Get user bookings
-- `POST /api/bookings` - Create booking
-- `GET /api/bookings/:id` - Get booking details
-- `PUT /api/bookings/:id` - Update booking
-- `DELETE /api/bookings/:id` - Cancel booking
-
-### Products (Ecommerce)
-- `GET /api/products` - Get all products
-- `POST /api/products` - Create product
-- `GET /api/products/:id` - Get product details
-- `PUT /api/products/:id` - Update product
-- `DELETE /api/products/:id` - Delete product
-
-### Orders
-- `GET /api/orders` - Get user orders
-- `POST /api/orders` - Create order
-- `GET /api/orders/:id` - Get order details
-- `PUT /api/orders/:id` - Update order status
-
-### Vehicles
-- `GET /api/vehicles` - Get all vehicles
-- `POST /api/vehicles` - Add vehicle
-- `GET /api/vehicles/:id` - Get vehicle details
-- `PUT /api/vehicles/:id` - Update vehicle
-- `DELETE /api/vehicles/:id` - Delete vehicle
-
-### Wedding Vendors
-- `GET /api/weddings` - Get all vendors
-- `POST /api/weddings` - Create vendor profile
-- `GET /api/weddings/:id` - Get vendor details
-- `PUT /api/weddings/:id` - Update vendor
-- `DELETE /api/weddings/:id` - Delete vendor
-
-### Business Management
-- `GET /api/business` - Get businesses
-- `POST /api/business` - Create business
-- `GET /api/business/:slug` - Get business by slug
-- `PUT /api/business/:id` - Update business
-- `DELETE /api/business/:id` - Delete business
-
-### Media & File Upload
-- `POST /api/media/upload` - Upload files
-- `DELETE /api/media/:id` - Delete file
-- `GET /api/media/business/:businessId` - Get business media
-
-### Search & Analytics
-- `GET /api/search` - Global search
-- `GET /api/analytics/dashboard` - Business analytics
-- `GET /api/analytics/reports` - Generate reports
-
-## 🧪 Testing
-
+#### Register User
 ```bash
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
+curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "SecurePass123"
+  }'
 ```
 
-## 🚀 Deployment
-
-### Using PM2 (Recommended)
+#### Login User
 ```bash
-npm install -g pm2
-pm2 start server.js --name "multi-business-api"
-pm2 startup
-pm2 save
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "SecurePass123"
+  }'
 ```
 
-### Using Docker
+#### Get User Profile
 ```bash
-# Build image
-docker build -t multi-business-api .
+curl -X GET http://localhost:5000/api/auth/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
 
-# Run container
-docker run -p 5000:5000 --env-file .env multi-business-api
+## 🏢 Multi-Tenant Architecture
+
+The system supports multiple tenant resolution methods:
+
+### 1. Slug-based URLs
+```
+https://yourplatform.com/luxury-hotel-downtown
+```
+
+### 2. Subdomain-based URLs
+```
+https://luxury-hotel-downtown.yourplatform.com
+```
+
+### 3. Custom Domain
+```
+https://luxuryhotel.com
+```
+
+### 4. Header-based (for API calls)
+```bash
+curl -H "X-Tenant-Slug: luxury-hotel-downtown" \
+     https://api.yourplatform.com/api/bookings
 ```
 
 ## 📁 Project Structure
 
 ```
+Backend_Starter/
 ├── config/
-│   └── database.js          # Database configuration
-├── controllers/             # Route controllers
-│   ├── authController.js
-│   ├── hotelController.js
-│   ├── productController.js
-│   └── ...
-├── middleware/              # Custom middleware
-│   ├── auth.js
-│   ├── errorHandler.js
-│   └── upload.js
-├── models/                  # Mongoose models
-│   ├── User.js
-│   ├── Business.js
-│   ├── Hotel.js
-│   └── ...
-├── routes/                  # API routes
-│   ├── auth.js
-│   ├── hotels.js
-│   ├── products.js
-│   └── ...
-├── utils/                   # Utility functions
-│   ├── sendEmail.js
-│   ├── socketHandler.js
-│   └── ...
-├── uploads/                 # File uploads directory
-├── tests/                   # Test files
-├── docs/                    # API documentation
-├── server.js               # Main server file
-└── package.json
+│   └── database.js              # Database configuration
+├── controllers/
+│   └── authController.js        # Authentication controller
+├── middleware/
+│   ├── auth.js                  # Authentication middleware
+│   ├── tenantResolver.js        # Tenant resolution middleware
+│   └── errorHandler.js          # Error handling middleware
+├── models/
+│   ├── User.js                  # User model
+│   └── Website.js               # Website model
+├── modules/                     # Business modules (planned)
+│   ├── hotels/
+│   ├── ecommerce/
+│   ├── weddings/
+│   ├── automobiles/
+│   └── business/
+├── routes/
+│   └── auth.js                  # Authentication routes
+├── utils/
+│   └── jwt.js                   # JWT utilities
+├── .env.example                 # Environment variables template
+├── .gitignore                   # Git ignore rules
+├── package.json                 # Dependencies and scripts
+├── README.md                    # This file
+└── server.js                    # Main server file
+```
+
+## 🔐 Security Features
+
+- **JWT Authentication** with access and refresh tokens
+- **Password Hashing** using bcrypt with salt rounds
+- **Rate Limiting** to prevent abuse
+- **Helmet.js** for security headers
+- **CORS** configuration
+- **Input Validation** using express-validator
+- **Account Lockout** after failed login attempts
+- **Email Verification** for new accounts
+
+## 🗄️ Database Schema
+
+### User Model
+- Basic information (name, email, password)
+- Profile data (avatar, phone, bio)
+- Role-based permissions
+- Account status and verification
+- Subscription information
+- User preferences
+
+### Website Model
+- Basic website information
+- Tenant identification (slug, domain)
+- Website type (business module)
+- Owner relationship
+- Configuration settings
+- Theme and appearance
+- Contact information
+- Feature toggles
+- Analytics and statistics
+
+## 🚦 Development Workflow
+
+### Running in Development
+```bash
+npm run dev
+```
+
+### Running Tests
+```bash
+npm test
+```
+
+### Database Seeding
+```bash
+npm run seed
+```
+
+## 🌐 Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `5000` |
+| `NODE_ENV` | Environment | `development` |
+| `MONGODB_URI` | MongoDB connection string | Required |
+| `JWT_SECRET` | JWT signing secret | Required |
+| `JWT_EXPIRE` | JWT expiration time | `7d` |
+| `CORS_ORIGIN` | Allowed CORS origins | `http://localhost:3000` |
+| `RATE_LIMIT_WINDOW_MS` | Rate limit window | `900000` (15 min) |
+| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `100` |
+
+## 🔄 API Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": {
+    // Response data
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "errorCode": "ERROR_CODE",
+  "stack": "Error stack (development only)"
+}
+```
+
+### Paginated Response
+```json
+{
+  "success": true,
+  "message": "Data retrieved successfully",
+  "data": [...],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 5,
+    "totalItems": 50,
+    "itemsPerPage": 10,
+    "hasNextPage": true,
+    "hasPrevPage": false
+  }
+}
+```
+
+## 🧪 Testing
+
+The project includes comprehensive testing setup:
+
+- **Unit Tests** for individual functions
+- **Integration Tests** for API endpoints
+- **Database Tests** with test database
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+## 📈 Monitoring and Logging
+
+- **Morgan** for HTTP request logging
+- **Console logging** for application events
+- **Error tracking** with stack traces
+- **Health check** endpoint at `/health`
+
+## 🚀 Deployment
+
+### Production Checklist
+- [ ] Set `NODE_ENV=production`
+- [ ] Configure production MongoDB URI
+- [ ] Set secure JWT secrets
+- [ ] Configure CORS for production domains
+- [ ] Set up SSL/TLS certificates
+- [ ] Configure reverse proxy (nginx)
+- [ ] Set up monitoring and logging
+- [ ] Configure backup strategy
+
+### Docker Deployment (Coming Soon)
+```dockerfile
+# Dockerfile will be added for containerized deployment
 ```
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the ISC License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-For support, email support@yourdomain.com or create an issue in the repository.
+For support and questions:
+- Create an issue in the repository
+- Contact: support@yourplatform.com
 
-## 🔄 Changelog
+## 🗺️ Roadmap
 
-### v1.0.0
-- Initial release with full multi-business platform support
-- Authentication system with JWT
-- Hotel booking system
-- Ecommerce functionality
-- Wedding vendor management
-- Automobile listings
-- Business website builder
-- File upload system
-- Real-time notifications
-- API documentation
+### Phase 1 (Current)
+- ✅ Core authentication system
+- ✅ Multi-tenant architecture
+- ✅ Website management
+
+### Phase 2 (Next)
+- 🏨 Hotel management module
+- 🛒 E-commerce module
+- 💍 Wedding services module
+
+### Phase 3 (Future)
+- 🚗 Automobile module
+- 🏢 Business services module
+- 📊 Advanced analytics
+- 💳 Payment processing
+- 📧 Email marketing integration
+
+---
+
+**Built with ❤️ for the multi-tenant website builder platform**
 

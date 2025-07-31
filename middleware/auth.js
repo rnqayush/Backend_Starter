@@ -1,38 +1,32 @@
-const jwt = require('jsonwebtoken');
+const jwtUtils = require('../utils/jwt');
 const User = require('../models/User');
 
-// Protect routes - verify JWT token
-const protect = async (req, res, next) => {
-  let token;
-
-  // Check for token in headers
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-  // Check for token in cookies
-  else if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  }
-
-  // Make sure token exists
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: 'Not authorized to access this route'
-    });
-  }
-
+/**
+ * Authentication middleware
+ * Verifies JWT tokens and attaches user information to request
+ */
+const authenticate = async (req, res, next) => {
   try {
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Extract token from Authorization header
+    const authHeader = req.header('Authorization');
+    const token = jwtUtils.extractTokenFromHeader(authHeader);
 
-    // Get user from token
-    const user = await User.findById(decoded.id).select('-password');
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Access denied. No token provided.'
+      });
+    }
+
+    // Verify token
+    const decoded = jwtUtils.verifyAccessToken(token);
     
+    // Find user and attach to request
+    const user = await User.findById(decoded.userId).select('-password');
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found'
+        message: 'Invalid token. User not found.'
       });
     }
 
@@ -40,156 +34,120 @@ const protect = async (req, res, next) => {
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'User account is deactivated'
+        message: 'Account is deactivated. Please contact support.'
       });
     }
 
+    // Attach user to request
     req.user = user;
+    req.token = token;
+    
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error);
+    console.error('Authentication error:', error.message);
     return res.status(401).json({
       success: false,
-      message: 'Not authorized to access this route'
+      message: 'Invalid token.'
     });
   }
 };
 
-// Grant access to specific roles
+/**
+ * Authorization middleware factory
+ * Creates middleware to check user roles
+ * @param {...string} roles - Required roles
+ * @returns {Function} Middleware function
+ */
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Not authorized to access this route'
+        message: 'Authentication required.'
       });
     }
 
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: `User role ${req.user.role} is not authorized to access this route`
+        message: 'Insufficient permissions.'
       });
     }
+
     next();
   };
 };
 
-// Check if user owns the resource or is admin
-const authorizeOwnerOrAdmin = (resourceModel, resourceIdParam = 'id') => {
-  return async (req, res, next) => {
-    try {
-      const resourceId = req.params[resourceIdParam];
-      const resource = await resourceModel.findById(resourceId);
+/**
+ * Website owner authorization middleware
+ * Checks if user owns the website they're trying to access
+ */
+const authorizeWebsiteOwner = async (req, res, next) => {
+  try {
+    const { websiteId } = req.params;
+    const userId = req.user._id;
 
-      if (!resource) {
-        return res.status(404).json({
-          success: false,
-          message: 'Resource not found'
-        });
-      }
+    // Import Website model here to avoid circular dependency
+    const Website = require('../models/Website');
+    
+    const website = await Website.findById(websiteId);
+    if (!website) {
+      return res.status(404).json({
+        success: false,
+        message: 'Website not found.'
+      });
+    }
 
-      // Allow if user is admin or super_admin
-      if (['admin', 'super_admin'].includes(req.user.role)) {
-        return next();
-      }
-
-      // Allow if user owns the resource
-      if (resource.owner && resource.owner.toString() === req.user._id.toString()) {
-        return next();
-      }
-
-      // Allow if user created the resource
-      if (resource.createdBy && resource.createdBy.toString() === req.user._id.toString()) {
-        return next();
-      }
-
-      // Allow if user is associated with the business
-      if (resource.business && req.user.businesses && req.user.businesses.includes(resource.business)) {
-        return next();
-      }
-
+    // Check if user owns the website or is admin
+    if (website.owner.toString() !== userId.toString() && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Not authorized to access this resource'
-      });
-    } catch (error) {
-      console.error('Authorization error:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Server error during authorization'
+        message: 'Access denied. You do not own this website.'
       });
     }
-  };
-};
 
-// Check if user has business access
-const authorizeBusinessAccess = async (req, res, next) => {
-  try {
-    const { businessId } = req.params;
-    
-    // Allow if user is admin or super_admin
-    if (['admin', 'super_admin'].includes(req.user.role)) {
-      return next();
-    }
-
-    // Check if user has access to this business
-    if (req.user.businesses && req.user.businesses.includes(businessId)) {
-      return next();
-    }
-
-    // Check if user is the owner of the business
-    const Business = require('../models/Business');
-    const business = await Business.findById(businessId);
-    
-    if (business && business.owner.toString() === req.user._id.toString()) {
-      return next();
-    }
-
-    return res.status(403).json({
-      success: false,
-      message: 'Not authorized to access this business'
-    });
+    // Attach website to request for use in controllers
+    req.website = website;
+    next();
   } catch (error) {
-    console.error('Business authorization error:', error);
+    console.error('Website authorization error:', error.message);
     return res.status(500).json({
       success: false,
-      message: 'Server error during business authorization'
+      message: 'Server error during authorization.'
     });
   }
 };
 
-// Optional auth - doesn't fail if no token
+/**
+ * Optional authentication middleware
+ * Attaches user if token is provided, but doesn't require it
+ */
 const optionalAuth = async (req, res, next) => {
-  let token;
+  try {
+    const authHeader = req.header('Authorization');
+    const token = jwtUtils.extractTokenFromHeader(authHeader);
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  }
-
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select('-password');
+    if (token) {
+      const decoded = jwtUtils.verifyAccessToken(token);
+      const user = await User.findById(decoded.userId).select('-password');
+      
       if (user && user.isActive) {
         req.user = user;
+        req.token = token;
       }
-    } catch (error) {
-      // Token is invalid, but we don't fail the request
-      console.log('Invalid token in optional auth:', error.message);
     }
+    
+    next();
+  } catch (error) {
+    // Continue without authentication if token is invalid
+    next();
   }
-
-  next();
 };
 
 module.exports = {
-  protect,
+  authenticate,
   authorize,
-  authorizeOwnerOrAdmin,
-  authorizeBusinessAccess,
+  authorizeWebsiteOwner,
   optionalAuth
 };
 
