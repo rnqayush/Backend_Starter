@@ -16,7 +16,18 @@ class WebsiteController {
     // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(new AppError('Validation failed', 400, 'VALIDATION_ERROR'));
+      const errorMessages = errors.array().map(error => ({
+        field: error.path,
+        message: error.msg,
+        value: error.value
+      }));
+      
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errorCode: 'VALIDATION_ERROR',
+        errors: errorMessages
+      });
     }
 
     const { name, description, type, slug } = req.body;
@@ -334,4 +345,3 @@ class WebsiteController {
 }
 
 module.exports = new WebsiteController();
-
