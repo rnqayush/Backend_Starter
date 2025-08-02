@@ -20,12 +20,36 @@ export const generateAccessToken = (payload, expiresIn = process.env.JWT_EXPIRE 
 };
 
 /**
+ * Generate JWT token (alias for generateAccessToken)
+ * @param {string} userId - User ID
+ * @param {string} email - User email
+ * @param {string} role - User role
+ * @returns {string} - JWT token
+ */
+export const generateToken = (userId, email, role) => {
+  const payload = {
+    id: userId,
+    email,
+    role
+  };
+  return generateAccessToken(payload);
+};
+
+/**
  * Generate JWT refresh token
- * @param {Object} payload - Token payload (user data)
+ * @param {string|Object} userIdOrPayload - User ID or payload object
  * @param {string} expiresIn - Token expiration time
  * @returns {string} - JWT refresh token
  */
-export const generateRefreshToken = (payload, expiresIn = '30d') => {
+export const generateRefreshToken = (userIdOrPayload, expiresIn = '30d') => {
+  let payload;
+  
+  if (typeof userIdOrPayload === 'string') {
+    payload = { userId: userIdOrPayload };
+  } else {
+    payload = userIdOrPayload;
+  }
+  
   return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
     expiresIn,
     issuer: 'multi-vendor-backend',
