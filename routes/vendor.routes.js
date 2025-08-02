@@ -22,6 +22,10 @@ import {
   requireAdmin,
   optionalAuth 
 } from '../middleware/auth.middleware.js';
+import { 
+  validateVendor, 
+  validateVendorUpdateData 
+} from '../validators/vendor.validator.js';
 
 const router = express.Router();
 
@@ -36,9 +40,9 @@ router.get('/:id', optionalAuth, getVendor);
 router.use(verifyToken);
 
 // Vendor creation and management
-router.post('/', createVendor);
+router.post('/', validateVendor, createVendor);
 router.get('/dashboard/stats', requireVendor, getVendorDashboard);
-router.put('/:id', updateVendor);
+router.put('/:id', validateVendorUpdateData, updateVendor);
 router.delete('/:id', updateVendor); // Soft delete
 
 // Admin only routes

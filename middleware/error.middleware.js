@@ -19,14 +19,30 @@ export class AppError extends Error {
 
 // Validation error handler
 export const handleValidationError = (error) => {
-  const errors = Object.values(error.errors).map(err => ({
-    field: err.path,
-    message: err.message,
-    value: err.value
-  }));
+  const errors = Object.values(error.errors).map(err => {
+    // Handle specific validation error types
+    if (err.kind === 'ObjectExpectedError') {
+      return {
+        field: err.path,
+        message: `${err.path}: Expected object but received ${typeof err.value} "${err.value}"`,
+        value: err.value,
+        expectedType: 'object',
+        receivedType: typeof err.value
+      };
+    }
+    
+    return {
+      field: err.path,
+      message: err.message,
+      value: err.value
+    };
+  });
+
+  // Create detailed error message
+  const detailedMessage = errors.map(err => `${err.field}: ${err.message}`).join(', ');
 
   return new AppError(
-    'Validation failed',
+    `Vendor validation failed: ${detailedMessage}`,
     400,
     'VALIDATION_ERROR',
     { errors }

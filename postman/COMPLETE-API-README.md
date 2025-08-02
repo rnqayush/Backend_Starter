@@ -246,11 +246,14 @@ Update the `baseUrl` variable in your environment:
 ```
 
 ### 🏪 **Vendor Creation**
+
+**⚠️ IMPORTANT: All fields marked as required MUST be included in the request body.**
+
 ```json
 {
   "name": "Grand Palace Hotel",
   "category": "hotel",
-  "description": "Premium hotel services",
+  "description": "Premium hotel services with excellent amenities and world-class hospitality",
   "email": "info@grandpalace.com",
   "phone": "+91-9876543210",
   "address": {
@@ -271,6 +274,21 @@ Update the `baseUrl` variable in your environment:
   }
 }
 ```
+
+**📋 Required Fields:**
+- ✅ `name` (String) - Business name
+- ✅ `category` (String) - Business category (hotel, ecommerce, wedding, automobile, business)
+- ✅ `description` (String) - Business description
+- ✅ `email` (String) - Business email
+- ✅ `phone` (String) - Phone number
+- ✅ `address` (Object) - Complete address with street, city, state, zipCode, country
+
+**⚠️ Common Validation Errors:**
+- ❌ **Missing required fields**: Ensure all required fields are included
+- ❌ **Wrong field names**: Use `name` not `businessName`, `email`/`phone` at root level not in `contactInfo`
+- ❌ **businessHours as string**: Must be object with day properties, not a single string
+- ❌ **Invalid email format**: Must be valid email format
+- ❌ **Invalid phone format**: Must be valid phone number format
 
 ### 🛍️ **Product Creation**
 ```json
