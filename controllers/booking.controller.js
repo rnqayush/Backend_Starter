@@ -405,7 +405,7 @@ export const checkInBooking = catchAsync(async (req, res, next) => {
   }
 
   // Check-in booking
-  await booking.checkIn(actualGuests);
+  await booking.performCheckIn(actualGuests);
 
   res.status(200).json({
     status: 'success',
@@ -443,7 +443,7 @@ export const checkOutBooking = catchAsync(async (req, res, next) => {
   }
 
   // Check-out booking
-  await booking.checkOut();
+  await booking.performCheckOut();
 
   res.status(200).json({
     status: 'success',

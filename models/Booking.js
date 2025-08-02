@@ -547,7 +547,7 @@ bookingSchema.methods.cancel = async function(reason, cancelledBy = 'customer') 
   return this.save();
 };
 
-bookingSchema.methods.checkIn = async function(actualGuests = null) {
+bookingSchema.methods.performCheckIn = async function(actualGuests = null) {
   this.checkedInAt = new Date();
   if (actualGuests) {
     this.actualGuests = actualGuests;
@@ -555,7 +555,7 @@ bookingSchema.methods.checkIn = async function(actualGuests = null) {
   return this.save();
 };
 
-bookingSchema.methods.checkOut = async function() {
+bookingSchema.methods.performCheckOut = async function() {
   this.checkedOutAt = new Date();
   this.status = BOOKING_STATUS.COMPLETED;
   return this.save();

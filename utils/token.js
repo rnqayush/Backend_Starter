@@ -20,13 +20,44 @@ export const generateAccessToken = (payload, expiresIn = process.env.JWT_EXPIRE 
 };
 
 /**
+ * Generate JWT token (alias for generateAccessToken for backward compatibility)
+ * @param {string} userId - User ID
+ * @param {string} email - User email
+ * @param {string} role - User role
+ * @param {string} expiresIn - Token expiration time
+ * @returns {string} - JWT token
+ */
+export const generateToken = (userId, email, role, expiresIn = process.env.JWT_EXPIRE || '7d') => {
+  const payload = {
+    id: userId,
+    email,
+    role,
+    iat: Math.floor(Date.now() / 1000)
+  };
+  
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn,
+    issuer: 'multi-vendor-backend',
+    audience: 'multi-vendor-app'
+  });
+};
+
+/**
  * Generate JWT refresh token
- * @param {Object} payload - Token payload (user data)
+ * @param {Object|string} payload - Token payload (user data) or userId string
  * @param {string} expiresIn - Token expiration time
  * @returns {string} - JWT refresh token
  */
 export const generateRefreshToken = (payload, expiresIn = '30d') => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
+  // Handle both object payload and simple userId string
+  let tokenPayload;
+  if (typeof payload === 'string') {
+    tokenPayload = { userId: payload };
+  } else {
+    tokenPayload = payload;
+  }
+  
+  return jwt.sign(tokenPayload, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
     expiresIn,
     issuer: 'multi-vendor-backend',
     audience: 'multi-vendor-app'
@@ -250,6 +281,7 @@ export const getClearCookieOptions = (isProduction = process.env.NODE_ENV === 'p
 };
 
 export default {
+  generateToken,
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
