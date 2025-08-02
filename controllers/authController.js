@@ -8,17 +8,15 @@ export const register = async (req, res) => {
   const { name, email, password, confirmPassword, role } = req.body;
 
   try {
-    // 1. Check if all fields are provided
-    if (!name || !email || !password) {
+    // 2. Check if passwords match (if confirmPassword is provided)
+    if(!confirmPassword){
       return res.status(400).json({ 
         status: 'error',
         statusCode: 400,
-        message: "Name, email, and password are required",
-        code: 'MISSING_FIELDS'
+        message: "enter confirm passowrd ",
+        code: 'PASSWORD_MISMATCH'
       });
     }
-
-    // 2. Check if passwords match (if confirmPassword is provided)
     if (confirmPassword && password !== confirmPassword) {
       return res.status(400).json({ 
         status: 'error',
