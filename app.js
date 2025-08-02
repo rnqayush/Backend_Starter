@@ -6,13 +6,13 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Import database connection
-const connectDB = require('../config/db');
+const connectDB = require('./config/db');
 
 // Import middleware
-const { errorHandler, notFound } = require('../middleware/error.middleware');
+const { errorHandler, notFound } = require('./middleware/error.middleware');
 
 // Import routes
-const routes = require('../routes');
+const routes = require('./routes');
 
 // Create Express app
 const app = express();
