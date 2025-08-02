@@ -8,6 +8,7 @@ import vendorRoutes from './vendor.routes.js';
 import hotelRoutes from './hotel.routes.js';
 import productRoutes from './product.routes.js';
 import bookingRoutes from './booking.routes.js';
+import reviewRoutes from './review.routes.js';
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.use('/vendors', vendorRoutes);
 router.use('/hotels', hotelRoutes);
 router.use('/products', productRoutes);
 router.use('/bookings', bookingRoutes);
+router.use('/reviews', reviewRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -42,7 +44,8 @@ router.get('/', (req, res) => {
       vendors: '/api/vendors',
       hotels: '/api/hotels',
       products: '/api/products',
-      bookings: '/api/bookings'
+      bookings: '/api/bookings',
+      reviews: '/api/reviews'
     },
     features: [
       'Multi-vendor support',

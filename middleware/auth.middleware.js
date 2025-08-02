@@ -306,3 +306,6 @@ export const requireResourceOwnership = (resourceModel, resourceField = 'user') 
     }
   };
 };
+
+// Alias for backward compatibility
+export const authenticateToken = verifyToken;
