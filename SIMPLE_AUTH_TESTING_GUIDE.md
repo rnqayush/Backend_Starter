@@ -24,7 +24,7 @@ docker run -d -p 27017:27017 --name mongodb mongo:latest
 2. Create a cluster and get connection string
 3. Update `.env` file with your connection string:
 ```env
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/simple-auth-db
+MONGO_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.mongodb.net/simple-auth-db
 ```
 
 ### 2. **Environment Setup**
@@ -267,4 +267,3 @@ curl -X GET http://localhost:5000/api/auth/logout
 - **Error Handling**: Consistent error response format across all endpoints
 
 Happy Testing! 🚀
-
