@@ -9,28 +9,49 @@ const createToken = (id) => {
 };
 
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
 
   try {
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: "User already exists" });
+    // 1. Check if all fields are provided
+    if (!name || !email || !password || !confirmPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
+    // 2. Check if passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // 3. Check if user already exists
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // 4. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // 5. Save user
     const user = await User.create({ name, email, password: hashedPassword });
 
+    // 6. Create and set token in cookie
     const token = createToken(user._id);
-
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
     });
 
-    res.status(201).json({ user: { id: user._id, name: user.name, email: user.email } });
+    // 7. Send response
+    res.status(201).json({
+      user: { id: user._id, name: user.name, email: user.email },
+      message: "Registration successful",
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
