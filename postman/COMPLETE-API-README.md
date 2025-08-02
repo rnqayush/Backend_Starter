@@ -248,16 +248,26 @@ Update the `baseUrl` variable in your environment:
 ### 🏪 **Vendor Creation**
 ```json
 {
-  "businessName": "Grand Palace Hotel",
+  "name": "Grand Palace Hotel",
   "category": "hotel",
   "description": "Premium hotel services",
-  "contactInfo": {
-    "phone": "+91-9876543210",
-    "email": "info@grandpalace.com"
+  "email": "info@grandpalace.com",
+  "phone": "+91-9876543210",
+  "address": {
+    "street": "123 Main Street",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "zipCode": "400001",
+    "country": "India"
   },
   "businessHours": {
     "monday": "9:00 AM - 6:00 PM",
-    "tuesday": "9:00 AM - 6:00 PM"
+    "tuesday": "9:00 AM - 6:00 PM",
+    "wednesday": "9:00 AM - 6:00 PM",
+    "thursday": "9:00 AM - 6:00 PM",
+    "friday": "9:00 AM - 6:00 PM",
+    "saturday": "10:00 AM - 4:00 PM",
+    "sunday": "Closed"
   }
 }
 ```
