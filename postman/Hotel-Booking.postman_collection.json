@@ -1,0 +1,304 @@
+{
+  "name": "🏨 Hotel Booking",
+  "item": [
+    {
+      "name": "Create Hotel",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const response = pm.response.json();",
+              "    if (response.data && response.data.hotel) {",
+              "        pm.collectionVariables.set('hotel_id', response.data.hotel._id);",
+              "    }",
+              "    pm.test('Hotel created successfully', function () {",
+              "        pm.expect(response.status).to.eql('success');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Grand Plaza Hotel\",\n  \"description\": \"Luxury hotel in the heart of the city\",\n  \"address\": {\n    \"street\": \"456 Main Street\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"contactInfo\": {\n    \"phone\": \"+1-555-0199\",\n    \"email\": \"info@grandplaza.com\",\n    \"website\": \"https://grandplaza.com\"\n  },\n  \"amenities\": [\"wifi\", \"pool\", \"gym\", \"spa\", \"restaurant\", \"parking\"],\n  \"checkInTime\": \"3:00 PM\",\n  \"checkOutTime\": \"11:00 AM\",\n  \"policies\": {\n    \"cancellation\": \"Free cancellation up to 24 hours before check-in\",\n    \"petPolicy\": \"Pets allowed with additional fee\",\n    \"smokingPolicy\": \"Non-smoking property\"\n  },\n  \"rating\": 4.5,\n  \"priceRange\": {\n    \"min\": 150,\n    \"max\": 500\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/hotels",
+          "host": ["{{base_url}}"],
+          "path": ["hotels"]
+        },
+        "description": "Create a new hotel"
+      }
+    },
+    {
+      "name": "Search Hotels",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/hotels/search?city=New York&checkIn=2024-03-15&checkOut=2024-03-18&guests=2&minPrice=100&maxPrice=300",
+          "host": ["{{base_url}}"],
+          "path": ["hotels", "search"],
+          "query": [
+            {
+              "key": "city",
+              "value": "New York"
+            },
+            {
+              "key": "checkIn",
+              "value": "2024-03-15"
+            },
+            {
+              "key": "checkOut",
+              "value": "2024-03-18"
+            },
+            {
+              "key": "guests",
+              "value": "2"
+            },
+            {
+              "key": "minPrice",
+              "value": "100"
+            },
+            {
+              "key": "maxPrice",
+              "value": "300"
+            }
+          ]
+        },
+        "description": "Search for available hotels"
+      }
+    },
+    {
+      "name": "Get Hotel Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/hotels/{{hotel_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["hotels", "{{hotel_id}}"]
+        },
+        "description": "Get detailed information about a specific hotel"
+      }
+    },
+    {
+      "name": "Create Booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const response = pm.response.json();",
+              "    if (response.data && response.data.booking) {",
+              "        pm.collectionVariables.set('booking_id', response.data.booking._id);",
+              "    }",
+              "    pm.test('Booking created successfully', function () {",
+              "        pm.expect(response.status).to.eql('success');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"hotelId\": \"{{hotel_id}}\",\n  \"checkIn\": \"2024-03-15T15:00:00.000Z\",\n  \"checkOut\": \"2024-03-18T11:00:00.000Z\",\n  \"guests\": {\n    \"adults\": 2,\n    \"children\": 0\n  },\n  \"roomType\": \"deluxe\",\n  \"specialRequests\": \"Late check-in, high floor room preferred\",\n  \"guestInfo\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+1-555-0123\"\n  },\n  \"payment\": {\n    \"method\": \"credit_card\",\n    \"amount\": 450.00\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/bookings",
+          "host": ["{{base_url}}"],
+          "path": ["bookings"]
+        },
+        "description": "Create a new hotel booking"
+      }
+    },
+    {
+      "name": "Get My Bookings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/bookings/my-bookings?status=confirmed&page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["bookings", "my-bookings"],
+          "query": [
+            {
+              "key": "status",
+              "value": "confirmed"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Get current user's bookings"
+      }
+    },
+    {
+      "name": "Get Booking Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/bookings/{{booking_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["bookings", "{{booking_id}}"]
+        },
+        "description": "Get detailed information about a specific booking"
+      }
+    },
+    {
+      "name": "Update Booking",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"specialRequests\": \"Updated: Late check-in, high floor room, extra towels\",\n  \"guestInfo\": {\n    \"phone\": \"+1-555-0124\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/bookings/{{booking_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["bookings", "{{booking_id}}"]
+        },
+        "description": "Update booking information"
+      }
+    },
+    {
+      "name": "Cancel Booking",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Change of plans\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/bookings/{{booking_id}}/cancel",
+          "host": ["{{base_url}}"],
+          "path": ["bookings", "{{booking_id}}", "cancel"]
+        },
+        "description": "Cancel a booking"
+      }
+    },
+    {
+      "name": "Check-in Booking",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actualGuests\": {\n    \"adults\": 2,\n    \"children\": 0\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/bookings/{{booking_id}}/checkin",
+          "host": ["{{base_url}}"],
+          "path": ["bookings", "{{booking_id}}", "checkin"]
+        },
+        "description": "Check-in to a booking"
+      }
+    },
+    {
+      "name": "Check-out Booking",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/bookings/{{booking_id}}/checkout",
+          "host": ["{{base_url}}"],
+          "path": ["bookings", "{{booking_id}}", "checkout"]
+        },
+        "description": "Check-out from a booking"
+      }
+    }
+  ],
+  "description": "Hotel booking system endpoints for managing hotels and reservations"
+}

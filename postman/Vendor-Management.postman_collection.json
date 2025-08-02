@@ -1,0 +1,167 @@
+{
+  "name": "🏪 Vendor Management",
+  "item": [
+    {
+      "name": "Create Vendor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const response = pm.response.json();",
+              "    if (response.data && response.data.vendor) {",
+              "        pm.collectionVariables.set('vendor_id', response.data.vendor._id);",
+              "    }",
+              "    pm.test('Vendor created successfully', function () {",
+              "        pm.expect(response.status).to.eql('success');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"businessName\": \"Amazing Hotels & Resorts\",\n  \"businessType\": \"hotel\",\n  \"description\": \"Premium hotel chain offering luxury accommodations\",\n  \"contactInfo\": {\n    \"email\": \"contact@amazinghotels.com\",\n    \"phone\": \"+1-555-0123\",\n    \"website\": \"https://amazinghotels.com\"\n  },\n  \"address\": {\n    \"street\": \"123 Luxury Ave\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"settings\": {\n    \"acceptsOnlineBookings\": true,\n    \"requiresApproval\": false,\n    \"cancellationPolicy\": \"flexible\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/vendors",
+          "host": ["{{base_url}}"],
+          "path": ["vendors"]
+        },
+        "description": "Create a new vendor profile"
+      }
+    },
+    {
+      "name": "Get All Vendors",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/vendors?page=1&limit=10&businessType=hotel&verified=true",
+          "host": ["{{base_url}}"],
+          "path": ["vendors"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "businessType",
+              "value": "hotel"
+            },
+            {
+              "key": "verified",
+              "value": "true"
+            }
+          ]
+        },
+        "description": "Get list of vendors with optional filters"
+      }
+    },
+    {
+      "name": "Get Vendor by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/vendors/{{vendor_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["vendors", "{{vendor_id}}"]
+        },
+        "description": "Get specific vendor details by ID"
+      }
+    },
+    {
+      "name": "Update Vendor",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"businessName\": \"Amazing Hotels & Resorts - Updated\",\n  \"description\": \"Premium hotel chain offering luxury accommodations worldwide\",\n  \"contactInfo\": {\n    \"phone\": \"+1-555-0124\"\n  },\n  \"settings\": {\n    \"acceptsOnlineBookings\": true,\n    \"requiresApproval\": true\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/vendors/{{vendor_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["vendors", "{{vendor_id}}"]
+        },
+        "description": "Update vendor information"
+      }
+    },
+    {
+      "name": "Delete Vendor",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/vendors/{{vendor_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["vendors", "{{vendor_id}}"]
+        },
+        "description": "Delete vendor profile"
+      }
+    },
+    {
+      "name": "Get Vendor Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{auth_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/vendors/{{vendor_id}}/stats",
+          "host": ["{{base_url}}"],
+          "path": ["vendors", "{{vendor_id}}", "stats"]
+        },
+        "description": "Get vendor performance statistics"
+      }
+    }
+  ],
+  "description": "Vendor management endpoints for creating, updating, and managing vendor profiles"
+}
