@@ -4,56 +4,85 @@ This directory contains comprehensive Postman collections for testing all endpoi
 
 ## 📁 Collections Overview
 
-### 🔐 Authentication Collection
-**File:** `Multi-Vendor-Backend.postman_collection.json`
+### 🚀 **NEW** Complete API Collection
+**File:** `Multi-Vendor-Complete-API.postman_collection.json`
+**Environment:** `Multi-Vendor-Backend.postman_environment.json`
 
-Complete authentication system testing including:
-- ✅ User Registration
-- ✅ User Login (with automatic token extraction)
-- ✅ Get User Profile
-- ✅ Update User Profile
+**🎯 RECOMMENDED - Complete collection with ALL endpoints:**
+
+#### 🔐 Authentication
+- ✅ User Registration (with auto token extraction)
+- ✅ User Login (with auto token extraction)
 - ✅ User Logout
 
-**Features:**
-- Automatic JWT token extraction and storage
-- Pre-configured test scripts
-- Environment variable management
-
-### 🏪 Vendor Management Collection
-**File:** `Vendor-Management.postman_collection.json`
-
-Vendor management system endpoints:
-- ✅ Create Vendor Profile
-- ✅ Get All Vendors (with filters)
+#### 🏪 Vendors
+- ✅ Get All Vendors (with pagination & filters)
+- ✅ Get Featured Vendors
+- ✅ Search Vendors
+- ✅ Get Vendors by Category
 - ✅ Get Vendor by ID
-- ✅ Update Vendor Information
-- ✅ Delete Vendor
-- ✅ Get Vendor Statistics
+- ✅ Create Vendor (auth required)
+- ✅ Get Vendor Dashboard (vendor only)
+- ✅ Update Vendor
+- ✅ Update Vendor Status (admin only)
 
-**Features:**
-- Automatic vendor ID extraction
-- Comprehensive filtering options
-- Business type categorization
+#### 🛍️ Products
+- ✅ Get All Products
+- ✅ Get Featured Products
+- ✅ Get Products on Sale
+- ✅ Search Products
+- ✅ Get Products by Category
+- ✅ Get Products by Vendor
+- ✅ Get Product by ID
+- ✅ Create Product (vendor only)
+- ✅ Update Product
+- ✅ Delete Product
+- ✅ Update Stock
 
-### 🏨 Hotel Booking Collection
-**File:** `Hotel-Booking.postman_collection.json`
+#### 🏨 Hotels
+- ✅ Get All Hotels
+- ✅ Get Featured Hotels
+- ✅ Search Hotels
+- ✅ Get Hotels by City
+- ✅ Get Hotel by ID
+- ✅ Create Hotel (vendor only)
+- ✅ Update Hotel
+- ✅ Delete Hotel
+- ✅ Add Room
+- ✅ Update Room
+- ✅ Delete Room
 
-Complete hotel booking system:
-- ✅ Create Hotel
-- ✅ Search Hotels (with filters)
-- ✅ Get Hotel Details
+#### 📅 Bookings
 - ✅ Create Booking
-- ✅ Get My Bookings
-- ✅ Get Booking Details
+- ✅ Get All Bookings
+- ✅ Get User Bookings
+- ✅ Get Vendor Bookings
+- ✅ Get Booking by ID
 - ✅ Update Booking
 - ✅ Cancel Booking
+- ✅ Confirm Booking
 - ✅ Check-in Booking
 - ✅ Check-out Booking
+- ✅ Add Review
 
 **Features:**
-- Advanced search filters
-- Booking lifecycle management
-- Automatic ID extraction
+- 🔄 Automatic JWT token management
+- 🎲 Dynamic test data generation
+- 🧪 Comprehensive test scripts
+- 🌍 Environment variable management
+- 📊 Role-based access testing
+
+---
+
+### 📚 Legacy Collections
+
+### 🔐 Simple Auth Collection
+**File:** `Simple Auth Backend API.postman_collection.json`
+
+Basic authentication endpoints only:
+- ✅ User Registration
+- ✅ User Login
+- ✅ User Logout
 
 ## 🚀 Quick Setup
 
