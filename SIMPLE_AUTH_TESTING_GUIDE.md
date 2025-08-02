@@ -24,7 +24,7 @@ docker run -d -p 27017:27017 --name mongodb mongo:latest
 2. Create a cluster and get connection string
 3. Update `.env` file with your connection string:
 ```env
-MONGO_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.mongodb.net/simple-auth-db
+MONGO_URI=<your-mongodb-atlas-connection-string-here>
 ```
 
 ### 2. **Environment Setup**
