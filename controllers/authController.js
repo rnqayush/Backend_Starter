@@ -56,8 +56,11 @@ export const register = async (req, res) => {
     });
 
     // 6. Create tokens
-    const token = generateToken(user._id, user.email, user.role);
-    const refreshToken = generateRefreshToken(user._id);
+    const token = generateToken(user._id.toString(), user.email, user.role);
+    const refreshToken = generateRefreshToken({
+      userId: user._id.toString(),
+      role: user.role
+    });
 
     // 7. Set token in cookie
     res.cookie("token", token, {
@@ -158,8 +161,11 @@ export const login = async (req, res) => {
     await user.save();
 
     // 8. Create tokens
-    const token = generateToken(user._id, user.email, user.role);
-    const refreshToken = generateRefreshToken(user._id);
+    const token = generateToken(user._id.toString(), user.email, user.role);
+    const refreshToken = generateRefreshToken({
+      userId: user._id.toString(),
+      role: user.role
+    });
 
     // 9. Set token in cookie
     res.cookie("token", token, {
@@ -286,4 +292,3 @@ export const updateProfile = async (req, res) => {
     });
   }
 };
-
