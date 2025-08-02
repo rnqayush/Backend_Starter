@@ -1,0 +1,692 @@
+{
+  "info": {
+    "name": "Multi-Vendor Backend API",
+    "description": "Complete API collection for testing the Multi-Vendor Backend system with authentication, vendor management, and product management.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏥 Health & Info",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the server is running and get system information"
+          },
+          "response": []
+        },
+        {
+          "name": "API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api",
+              "host": ["{{baseUrl}}"],
+              "path": ["api"]
+            },
+            "description": "Get API information and available endpoints"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.tokens) {",
+                  "        pm.collectionVariables.set('accessToken', response.data.tokens.accessToken);",
+                  "        pm.collectionVariables.set('refreshToken', response.data.tokens.refreshToken);",
+                  "        pm.collectionVariables.set('userId', response.data.user.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password123\",\n  \"confirmPassword\": \"Password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"customer\",\n  \"agreeToTerms\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user account"
+          },
+          "response": []
+        },
+        {
+          "name": "Register Vendor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.tokens) {",
+                  "        pm.collectionVariables.set('accessToken', response.data.tokens.accessToken);",
+                  "        pm.collectionVariables.set('refreshToken', response.data.tokens.refreshToken);",
+                  "        pm.collectionVariables.set('userId', response.data.user.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@vendor.com\",\n  \"password\": \"VendorPass123\",\n  \"confirmPassword\": \"VendorPass123\",\n  \"phone\": \"+1987654321\",\n  \"role\": \"vendor\",\n  \"agreeToTerms\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new vendor account"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.tokens) {",
+                  "        pm.collectionVariables.set('accessToken', response.data.tokens.accessToken);",
+                  "        pm.collectionVariables.set('refreshToken', response.data.tokens.refreshToken);",
+                  "        pm.collectionVariables.set('userId', response.data.user.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with email and password"
+          },
+          "response": []
+        },
+        {
+          "name": "Check Email Availability",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/check-email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "check-email"]
+            },
+            "description": "Check if an email is already registered"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Get current user profile (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John Updated\",\n  \"lastName\": \"Doe Updated\",\n  \"phone\": \"+1234567899\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Update current user profile (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password123\",\n  \"newPassword\": \"NewPassword123\",\n  \"confirmPassword\": \"NewPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "change-password"]
+            },
+            "description": "Change user password (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.accessToken) {",
+                  "        pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "refresh-token"]
+            },
+            "description": "Refresh access token using refresh token"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout current user (requires authentication)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏪 Vendors",
+      "item": [
+        {
+          "name": "Get All Vendors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vendors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vendors"]
+            },
+            "description": "Get all approved vendors (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Vendor by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vendors/john-doe-electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vendors", "john-doe-electronics"]
+            },
+            "description": "Get vendor details by slug (public endpoint)"
+          },
+          "response": []
+        },
+        {
+          "name": "Register as Vendor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"John's Electronics Store\",\n  \"businessType\": \"electronics\",\n  \"description\": \"We sell high-quality electronics and gadgets\",\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"businessRegistration\": \"REG123456789\",\n  \"taxId\": \"TAX987654321\",\n  \"website\": \"https://johnselectronics.com\",\n  \"socialMedia\": {\n    \"facebook\": \"https://facebook.com/johnselectronics\",\n    \"instagram\": \"https://instagram.com/johnselectronics\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/vendors/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vendors", "register"]
+            },
+            "description": "Register current user as a vendor (requires authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Vendor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"John's Premium Electronics\",\n  \"description\": \"Premium electronics and cutting-edge gadgets\",\n  \"website\": \"https://johnspremiumelectronics.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/vendors/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vendors", "profile"]
+            },
+            "description": "Update vendor profile (requires vendor authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Vendor Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vendors/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "vendors", "dashboard"]
+            },
+            "description": "Get vendor dashboard data (requires vendor authentication)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?page=1&limit=10&category=electronics&minPrice=100&maxPrice=1000&sort=price&order=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "category",
+                  "value": "electronics",
+                  "description": "Filter by category"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "100",
+                  "description": "Minimum price filter"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "1000",
+                  "description": "Maximum price filter"
+                },
+                {
+                  "key": "sort",
+                  "value": "price",
+                  "description": "Sort field"
+                },
+                {
+                  "key": "order",
+                  "value": "asc",
+                  "description": "Sort order (asc/desc)"
+                }
+              ]
+            },
+            "description": "Get all products with optional filtering and pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/iphone-15-pro-max",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "iphone-15-pro-max"]
+            },
+            "description": "Get product details by slug"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/category/electronics?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "category", "electronics"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get products by category with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"iPhone 15 Pro Max\",\n  \"description\": \"Latest iPhone with advanced features and premium build quality\",\n  \"category\": \"electronics\",\n  \"subcategory\": \"smartphones\",\n  \"price\": 1199.99,\n  \"compareAtPrice\": 1299.99,\n  \"costPrice\": 800.00,\n  \"sku\": \"IPH15PM-256-BLU\",\n  \"barcode\": \"1234567890123\",\n  \"inventory\": {\n    \"quantity\": 50,\n    \"lowStockThreshold\": 5,\n    \"trackQuantity\": true\n  },\n  \"images\": [\n    {\n      \"url\": \"https://example.com/iphone15-1.jpg\",\n      \"alt\": \"iPhone 15 Pro Max Front View\",\n      \"isPrimary\": true\n    },\n    {\n      \"url\": \"https://example.com/iphone15-2.jpg\",\n      \"alt\": \"iPhone 15 Pro Max Back View\",\n      \"isPrimary\": false\n    }\n  ],\n  \"variants\": [\n    {\n      \"name\": \"Storage\",\n      \"options\": [\"256GB\", \"512GB\", \"1TB\"]\n    },\n    {\n      \"name\": \"Color\",\n      \"options\": [\"Blue Titanium\", \"White Titanium\", \"Black Titanium\"]\n    }\n  ],\n  \"specifications\": {\n    \"brand\": \"Apple\",\n    \"model\": \"iPhone 15 Pro Max\",\n    \"storage\": \"256GB\",\n    \"color\": \"Blue Titanium\",\n    \"display\": \"6.7-inch Super Retina XDR\",\n    \"processor\": \"A17 Pro chip\"\n  },\n  \"dimensions\": {\n    \"length\": 159.9,\n    \"width\": 76.7,\n    \"height\": 8.25,\n    \"weight\": 221\n  },\n  \"shipping\": {\n    \"weight\": 0.5,\n    \"requiresShipping\": true,\n    \"shippingClass\": \"standard\"\n  },\n  \"seo\": {\n    \"metaTitle\": \"iPhone 15 Pro Max - Latest Apple Smartphone\",\n    \"metaDescription\": \"Get the latest iPhone 15 Pro Max with advanced features\",\n    \"keywords\": [\"iPhone\", \"Apple\", \"smartphone\", \"Pro Max\"]\n  },\n  \"tags\": [\"premium\", \"latest\", \"apple\", \"smartphone\"],\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Create a new product (requires vendor authentication)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"iPhone 15 Pro Max - Updated\",\n  \"price\": 1099.99,\n  \"inventory\": {\n    \"quantity\": 45\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/product-id-here",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "product-id-here"]
+            },
+            "description": "Update a product (requires vendor authentication and ownership)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/product-id-here",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "product-id-here"]
+            },
+            "description": "Delete a product (requires vendor authentication and ownership)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "❌ Error Testing",
+      "item": [
+        {
+          "name": "Invalid Registration Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"J\",\n  \"lastName\": \"D\",\n  \"email\": \"invalid-email\",\n  \"password\": \"123\",\n  \"confirmPassword\": \"456\",\n  \"agreeToTerms\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation errors with invalid registration data"
+          },
+          "response": []
+        },
+        {
+          "name": "Unauthorized Access",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Test unauthorized access to protected endpoint"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid-token-here"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "Test invalid token handling"
+          },
+          "response": []
+        },
+        {
+          "name": "Non-existent Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/non-existent",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "non-existent"]
+            },
+            "description": "Test 404 error handling"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+
