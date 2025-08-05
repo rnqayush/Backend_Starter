@@ -5,8 +5,8 @@ import { RESPONSE_MESSAGES } from "../config/constants.js";
 import { generateToken, generateRefreshToken } from "../utils/token.js";
 
 export const register = async (req, res) => {
-  const { name, email, password, confirmPassword, role } = req.body;
-
+  const { name, email, password, confirmPassword,phone, role } = req.body;
+  
   try {
     // 2. Check if passwords match (if confirmPassword is provided)
     if(!confirmPassword){
@@ -48,12 +48,7 @@ export const register = async (req, res) => {
     }
 
     // 5. Save user (password will be hashed by pre-save middleware)
-    const user = await User.create({ 
-      name, 
-      email, 
-      password,
-      role: role || 'customer'
-    });
+    const user = await User.create(req.body);
 
     // 6. Create tokens
     const token = generateToken(user._id.toString(), user.email, user.role);
