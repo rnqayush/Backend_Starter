@@ -8,6 +8,8 @@ const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/orders');
 const categoryRoutes = require('./routes/categories');
 const sellerRoutes = require('./routes/seller');
+const vendorRoutes = require('./routes/vendors');
+const wishlistRoutes = require('./routes/wishlist');
 
 // Use routes
 router.use('/products', productRoutes);
@@ -15,6 +17,8 @@ router.use('/cart', cartRoutes);
 router.use('/orders', orderRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/seller', sellerRoutes);
+router.use('/vendors', vendorRoutes);
+router.use('/wishlist', wishlistRoutes);
 
 // Module info route
 router.get('/', (req, res) => {
@@ -28,7 +32,9 @@ router.get('/', (req, res) => {
       cart: '/api/ecommerce/cart',
       orders: '/api/ecommerce/orders',
       categories: '/api/ecommerce/categories',
-      seller: '/api/ecommerce/seller'
+      seller: '/api/ecommerce/seller',
+      vendors: '/api/ecommerce/vendors',
+      wishlist: '/api/ecommerce/wishlist'
     }
   });
 });
