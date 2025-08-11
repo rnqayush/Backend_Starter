@@ -75,25 +75,24 @@ A comprehensive, scalable backend API for a multi-vendor platform supporting **H
 Backend_Starter/
 ├── app.js                          # Main application entry point
 ├── src/
-│   ├── shared/                     # Shared utilities and configurations
-│   │   ├── config/
-│   │   │   └── database.js         # MongoDB connection
-│   │   ├── models/                 # Mongoose models
-│   │   │   ├── User.js
-│   │   │   ├── Hotel.js
-│   │   │   ├── Automobile.js
-│   │   │   ├── Ecommerce.js
-│   │   │   ├── Wedding.js
-│   │   │   ├── Business.js
-│   │   │   └── Blog.js
-│   │   ├── middleware/              # Express middleware
-│   │   │   ├── auth.js
-│   │   │   ├── upload.js
-│   │   │   └── errorHandler.js
-│   │   └── utils/                  # Utility functions
-│   │       ├── moduleRegistry.js   # Dynamic module loading
-│   │       ├── responseHelper.js   # Standardized responses
-│   │       └── validation.js       # Validation helpers
+│   ├── config/
+│   │   └── database.js             # MongoDB connection
+│   ├── models/                     # Mongoose models
+│   │   ├── User.js
+│   │   ├── Hotel.js
+│   │   ├── Automobile.js
+│   │   ├── Ecommerce.js
+│   │   ├── Wedding.js
+│   │   ├── Business.js
+│   │   └── Blog.js
+│   ├── middleware/                 # Express middleware
+│   │   ├── auth.js
+│   │   ├── upload.js
+│   │   └── errorHandler.js
+│   ├── utils/                      # Utility functions
+│   │   ├── moduleRegistry.js       # Dynamic module loading
+│   │   ├── responseHelper.js       # Standardized responses
+│   │   └── validation.js           # Validation helpers
 │   └── modules/                    # Business logic modules
 │       ├── auth/                   # Authentication module
 │       ├── hotel/                  # Hotel management
