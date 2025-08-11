@@ -6,7 +6,7 @@ const {
   updateBooking,
   cancelBooking
 } = require('../controllers/bookingController');
-const { auth } = require('../middleware/auth');
+const { auth } = require('../../../shared/middleware/auth');
 
 const router = express.Router();
 
@@ -36,4 +36,3 @@ router.put('/:id', auth, updateBooking);
 router.delete('/:id', auth, cancelBooking);
 
 module.exports = router;
-

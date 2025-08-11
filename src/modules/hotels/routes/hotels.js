@@ -6,7 +6,7 @@ const {
   updateHotel,
   deleteHotel
 } = require('../controllers/hotelController');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, adminAuth } = require('../../../shared/middleware/auth');
 
 const router = express.Router();
 
@@ -36,4 +36,3 @@ router.put('/:id', auth, updateHotel);
 router.delete('/:id', auth, deleteHotel);
 
 module.exports = router;
-
