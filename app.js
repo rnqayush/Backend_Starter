@@ -87,7 +87,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static files
 app.use('/uploads', express.static('uploads'));
 
-// Register module routes
+// Import routes
+const authRoutes = require('./src/routes/User/authRoutes');
+const hotelRoutes = require('./src/routes/Hotel/hotelRoutes');
+
+// Register routes
+app.use('/api/auth', authRoutes);
+app.use('/api/hotels', hotelRoutes);
+
+// Register module routes (for any additional modules)
 moduleRegistry.registerRoutes(app, '/api');
 
 // Health check route
