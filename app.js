@@ -4,9 +4,9 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
-const connectDB = require('./src/shared/config/database');
-const moduleRegistry = require('./src/shared/utils/moduleRegistry');
-const errorHandler = require('./src/shared/middleware/errorHandler');
+const connectDB = require('./src/config/database');
+const moduleRegistry = require('./src/utils/moduleRegistry');
+const errorHandler = require('./src/middleware/errorHandler');
 
 const app = express();
 

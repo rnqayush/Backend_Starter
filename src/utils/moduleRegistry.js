@@ -9,7 +9,7 @@ class ModuleRegistry {
 
   // Load all modules from the modules directory
   loadModules() {
-    const modulesPath = path.join(__dirname, '../../modules');
+    const modulesPath = path.join(__dirname, '../modules');
     
     if (!fs.existsSync(modulesPath)) {
       console.log('📁 Modules directory not found, creating...');

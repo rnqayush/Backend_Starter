@@ -1,0 +1,10 @@
+# This file ensures the modules directory is tracked by git
+# Business logic modules will be implemented here:
+# - auth/          Authentication module
+# - hotel/         Hotel management
+# - ecommerce/     Ecommerce platform  
+# - automobile/    Vehicle dealership
+# - wedding/       Wedding services
+# - business/      Business services
+# - blog/          Blog management
+# - platform/      Platform-wide features
