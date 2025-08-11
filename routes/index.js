@@ -1,65 +1,27 @@
-/**
- * Main Routes Index - Combine all routes
- */
-
-import express from 'express';
-import authRoutes from './auth.routes.js';
-import vendorRoutes from './vendor.routes.js';
-import hotelRoutes from './hotel.routes.js';
-import productRoutes from './product.routes.js';
-import bookingRoutes from './booking.routes.js';
-import reviewRoutes from './review.routes.js';
+const express = require('express');
+const authRoutes = require('./auth');
+const hotelRoutes = require('./hotels');
+const roomRoutes = require('./rooms');
+const bookingRoutes = require('./bookings');
+const reviewRoutes = require('./reviews');
 
 const router = express.Router();
 
 // API Routes
 router.use('/auth', authRoutes);
-router.use('/vendors', vendorRoutes);
 router.use('/hotels', hotelRoutes);
-router.use('/products', productRoutes);
+router.use('/rooms', roomRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/reviews', reviewRoutes);
 
-// Health check endpoint
+// Health check route
 router.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    statusCode: 200,
-    message: 'Multi-Vendor Backend API is running',
-    timestamp: new Date().toISOString(),
-    version: '1.0.0'
+  res.json({
+    success: true,
+    message: 'Hotel Management API is running',
+    timestamp: new Date().toISOString()
   });
 });
 
-// API info endpoint
-router.get('/', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    statusCode: 200,
-    message: 'Welcome to Multi-Vendor Backend API',
-    version: '1.0.0',
-    documentation: '/api/docs',
-    endpoints: {
-      auth: '/api/auth',
-      vendors: '/api/vendors',
-      hotels: '/api/hotels',
-      products: '/api/products',
-      bookings: '/api/bookings',
-      reviews: '/api/reviews'
-    },
-    features: [
-      'Multi-vendor support',
-      'Hotel management',
-      'Ecommerce products',
-      'Wedding services',
-      'Automobile listings',
-      'Business services',
-      'Booking system',
-      'Payment integration',
-      'Review system',
-      'Analytics dashboard'
-    ]
-  });
-});
+module.exports = router;
 
-export default router;
