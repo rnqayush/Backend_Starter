@@ -90,10 +90,14 @@ app.use('/uploads', express.static('uploads'));
 // Import routes
 const authRoutes = require('./src/routes/User/authRoutes');
 const hotelRoutes = require('./src/routes/Hotel/hotelRoutes');
+const productRoutes = require('./src/routes/Ecommerce/productRoutes');
+const vehicleRoutes = require('./src/routes/Automobile/vehicleRoutes');
 
 // Register routes
 app.use('/api/auth', authRoutes);
 app.use('/api/hotels', hotelRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 // Register module routes (for any additional modules)
 moduleRegistry.registerRoutes(app, '/api');
