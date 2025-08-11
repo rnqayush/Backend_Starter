@@ -1,50 +1,108 @@
-# Hotel Management Backend API
+# Modular Backend API
 
-Complete hotel management backend system with user authentication, hotel management, room booking, and review system.
+A scalable, modular backend system with multiple business domains including hotels, e-commerce, automobiles, business services, and weddings. Built with a clean modular architecture for easy extension and maintenance.
 
 ## 🚀 Features
 
-- **User Authentication**: Registration, login with JWT tokens
-- **Hotel Management**: Complete CRUD operations for hotels
-- **Room Management**: Room creation, updates, and availability
-- **Booking System**: Hotel room booking with status tracking
-- **Review System**: Guest reviews and ratings for hotels
-- **No Required Validations**: Flexible data entry as requested
+### Core Features
+- **Modular Architecture**: Clean separation of business domains
+- **Dynamic Module Loading**: Automatic discovery and registration of modules
+- **User Authentication**: JWT-based authentication system
+- **Scalable Structure**: Easy to add new modules and features
+
+### Available Modules
+- **🏨 Hotels**: Complete hotel management with rooms, bookings, and reviews
+- **🛒 E-commerce**: Product management and order processing (placeholder)
+- **🚗 Automobiles**: Vehicle management and rental system (placeholder)
+- **💼 Business**: Company services and appointment management (placeholder)
+- **💒 Weddings**: Venue and vendor management for events (placeholder)
+
+### Technical Features
+- **Health Monitoring**: Built-in health check endpoints
+- **Security**: Helmet, CORS, and rate limiting
+- **Flexible Validation**: No strict validation requirements for rapid development
+
+## 🏗️ Architecture
+
+### Directory Structure
+```
+src/
+├── modules/                 # Business domain modules
+│   ├── auth/               # Authentication module
+│   │   ├── controllers/    # Route handlers
+│   │   ├── models/         # Database models
+│   │   ├── routes/         # Route definitions
+│   │   ├── services/       # Business logic
+│   │   ├── middleware/     # Module-specific middleware
+│   │   └── index.js        # Module registration
+│   ├── hotels/             # Hotel management module
+│   ├── ecommerce/          # E-commerce module (placeholder)
+│   ├── automobiles/        # Automobile module (placeholder)
+│   ├── business/           # Business services module (placeholder)
+│   └── weddings/           # Wedding services module (placeholder)
+└── shared/                 # Shared utilities and config
+    ├── config/             # Database and app configuration
+    ├── middleware/         # Global middleware
+    ├── utils/              # Utility functions
+    └── types/              # TypeScript definitions (future)
+```
+
+### Module System
+Each module is self-contained with:
+- **Controllers**: Handle HTTP requests and responses
+- **Models**: Database schema definitions
+- **Routes**: API endpoint definitions
+- **Services**: Business logic and data processing
+- **Middleware**: Module-specific middleware
+- **Index.js**: Module registration and route mounting
+
+### Adding New Modules
+1. Create module directory in `src/modules/`
+2. Add controllers, models, routes, and services
+3. Create `index.js` with module configuration
+4. Module will be automatically discovered and loaded
 
 ## 📋 API Endpoints
 
-### Authentication
+### System
+- `GET /` - API information and loaded modules
+- `GET /api/health` - Health check with module status
+
+### Authentication Module
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user (Protected)
 
-### Hotels
+### Hotels Module
 - `GET /api/hotels` - Get all hotels
 - `GET /api/hotels/:id` - Get hotel by ID or slug
 - `POST /api/hotels` - Create hotel (Protected)
 - `PUT /api/hotels/:id` - Update hotel (Protected)
 - `DELETE /api/hotels/:id` - Delete hotel (Protected)
 
-### Rooms
+#### Rooms
 - `GET /api/rooms` - Get all rooms
 - `GET /api/rooms/:id` - Get room by ID
 - `POST /api/rooms` - Create room (Protected)
 - `PUT /api/rooms/:id` - Update room (Protected)
 - `DELETE /api/rooms/:id` - Delete room (Protected)
 
-### Bookings
+#### Bookings
 - `GET /api/bookings` - Get all bookings (Protected)
 - `GET /api/bookings/:id` - Get booking by ID (Protected)
 - `POST /api/bookings` - Create booking (Protected)
 - `PUT /api/bookings/:id` - Update booking (Protected)
 - `DELETE /api/bookings/:id` - Cancel booking (Protected)
 
-### Reviews
+#### Reviews
 - `GET /api/reviews` - Get all reviews
 - `GET /api/reviews/hotel/:hotelId` - Get hotel reviews
 - `POST /api/reviews` - Create review (Protected)
 - `PUT /api/reviews/:id` - Update review (Protected)
 - `DELETE /api/reviews/:id` - Delete review (Protected)
+
+### Other Modules
+*E-commerce, Automobiles, Business, and Weddings modules are placeholders and will be implemented as needed.*
 
 ## 🛠️ Installation
 
@@ -191,4 +249,3 @@ All API responses follow this format:
 ## 📄 License
 
 This project is licensed under the MIT License.
-

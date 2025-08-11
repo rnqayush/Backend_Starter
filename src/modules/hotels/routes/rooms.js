@@ -6,7 +6,7 @@ const {
   updateRoom,
   deleteRoom
 } = require('../controllers/roomController');
-const { auth } = require('../middleware/auth');
+const { auth } = require('../../../shared/middleware/auth');
 
 const router = express.Router();
 
@@ -36,4 +36,3 @@ router.put('/:id', auth, updateRoom);
 router.delete('/:id', auth, deleteRoom);
 
 module.exports = router;
-
