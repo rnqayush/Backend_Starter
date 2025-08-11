@@ -1,0 +1,1181 @@
+{
+  "info": {
+    "_postman_id": "12345678-1234-5678-9012-123456789012",
+    "name": "StoreBuilder Backend API",
+    "description": "Comprehensive API collection for StoreBuilder multi-tenant platform supporting Hotels, E-commerce, Automobiles, Wedding Services, and Business websites.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.token) {",
+                  "        pm.environment.set('authToken', response.data.token);",
+                  "        pm.environment.set('userId', response.data.user._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"vendor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.token) {",
+                  "        pm.environment.set('authToken', response.data.token);",
+                  "        pm.environment.set('userId', response.data.user._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@storebuilder.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"profile\": {\n    \"bio\": \"Updated bio\",\n    \"location\": \"New York\",\n    \"phone\": \"+1234567890\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Business Management",
+      "item": [
+        {
+          "name": "Create Business",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data._id) {",
+                  "        pm.environment.set('businessId', response.data._id);",
+                  "        pm.environment.set('businessSlug', response.data.slug);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grand Palace Hotel\",\n  \"type\": \"hotel\",\n  \"businessInfo\": {\n    \"description\": \"Luxury hotel in the heart of the city\",\n    \"address\": {\n      \"street\": \"123 Main Street\",\n      \"city\": \"Mumbai\",\n      \"state\": \"Maharashtra\",\n      \"zipCode\": \"400001\"\n    },\n    \"contact\": {\n      \"phone\": \"+91-22-12345678\",\n      \"email\": \"info@grandpalace.com\"\n    }\n  },\n  \"branding\": {\n    \"logo\": \"https://example.com/logo.png\",\n    \"colors\": {\n      \"primary\": \"#FF6B35\",\n      \"secondary\": \"#004E89\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/business",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "business"]
+            }
+          }
+        },
+        {
+          "name": "Get Business by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/business/{{businessSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "business", "{{businessSlug}}"]
+            }
+          }
+        },
+        {
+          "name": "Get My Businesses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/business/my/businesses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "business", "my", "businesses"]
+            }
+          }
+        },
+        {
+          "name": "Update Business",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessInfo\": {\n    \"description\": \"Updated luxury hotel description\",\n    \"hours\": {\n      \"monday\": \"9:00 AM - 10:00 PM\",\n      \"tuesday\": \"9:00 AM - 10:00 PM\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/business/{{businessId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "business", "{{businessId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Business Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/business/{{businessId}}/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "business", "{{businessId}}", "analytics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏨 Hotels",
+      "item": [
+        {
+          "name": "Create Hotel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data._id) {",
+                  "        pm.environment.set('hotelId', response.data._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grand Palace Hotel\",\n  \"business\": \"{{businessId}}\",\n  \"description\": \"A luxurious 5-star hotel with world-class amenities\",\n  \"address\": {\n    \"street\": \"123 Hotel Avenue\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"zipCode\": \"400001\",\n    \"coordinates\": {\n      \"latitude\": 19.0760,\n      \"longitude\": 72.8777\n    }\n  },\n  \"contact\": {\n    \"phone\": \"+91-22-12345678\",\n    \"email\": \"info@grandpalace.com\"\n  },\n  \"pricing\": {\n    \"basePrice\": 5000,\n    \"currency\": \"INR\"\n  },\n  \"amenities\": [\"wifi\", \"parking\", \"pool\", \"spa\", \"gym\", \"restaurant\"],\n  \"images\": {\n    \"main\": \"https://images.unsplash.com/photo-1566073771259-6a8506099945\",\n    \"gallery\": [\n      \"https://images.unsplash.com/photo-1564501049412-61c2a3083791\",\n      \"https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9\"\n    ]\n  },\n  \"featured\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "hotels"]
+            }
+          }
+        },
+        {
+          "name": "Get Hotels by Business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/business/{{businessId}}?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "hotels", "business", "{{businessId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Hotel Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/{{hotelId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "hotels", "{{hotelId}}"]
+            }
+          }
+        },
+        {
+          "name": "Search Hotels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/search?city=Mumbai&minPrice=3000&maxPrice=10000&amenities=wifi,pool",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "hotels", "search"],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Mumbai"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "3000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "10000"
+                },
+                {
+                  "key": "amenities",
+                  "value": "wifi,pool"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Room to Hotel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Deluxe Suite\",\n  \"description\": \"Spacious suite with city view\",\n  \"price\": 8000,\n  \"capacity\": 4,\n  \"size\": \"45 sqm\",\n  \"amenities\": [\"balcony\", \"minibar\", \"wifi\", \"ac\"],\n  \"images\": [\n    \"https://images.unsplash.com/photo-1631049307264-da0ec9d70304\"\n  ],\n  \"bedConfiguration\": \"1 King Bed + 1 Sofa Bed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/{{hotelId}}/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "hotels", "{{hotelId}}", "rooms"]
+            }
+          }
+        },
+        {
+          "name": "Update Hotel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated hotel description\",\n  \"amenities\": [\"wifi\", \"parking\", \"pool\", \"spa\", \"gym\", \"restaurant\", \"conference-room\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/{{hotelId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "hotels", "{{hotelId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛍️ E-commerce",
+      "item": [
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data._id) {",
+                  "        pm.environment.set('categoryId', response.data._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Electronic devices and gadgets\",\n  \"business\": \"{{businessId}}\",\n  \"image\": \"https://images.unsplash.com/photo-1498049794561-7780e7231661\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ecommerce", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data._id) {",
+                  "        pm.environment.set('productId', response.data._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Smartphone\",\n  \"description\": \"High-end smartphone with advanced camera and features\",\n  \"business\": \"{{businessId}}\",\n  \"category\": \"{{categoryId}}\",\n  \"sku\": \"PHONE-001\",\n  \"pricing\": {\n    \"price\": 45000,\n    \"originalPrice\": 50000,\n    \"onSale\": true\n  },\n  \"inventory\": {\n    \"quantity\": 50,\n    \"trackQuantity\": true,\n    \"lowStockThreshold\": 5\n  },\n  \"images\": {\n    \"main\": \"https://images.unsplash.com/photo-1511707171634-5f897ff02aa9\",\n    \"gallery\": [\n      \"https://images.unsplash.com/photo-1592899677977-9c10ca588bbd\",\n      \"https://images.unsplash.com/photo-1567581935884-3349723552ca\"\n    ]\n  },\n  \"featured\": true,\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ecommerce", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get Products by Business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/business/{{businessId}}/products?page=1&limit=12&featured=true",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "ecommerce",
+                "business",
+                "{{businessId}}",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "12"
+                },
+                {
+                  "key": "featured",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Categories by Business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/business/{{businessId}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "ecommerce",
+                "business",
+                "{{businessId}}",
+                "categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ecommerce", "products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/search?search=smartphone&minPrice=20000&maxPrice=60000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ecommerce", "search"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "smartphone"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "20000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "60000"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Product Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent smartphone with great camera quality!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/products/{{productId}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "ecommerce",
+                "products",
+                "{{productId}}",
+                "reviews"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get E-commerce Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ecommerce/business/{{businessId}}/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "ecommerce",
+                "business",
+                "{{businessId}}",
+                "analytics"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🚗 Automobiles",
+      "item": [
+        {
+          "name": "Create Vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data._id) {",
+                  "        pm.environment.set('vehicleId', response.data._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"basicInfo\": {\n    \"title\": \"BMW X5 2023 Model\",\n    \"brand\": \"BMW\",\n    \"model\": \"X5\",\n    \"category\": \"suv\",\n    \"description\": \"Luxury SUV with advanced features\"\n  },\n  \"specifications\": {\n    \"year\": 2023,\n    \"fuelType\": \"petrol\",\n    \"transmission\": \"automatic\",\n    \"engine\": {\n      \"displacement\": \"3.0L\",\n      \"power\": \"335 HP\",\n      \"torque\": \"450 Nm\"\n    },\n    \"mileage\": {\n      \"city\": \"10 kmpl\",\n      \"highway\": \"14 kmpl\"\n    }\n  },\n  \"condition\": \"new\",\n  \"pricing\": {\n    \"price\": 7500000,\n    \"currency\": \"INR\",\n    \"negotiable\": true\n  },\n  \"images\": {\n    \"main\": \"https://images.unsplash.com/photo-1555215695-3004980ad54e\",\n    \"exterior\": [\n      \"https://images.unsplash.com/photo-1542362567-b07e54358753\"\n    ]\n  },\n  \"business\": \"{{businessId}}\",\n  \"featured\": true,\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles"]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicles by Business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/business/{{businessId}}?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "business", "{{businessId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicle Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "{{vehicleId}}"]
+            }
+          }
+        },
+        {
+          "name": "Search Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/search?brand=BMW&category=suv&minPrice=5000000&maxPrice=10000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "search"],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": "BMW"
+                },
+                {
+                  "key": "category",
+                  "value": "suv"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "5000000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "10000000"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Submit Vehicle Inquiry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Customer\",\n  \"email\": \"john.customer@example.com\",\n  \"phone\": \"+91-9876543210\",\n  \"message\": \"I'm interested in this BMW X5. Can you provide more details about financing options?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/{{vehicleId}}/inquiry",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "automobiles", "{{vehicleId}}", "inquiry"]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicle Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/automobiles/business/{{businessId}}/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "automobiles",
+                "business",
+                "{{businessId}}",
+                "analytics"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💍 Wedding Services",
+      "item": [
+        {
+          "name": "Get Wedding Services by Business",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/weddings/business/{{businessId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "weddings", "business", "{{businessId}}"]
+            }
+          }
+        },
+        {
+          "name": "Search Wedding Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/weddings/search?location=Mumbai&service=photography",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "weddings", "search"],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "Mumbai"
+                },
+                {
+                  "key": "service",
+                  "value": "photography"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 Blogs",
+      "item": [
+        {
+          "name": "Create Blog",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data._id) {",
+                  "        pm.environment.set('blogId', response.data._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"10 Tips for Running a Successful Hotel Business\",\n  \"content\": \"Running a hotel business requires attention to detail, excellent customer service, and strategic planning. Here are 10 essential tips...\",\n  \"excerpt\": \"Discover the key strategies for hotel success\",\n  \"image\": \"https://images.unsplash.com/photo-1564501049412-61c2a3083791\",\n  \"category\": \"Business Tips\",\n  \"tags\": [\"hotel\", \"business\", \"hospitality\", \"tips\"],\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs"]
+            }
+          }
+        },
+        {
+          "name": "Get All Blogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs?page=1&limit=10&category=Business Tips",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "category",
+                  "value": "Business Tips"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Blog Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs", "{{blogId}}"]
+            }
+          }
+        },
+        {
+          "name": "Search Blogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/blogs/search?q=hotel&category=Business Tips",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "blogs", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "hotel"
+                },
+                {
+                  "key": "category",
+                  "value": "Business Tips"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📁 File Upload",
+      "item": [
+        {
+          "name": "Upload Single File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload/single",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload", "single"]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Files",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload/multiple",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload", "multiple"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Users (Admin)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=1&limit=10&role=vendor",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "role",
+                  "value": "vendor"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚙️ Admin",
+      "item": [
+        {
+          "name": "Get Platform Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Businesses (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/businesses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "businesses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Health & System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Platform Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/platform",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "platform"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}
