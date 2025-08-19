@@ -48,34 +48,34 @@ const useNews = (initialParams = {}) => {
   // Initial fetch
   useEffect(() => {
     fetchNews(initialParams);
-  }, [fetchNews, initialParams]);
+  }, []);
 
   // Function to load more articles
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {
       fetchNews({ page: params.page + 1 });
     }
-  }, [fetchNews, loading, hasMore, params.page]);
+  }, [ loading, hasMore, params.page]);
 
   // Function to change category
   const changeCategory = useCallback((category) => {
     fetchNews({ category, page: 1 });
-  }, [fetchNews]);
+  }, []);
 
   // Function to search news
   const searchForNews = useCallback((query) => {
     fetchNews({ query, page: 1 });
-  }, [fetchNews]);
+  }, []);
 
   // Function to change country
   const changeCountry = useCallback((country) => {
     fetchNews({ country, page: 1 });
-  }, [fetchNews]);
+  }, []);
 
   // Function to change sort order
   const changeSortBy = useCallback((sortBy) => {
     fetchNews({ sortBy, page: 1 });
-  }, [fetchNews]);
+  }, []);
 
   return {
     articles,

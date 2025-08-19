@@ -79,7 +79,7 @@ const HomePage = () => {
   // Reset to default params when component mounts
   useEffect(() => {
     refreshNews();
-  }, [refreshNews]);
+  }, []);
   
   // Get featured articles (first 3)
   const featuredArticles = articles.slice(0, 3);
