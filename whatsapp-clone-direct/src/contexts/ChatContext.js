@@ -232,6 +232,68 @@ export const ChatProvider = ({ children }) => {
     return false;
   };
 
+  // Function to add a reaction to a message
+  const addReaction = (chatId, messageId, reaction) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat) {
+      const updatedMessages = chat.messages.map(message => {
+        if (message.id === messageId) {
+          // Initialize reactions array if it doesn't exist
+          const reactions = message.reactions || [];
+          
+          // Check if user already reacted with this emoji
+          const existingReaction = reactions.find(
+            r => r.userId === reaction.userId && r.emoji === reaction.emoji
+          );
+          
+          if (existingReaction) {
+            // User already reacted with this emoji, do nothing
+            return message;
+          }
+          
+          // Add the new reaction
+          return {
+            ...message,
+            reactions: [...reactions, {
+              id: Date.now(), // Generate a unique ID
+              ...reaction,
+              timestamp: new Date().toISOString()
+            }]
+          };
+        }
+        return message;
+      });
+      
+      updateChat(chat.id, { messages: updatedMessages });
+      return true;
+    }
+    
+    return false;
+  };
+  
+  // Function to remove a reaction from a message
+  const removeReaction = (chatId, messageId, reactionId) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat) {
+      const updatedMessages = chat.messages.map(message => {
+        if (message.id === messageId && message.reactions) {
+          return {
+            ...message,
+            reactions: message.reactions.filter(r => r.id !== reactionId)
+          };
+        }
+        return message;
+      });
+      
+      updateChat(chat.id, { messages: updatedMessages });
+      return true;
+    }
+    
+    return false;
+  };
+
   // Context value
   const value = {
     chats,
@@ -246,7 +308,9 @@ export const ChatProvider = ({ children }) => {
     toggleStarMessage,
     forwardMessage,
     archiveChat,
-    unarchiveChat
+    unarchiveChat,
+    addReaction,
+    removeReaction
   };
 
   return (

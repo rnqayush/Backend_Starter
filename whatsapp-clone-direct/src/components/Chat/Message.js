@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { formatMessageTime, getContactById, currentUser } from '../../data/mockData';
-import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar, FaMicrophone } from 'react-icons/fa';
+import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar, FaMicrophone, FaSmile } from 'react-icons/fa';
 import MessageContextMenu from './MessageContextMenu';
 import AudioPlayer from './AudioPlayer';
+import { ReactionsPopup, MessageReactions } from './MessageReactions';
 
 const MessageContainer = styled.div`
   display: flex;
@@ -145,6 +146,7 @@ const AudioIcon = styled.div`
 
 const Message = ({ message, isSentByMe, onReply }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
+  const [showReactionsPopup, setShowReactionsPopup] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const messageRef = useRef(null);
 
@@ -161,6 +163,9 @@ const Message = ({ message, isSentByMe, onReply }) => {
   const handleClick = () => {
     if (showContextMenu) {
       setShowContextMenu(false);
+    }
+    if (showReactionsPopup) {
+      setShowReactionsPopup(false);
     }
   };
 
@@ -210,6 +215,9 @@ const Message = ({ message, isSentByMe, onReply }) => {
         <ActionButton onClick={() => onReply(message)} title="Reply">
           <FaReply />
         </ActionButton>
+        <ActionButton onClick={() => setShowReactionsPopup(true)} title="React">
+          <FaSmile />
+        </ActionButton>
       </MessageActions>
       
       <MessageBubble isSentByMe={isSentByMe}>
@@ -242,6 +250,18 @@ const Message = ({ message, isSentByMe, onReply }) => {
             </MessageStatus>
           )}
         </MessageMeta>
+        
+        {/* Display message reactions if any */}
+        <MessageReactions message={message} isSentByMe={isSentByMe} />
+        
+        {/* Show reactions popup when the reaction button is clicked */}
+        {showReactionsPopup && (
+          <ReactionsPopup 
+            message={message} 
+            isSentByMe={isSentByMe} 
+            onClose={() => setShowReactionsPopup(false)} 
+          />
+        )}
       </MessageBubble>
       
       {showContextMenu && (
