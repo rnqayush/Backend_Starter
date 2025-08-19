@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import ChatListItem from './ChatListItem';
-import { chats } from '../../data/mockData';
+import StatusItem from './StatusItem';
+import { useChat } from '../../contexts/ChatContext';
 
 const ChatListContainer = styled.div`
   flex: 1;
@@ -20,7 +21,9 @@ const EmptyList = styled.div`
   text-align: center;
 `;
 
-const ChatList = ({ contacts, onContactSelect, selectedContactId }) => {
+const ChatList = ({ contacts, onContactSelect, selectedContactId, onArchivedClick, onStatusClick }) => {
+  const { chats, archiveChat } = useChat();
+  
   // If no contacts match the search criteria
   if (contacts.length === 0) {
     return (
@@ -44,6 +47,8 @@ const ChatList = ({ contacts, onContactSelect, selectedContactId }) => {
 
   return (
     <ChatListContainer>
+      <StatusItem onStatusClick={onStatusClick} />
+      
       {sortedContacts.map(contact => {
         const chat = chats.find(c => c.contactId === contact.id);
         const lastMessage = chat?.messages[chat.messages.length - 1];
@@ -64,4 +69,3 @@ const ChatList = ({ contacts, onContactSelect, selectedContactId }) => {
 };
 
 export default ChatList;
-

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { formatChatListDate } from '../../data/mockData';
-import { FaCheck, FaCheckDouble } from 'react-icons/fa';
+import { FaCheck, FaCheckDouble, FaArchive, FaVolumeOff, FaTrash } from 'react-icons/fa';
+import { formatChatListDate } from '../../utils/formatters';
+import { useChat } from '../../contexts/ChatContext';
 
 const ListItem = styled.div`
   display: flex;
@@ -10,6 +11,7 @@ const ListItem = styled.div`
   cursor: pointer;
   border-bottom: 1px solid var(--border-color);
   background-color: ${props => props.isSelected ? 'var(--chat-hover)' : 'transparent'};
+  position: relative;
   
   &:hover {
     background-color: var(--chat-hover);
@@ -91,16 +93,78 @@ const UnreadBadge = styled.div`
   padding: 0 6px;
 `;
 
+const ContextMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 10px;
+  background-color: var(--dropdown-background);
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  display: ${props => props.show ? 'block' : 'none'};
+  overflow: hidden;
+`;
+
+const MenuItem = styled.div`
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  
+  &:hover {
+    background-color: var(--hover-background);
+  }
+  
+  svg {
+    margin-right: 10px;
+    font-size: 16px;
+  }
+`;
+
 const ChatListItem = ({ contact, lastMessage, unreadCount, onClick, isSelected }) => {
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const contextMenuRef = useRef(null);
+  const { archiveChat } = useChat();
+  
   const getMessageStatusIcon = (status) => {
     if (status === 'sent') return <FaCheck />;
     if (status === 'delivered') return <FaCheck />;
     if (status === 'read') return <FaCheckDouble />;
     return null;
   };
+  
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowContextMenu(true);
+  };
+  
+  const handleArchive = (e) => {
+    e.stopPropagation();
+    archiveChat(contact.id);
+    setShowContextMenu(false);
+  };
+  
+  const handleClickOutside = (e) => {
+    if (contextMenuRef.current && !contextMenuRef.current.contains(e.target)) {
+      setShowContextMenu(false);
+    }
+  };
+  
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <ListItem onClick={onClick} isSelected={isSelected}>
+    <ListItem 
+      onClick={onClick} 
+      isSelected={isSelected}
+      onContextMenu={handleContextMenu}
+    >
       <Avatar src={contact.avatar} alt={contact.name} />
       <ChatInfo>
         <TopRow>
@@ -127,9 +191,23 @@ const ChatListItem = ({ contact, lastMessage, unreadCount, onClick, isSelected }
           {unreadCount > 0 && <UnreadBadge>{unreadCount}</UnreadBadge>}
         </BottomRow>
       </ChatInfo>
+      
+      <ContextMenu show={showContextMenu} ref={contextMenuRef}>
+        <MenuItem onClick={handleArchive}>
+          <FaArchive />
+          Archive chat
+        </MenuItem>
+        <MenuItem>
+          <FaVolumeOff />
+          Mute notifications
+        </MenuItem>
+        <MenuItem>
+          <FaTrash />
+          Delete chat
+        </MenuItem>
+      </ContextMenu>
     </ListItem>
   );
 };
 
 export default ChatListItem;
-

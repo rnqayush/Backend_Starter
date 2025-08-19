@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { formatMessageTime } from '../../data/mockData';
-import { FaCheck, FaCheckDouble, FaClock } from 'react-icons/fa';
+import { formatMessageTime, getContactById, currentUser } from '../../data/mockData';
+import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar } from 'react-icons/fa';
 import MessageContextMenu from './MessageContextMenu';
 
 const MessageContainer = styled.div`
@@ -30,6 +30,67 @@ const MessageBubble = styled.div`
       'left: -6px; background: radial-gradient(circle at 100% 0, transparent 12px, var(--incoming-message) 0);'
     }
   }
+`;
+
+const ReplyPreviewContainer = styled.div`
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  background-color: ${props => props.isSentByMe ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+  border-left: 3px solid var(--primary-color);
+`;
+
+const ReplyPreviewSender = styled.div`
+  font-size: 12px;
+  font-weight: 500;
+  color: ${props => props.isCurrentUser ? 'var(--primary-color)' : 'var(--secondary-color)'};
+  margin-bottom: 2px;
+`;
+
+const ReplyPreviewText = styled.div`
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+`;
+
+const MessageActions = styled.div`
+  display: flex;
+  position: absolute;
+  top: -20px;
+  ${props => props.isSentByMe ? 'right: 0;' : 'left: 0;'}
+  background-color: var(--sidebar-header);
+  border-radius: 15px;
+  padding: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s;
+  
+  ${MessageContainer}:hover & {
+    opacity: 1;
+  }
+`;
+
+const ActionButton = styled.div`
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: var(--hover-background);
+  }
+`;
+
+const StarredIcon = styled(FaStar)`
+  color: var(--primary-color);
+  margin-left: 4px;
+  font-size: 12px;
 `;
 
 const MessageText = styled.div`
@@ -67,7 +128,7 @@ const MessageImage = styled.img`
   cursor: pointer;
 `;
 
-const Message = ({ message, isSentByMe }) => {
+const Message = ({ message, isSentByMe, onReply }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const messageRef = useRef(null);
@@ -101,6 +162,28 @@ const Message = ({ message, isSentByMe }) => {
     }
   };
 
+  // Render reply preview if message is a reply
+  const renderReplyPreview = () => {
+    if (!message.replyTo) return null;
+    
+    const repliedToSenderId = message.replyTo.senderId;
+    const isRepliedToCurrentUser = repliedToSenderId === 1;
+    const repliedToSender = isRepliedToCurrentUser 
+      ? currentUser 
+      : getContactById(repliedToSenderId);
+    
+    return (
+      <ReplyPreviewContainer isSentByMe={isSentByMe}>
+        <ReplyPreviewSender isCurrentUser={isRepliedToCurrentUser}>
+          {isRepliedToCurrentUser ? 'You' : repliedToSender?.name}
+        </ReplyPreviewSender>
+        <ReplyPreviewText>
+          {message.replyTo.text}
+        </ReplyPreviewText>
+      </ReplyPreviewContainer>
+    );
+  };
+
   return (
     <MessageContainer 
       isSentByMe={isSentByMe}
@@ -108,7 +191,15 @@ const Message = ({ message, isSentByMe }) => {
       onContextMenu={handleContextMenu}
       onClick={handleClick}
     >
+      <MessageActions isSentByMe={isSentByMe}>
+        <ActionButton onClick={() => onReply(message)} title="Reply">
+          <FaReply />
+        </ActionButton>
+      </MessageActions>
+      
       <MessageBubble isSentByMe={isSentByMe}>
+        {renderReplyPreview()}
+        
         {message.image && (
           <MessageImage src={message.image} alt="Shared image" />
         )}
@@ -117,6 +208,7 @@ const Message = ({ message, isSentByMe }) => {
         </MessageText>
         <MessageMeta>
           <MessageTime>{formatMessageTime(message.timestamp)}</MessageTime>
+          {message.isStarred && <StarredIcon title="Starred message" />}
           {isSentByMe && (
             <MessageStatus status={message.status}>
               {renderMessageStatus()}

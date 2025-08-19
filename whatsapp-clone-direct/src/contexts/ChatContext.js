@@ -10,6 +10,7 @@ export const useChat = () => useContext(ChatContext);
 // Chat provider component
 export const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState(initialChats);
+  const [archivedChats, setArchivedChats] = useState([]);
   const [typingStatus, setTypingStatus] = useState({});
   
   // Function to update a chat
@@ -168,16 +169,84 @@ export const ChatProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Function to set a message as starred/unstarred
+  const toggleStarMessage = (chatId, messageId, isStarred) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat) {
+      const updatedMessages = chat.messages.map(message => 
+        message.id === messageId ? { ...message, isStarred } : message
+      );
+      
+      updateChat(chat.id, { messages: updatedMessages });
+      return true;
+    }
+    
+    return false;
+  };
+
+  // Function to forward a message to another chat
+  const forwardMessage = (message, targetContactId) => {
+    const newMessage = {
+      ...message,
+      senderId: 1, // Current user is forwarding
+      timestamp: new Date().toISOString(),
+      status: 'sent',
+      isForwarded: true
+    };
+    
+    return addMessage(targetContactId, newMessage);
+  };
+  
+  // Function to archive a chat
+  const archiveChat = (chatId) => {
+    const chatToArchive = chats.find(chat => chat.id === chatId);
+    
+    if (chatToArchive) {
+      // Remove from active chats
+      setChats(prevChats => prevChats.filter(chat => chat.id !== chatId));
+      
+      // Add to archived chats
+      setArchivedChats(prevArchived => [...prevArchived, { ...chatToArchive, isArchived: true }]);
+      
+      return true;
+    }
+    
+    return false;
+  };
+  
+  // Function to unarchive a chat
+  const unarchiveChat = (chatId) => {
+    const chatToUnarchive = archivedChats.find(chat => chat.id === chatId);
+    
+    if (chatToUnarchive) {
+      // Remove from archived chats
+      setArchivedChats(prevArchived => prevArchived.filter(chat => chat.id !== chatId));
+      
+      // Add to active chats
+      setChats(prevChats => [...prevChats, { ...chatToUnarchive, isArchived: false }]);
+      
+      return true;
+    }
+    
+    return false;
+  };
+
   // Context value
   const value = {
     chats,
+    archivedChats,
     typingStatus,
     addMessage,
     updateChat,
     setTyping,
     markMessagesAsRead,
     deleteMessage,
-    updateMessageStatus
+    updateMessageStatus,
+    toggleStarMessage,
+    forwardMessage,
+    archiveChat,
+    unarchiveChat
   };
 
   return (

@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaEllipsisV, FaCommentAlt, FaCircleNotch, FaMoon, FaSun } from 'react-icons/fa';
+import { 
+  FaEllipsisV, 
+  FaCommentAlt, 
+  FaCircleNotch, 
+  FaMoon, 
+  FaSun, 
+  FaPhone, 
+  FaArchive 
+} from 'react-icons/fa';
 import { currentUser } from '../../data/mockData';
 import ProfileModal from '../Modals/ProfileModal';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -87,7 +95,7 @@ const MenuItem = styled.div`
   }
 `;
 
-const SidebarHeader = ({ onStatusClick }) => {
+const SidebarHeader = ({ onStatusClick, onCallsClick, onArchivedClick }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const { darkMode, toggleTheme } = useTheme();
@@ -118,6 +126,9 @@ const SidebarHeader = ({ onStatusClick }) => {
           <FaCircleNotch />
           <StatusDot hasUnviewedStories={hasUnviewedStories(2) || hasUnviewedStories(5) || hasUnviewedStories(10)} />
         </StatusIconWrapper>
+        <IconWrapper title="Calls" onClick={onCallsClick}>
+          <FaPhone />
+        </IconWrapper>
         <IconWrapper title="New chat">
           <FaCommentAlt />
         </IconWrapper>
@@ -125,6 +136,10 @@ const SidebarHeader = ({ onStatusClick }) => {
           <FaEllipsisV />
           <DropdownMenu isOpen={showDropdown}>
             <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+            <MenuItem onClick={onArchivedClick}>
+              <FaArchive style={{ marginRight: '8px' }} />
+              Archived
+            </MenuItem>
             <MenuItem onClick={handleThemeToggle}>
               {darkMode ? <FaSun /> : <FaMoon />}
               {darkMode ? 'Light Mode' : 'Dark Mode'}
