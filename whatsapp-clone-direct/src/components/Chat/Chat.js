@@ -5,6 +5,7 @@ import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import { getChatByContactId } from '../../data/mockData';
 import EmptyChat from './EmptyChat';
+import { useChat } from '../../contexts/ChatContext';
 
 const ChatContainer = styled.div`
   display: flex;
@@ -24,6 +25,7 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
   const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState(null);
   const messagesEndRef = useRef(null);
+  const { addMessage, chats } = useChat();
 
   useEffect(() => {
     if (selectedContact) {
@@ -43,19 +45,49 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  
+  // Update messages when chat context changes
+  useEffect(() => {
+    if (selectedContact && chat) {
+      // Find the updated chat in the context
+      const updatedChat = chats.find(c => c.id === chat.id);
+      if (updatedChat) {
+        setMessages(updatedChat.messages);
+      }
+    }
+  }, [chats, selectedContact, chat]);
 
-  const handleSendMessage = (text) => {
-    if (!text.trim() || !selectedContact) return;
+  const handleSendMessage = (text, attachment = null) => {
+    if ((!text.trim() && !attachment) || !selectedContact) return;
     
     const newMessage = {
-      id: messages.length + 1,
       senderId: 1, // Current user ID
       text,
-      timestamp: new Date().toISOString(),
       status: 'sent'
     };
     
-    setMessages([...messages, newMessage]);
+    // Add attachment if provided
+    if (attachment) {
+      if (attachment.type === 'image') {
+        newMessage.image = attachment.url;
+      } else {
+        newMessage.file = {
+          url: attachment.url,
+          name: attachment.name,
+          size: attachment.size
+        };
+      }
+    }
+    
+    // Add message to the chat context
+    addMessage(selectedContact.id, newMessage);
+    
+    // Update local state for immediate UI update
+    setMessages([...messages, {
+      ...newMessage,
+      id: messages.length + 1,
+      timestamp: new Date().toISOString()
+    }]);
   };
 
   if (!selectedContact) {
@@ -79,4 +111,3 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
 };
 
 export default Chat;
-

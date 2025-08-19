@@ -187,7 +187,8 @@ const ChatInput = ({ onSendMessage, contactId }) => {
         // For demo purposes, we'll use a data URL
         const reader = new FileReader();
         reader.onload = (e) => {
-          onSendMessage(message, {
+          const messageText = message.trim() ? message : selectedFile.name;
+          onSendMessage(messageText, {
             type: selectedFile.type.startsWith('image/') ? 'image' : 'file',
             url: e.target.result,
             name: selectedFile.name,
@@ -357,4 +358,3 @@ const ChatInput = ({ onSendMessage, contactId }) => {
 };
 
 export default ChatInput;
-

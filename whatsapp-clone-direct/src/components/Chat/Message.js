@@ -56,7 +56,7 @@ const MessageTime = styled.span`
 
 const MessageStatus = styled.span`
   font-size: 11px;
-  color: var(--message-status);
+  color: ${props => props.status === 'read' ? 'var(--primary-color)' : 'var(--message-status)'};
   margin-left: 2px;
 `;
 
@@ -91,13 +91,13 @@ const Message = ({ message, isSentByMe }) => {
   const renderMessageStatus = () => {
     switch (message.status) {
       case 'sent':
-        return <FaCheck />;
+        return <FaCheck title="Sent" />;
       case 'delivered':
-        return <FaCheckDouble />;
+        return <FaCheckDouble title="Delivered" />;
       case 'read':
-        return <FaCheckDouble style={{ color: '#53bdeb' }} />;
+        return <FaCheckDouble title="Read" style={{ color: '#53bdeb' }} />;
       default:
-        return <FaClock />;
+        return <FaClock title="Pending" />;
     }
   };
 
@@ -118,7 +118,7 @@ const Message = ({ message, isSentByMe }) => {
         <MessageMeta>
           <MessageTime>{formatMessageTime(message.timestamp)}</MessageTime>
           {isSentByMe && (
-            <MessageStatus>
+            <MessageStatus status={message.status}>
               {renderMessageStatus()}
             </MessageStatus>
           )}
@@ -138,4 +138,3 @@ const Message = ({ message, isSentByMe }) => {
 };
 
 export default Message;
-
