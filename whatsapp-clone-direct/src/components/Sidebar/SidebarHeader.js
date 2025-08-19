@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaEllipsisV, FaUsers, FaCircleNotch, FaCommentAlt } from 'react-icons/fa';
+import { FaEllipsisV, FaCommentAlt, FaCircleNotch, FaMoon, FaSun } from 'react-icons/fa';
 import { currentUser } from '../../data/mockData';
 import ProfileModal from '../Modals/ProfileModal';
+import { useTheme } from '../../contexts/ThemeContext';
 
-const Header = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -13,42 +14,87 @@ const Header = styled.div`
   height: 60px;
 `;
 
-const UserAvatar = styled.img`
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const Avatar = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  cursor: pointer;
+  margin-right: 10px;
+  object-fit: cover;
 `;
 
 const IconsContainer = styled.div`
   display: flex;
-  gap: 24px;
   color: var(--icon-color);
 `;
 
 const IconWrapper = styled.div`
+  margin-left: 22px;
   cursor: pointer;
   font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   
   &:hover {
-    color: var(--secondary-color);
+    color: var(--primary-color);
+  }
+`;
+
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--dropdown-background);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  border-radius: 3px;
+  width: 200px;
+  z-index: 100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+`;
+
+const MenuItem = styled.div`
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    background-color: var(--dropdown-hover);
+  }
+  
+  svg {
+    margin-right: 10px;
   }
 `;
 
 const SidebarHeader = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
-  
+  const [showDropdown, setShowDropdown] = useState(false);
+  const { darkMode, toggleTheme } = useTheme();
+
+  const handleMenuClick = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleProfileClick = () => {
+    setShowProfileModal(true);
+    setShowDropdown(false);
+  };
+
+  const handleThemeToggle = () => {
+    toggleTheme();
+    setShowDropdown(false);
+  };
+
   return (
-    <Header>
-      <UserAvatar 
-        src={currentUser.avatar} 
-        alt={currentUser.name}
-        onClick={() => setShowProfileModal(true)}
-      />
+    <HeaderContainer>
+      <UserInfo onClick={handleProfileClick}>
+        <Avatar src={currentUser.avatar} alt={currentUser.name} />
+      </UserInfo>
       
       <IconsContainer>
         <IconWrapper title="Status">
@@ -57,11 +103,17 @@ const SidebarHeader = () => {
         <IconWrapper title="New chat">
           <FaCommentAlt />
         </IconWrapper>
-        <IconWrapper title="Communities">
-          <FaUsers />
-        </IconWrapper>
-        <IconWrapper title="Menu">
+        <IconWrapper title="Menu" onClick={handleMenuClick}>
           <FaEllipsisV />
+          <DropdownMenu isOpen={showDropdown}>
+            <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+            <MenuItem onClick={handleThemeToggle}>
+              {darkMode ? <FaSun /> : <FaMoon />}
+              {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </MenuItem>
+            <MenuItem>Settings</MenuItem>
+            <MenuItem>Log out</MenuItem>
+          </DropdownMenu>
         </IconWrapper>
       </IconsContainer>
       
@@ -71,7 +123,7 @@ const SidebarHeader = () => {
           onClose={() => setShowProfileModal(false)} 
         />
       )}
-    </Header>
+    </HeaderContainer>
   );
 };
 
