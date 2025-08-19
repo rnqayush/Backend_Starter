@@ -53,3 +53,4 @@ const StatusIndicator = ({ status }) => {
 };
 
 export default StatusIndicator;
+

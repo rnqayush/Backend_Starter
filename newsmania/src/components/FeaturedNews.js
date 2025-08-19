@@ -20,113 +20,188 @@ const FeaturedContainer = styled.div`
 `;
 
 const MainArticle = styled.div`
-  position: relative;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  overflow: hidden;
-  box-shadow: ${({ theme }) => theme.shadows.md};
+  grid-column: 1;
+  grid-row: 1;
   background-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.1),
     rgba(0, 0, 0, 0.8)
-  ), url(${({ image }) => image});
+  ), url(${props => props.image});
   background-size: cover;
   background-position: center;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.lg};
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.xl};
-  transition: transform ${({ theme }) => theme.transitions.fast};
+  color: ${({ theme }) => theme.colors.white};
+  position: relative;
+  overflow: hidden;
   
   &:hover {
-    transform: scale(1.01);
+    &::after {
+      opacity: 1;
+    }
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.9)
+    );
+    opacity: 0;
+    transition: opacity ${({ theme }) => theme.transitions.fast};
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    grid-column: 1;
+    grid-row: 1;
   }
 `;
 
-const SecondaryArticlesContainer = styled.div`
-  display: grid;
-  grid-template-rows: 1fr 1fr;
+const SecondaryArticles = styled.div`
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    grid-column: 1;
+    grid-row: 2;
+  }
 `;
 
 const SecondaryArticle = styled.div`
-  position: relative;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  overflow: hidden;
-  box-shadow: ${({ theme }) => theme.shadows.md};
+  flex: 1;
   background-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.1),
-    rgba(0, 0, 0, 0.8)
-  ), url(${({ image }) => image});
+    rgba(0, 0, 0, 0.7)
+  ), url(${props => props.image});
   background-size: cover;
   background-position: center;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.md};
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.lg};
-  transition: transform ${({ theme }) => theme.transitions.fast};
+  color: ${({ theme }) => theme.colors.white};
+  position: relative;
+  overflow: hidden;
   
   &:hover {
-    transform: scale(1.01);
+    &::after {
+      opacity: 1;
+    }
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.8)
+    );
+    opacity: 0;
+    transition: opacity ${({ theme }) => theme.transitions.fast};
+    z-index: 1;
+    pointer-events: none;
   }
 `;
 
-const ArticleCategory = styled.span`
-  background-color: ${({ theme, category }) => 
-    theme.colors.categoryColors[category] || theme.colors.primary};
+const ArticleCategory = styled.div`
+  display: inline-block;
+  background-color: ${({ theme, category }) => {
+    switch (category) {
+      case 'business':
+        return theme.colors.business;
+      case 'entertainment':
+        return theme.colors.entertainment;
+      case 'health':
+        return theme.colors.health;
+      case 'science':
+        return theme.colors.science;
+      case 'sports':
+        return theme.colors.sports;
+      case 'technology':
+        return theme.colors.technology;
+      default:
+        return theme.colors.primary;
+    }
+  }};
   color: ${({ theme }) => theme.colors.white};
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   text-transform: uppercase;
-  display: inline-block;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  z-index: 2;
 `;
 
-const ArticleTitle = styled.h3`
-  font-size: ${({ main, theme }) => main ? theme.fontSizes['2xl'] : theme.fontSizes.xl};
+const ArticleTitle = styled.h2`
+  margin: 0 0 ${({ theme }) => theme.spacing.sm};
+  font-size: ${props => props.main ? 
+    props.theme.fontSizes.xl : 
+    props.theme.fontSizes.md};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.white};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  line-height: 1.3;
+  z-index: 2;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ main, theme }) => main ? theme.fontSizes.xl : theme.fontSizes.lg};
+    font-size: ${props => props.main ? 
+      props.theme.fontSizes.lg : 
+      props.theme.fontSizes.md};
   }
 `;
 
 const ArticleMeta = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  color: ${({ theme }) => theme.colors.lightGray};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  z-index: 2;
 `;
 
 const ArticleSource = styled.span`
   font-weight: ${({ theme }) => theme.fontWeights.medium};
+  margin-right: ${({ theme }) => theme.spacing.sm};
 `;
 
-const ArticleTime = styled.span``;
+const ArticleTime = styled.span`
+  opacity: 0.8;
+`;
 
 const ReadMoreLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
   color: ${({ theme }) => theme.colors.white};
-  background-color: ${({ theme }) => theme.colors.primary};
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   text-decoration: none;
-  display: inline-block;
   margin-top: ${({ theme }) => theme.spacing.md};
-  transition: background-color ${({ theme }) => theme.transitions.fast};
+  z-index: 2;
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.secondary};
+    text-decoration: underline;
+  }
+  
+  i {
+    margin-left: ${({ theme }) => theme.spacing.xs};
+    font-size: ${({ theme }) => theme.fontSizes.xs};
   }
 `;
 
@@ -146,8 +221,6 @@ const FeaturedNews = ({ articles }) => {
       ? encodeURIComponent(article.url.split('/').pop() || Date.now().toString())
       : Date.now().toString();
   };
-  
-  // Note: We're now using the centralized getArticleStatus function from statusUtils
   
   // Handle article click
   const handleArticleClick = (article) => {
@@ -181,14 +254,14 @@ const FeaturedNews = ({ articles }) => {
           to={`/article/${getArticleId(mainArticle)}`}
           onClick={() => handleArticleClick(mainArticle)}
         >
-          Read More
+          Read More <i className="fas fa-arrow-right"></i>
         </ReadMoreLink>
       </MainArticle>
       
-      <SecondaryArticlesContainer>
+      <SecondaryArticles>
         {secondaryArticles.map((article, index) => (
           <SecondaryArticle 
-            key={index} 
+            key={article.url || index}
             image={getDefaultImage(article.urlToImage)}
           >
             <ArticleCategory category={article.category || 'general'}>
@@ -213,9 +286,10 @@ const FeaturedNews = ({ articles }) => {
             </ArticleMeta>
           </SecondaryArticle>
         ))}
-      </SecondaryArticlesContainer>
+      </SecondaryArticles>
     </FeaturedContainer>
   );
 };
 
 export default FeaturedNews;
+
