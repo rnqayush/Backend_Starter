@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import WhatsApp from './pages/WhatsApp';
 import Login from './components/Auth/Login';
@@ -16,7 +16,7 @@ import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <AuthProvider>
         <ThemeProvider>
           <GlobalStyles />
@@ -40,7 +40,7 @@ function App() {
           </Routes>
         </ThemeProvider>
       </AuthProvider>
-    </Router>
+    </BrowserRouter>
   );
 }
 
