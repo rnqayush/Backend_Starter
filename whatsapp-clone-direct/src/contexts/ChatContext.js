@@ -37,6 +37,11 @@ export const ChatProvider = ({ children }) => {
         lastMessageTimestamp: new Date().toISOString()
       });
       
+      // If this is a message sent by the current user, simulate status updates
+      if (message.senderId === 1) {
+        simulateMessageStatusUpdates(chat.id, updatedMessages.length);
+      }
+      
       return true;
     }
     
@@ -86,6 +91,35 @@ export const ChatProvider = ({ children }) => {
       const updatedMessages = chat.messages.filter(message => message.id !== messageId);
       updateChat(chatId, { messages: updatedMessages });
     }
+  };
+  
+  // Function to update message status
+  const updateMessageStatus = (chatId, messageId, newStatus) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat) {
+      const updatedMessages = chat.messages.map(message => 
+        message.id === messageId ? { ...message, status: newStatus } : message
+      );
+      
+      updateChat(chat.id, { messages: updatedMessages });
+      return true;
+    }
+    
+    return false;
+  };
+  
+  // Function to simulate message status updates (sent -> delivered -> read)
+  const simulateMessageStatusUpdates = (chatId, messageId) => {
+    // Simulate 'delivered' status after 1 second
+    setTimeout(() => {
+      updateMessageStatus(chatId, messageId, 'delivered');
+      
+      // Simulate 'read' status after another 2-5 seconds
+      setTimeout(() => {
+        updateMessageStatus(chatId, messageId, 'read');
+      }, Math.random() * 3000 + 2000); // Random time between 2-5 seconds
+    }, 1000);
   };
 
   // Simulate receiving messages for demo purposes
@@ -142,7 +176,8 @@ export const ChatProvider = ({ children }) => {
     updateChat,
     setTyping,
     markMessagesAsRead,
-    deleteMessage
+    deleteMessage,
+    updateMessageStatus
   };
 
   return (
@@ -153,4 +188,3 @@ export const ChatProvider = ({ children }) => {
 };
 
 export default ChatContext;
-
