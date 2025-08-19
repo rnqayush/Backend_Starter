@@ -72,6 +72,8 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
     if (attachment) {
       if (attachment.type === 'image') {
         newMessage.image = attachment.url;
+      } else if (attachment.type === 'audio') {
+        newMessage.audio = attachment.url;
       } else {
         newMessage.file = {
           url: attachment.url,
