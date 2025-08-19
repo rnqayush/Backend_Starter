@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa';
 import EmojiPicker from 'emoji-picker-react';
 import { useChat } from '../../contexts/ChatContext';
+import AudioRecorder from './AudioRecorder';
 
 const InputContainer = styled.div`
   display: flex;
@@ -159,6 +160,7 @@ const ChatInput = ({ onSendMessage, contactId }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
   const fileInputRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const attachMenuRef = useRef(null);
@@ -261,97 +263,129 @@ const ChatInput = ({ onSendMessage, contactId }) => {
     }
   };
   
+  const handleStartRecording = () => {
+    setIsRecording(true);
+  };
+  
+  const handleCancelRecording = () => {
+    setIsRecording(false);
+  };
+  
+  const handleSendAudio = (audioUrl) => {
+    if (onSendMessage) {
+      onSendMessage('', {
+        type: 'audio',
+        url: audioUrl,
+        name: 'Voice message',
+        size: 0 // Size would be determined in a real app
+      });
+      setIsRecording(false);
+    }
+  };
+  
   return (
     <>
-      <InputContainer>
-        <IconWrapper 
-          title="Emoji" 
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        >
-          <FaSmile />
-        </IconWrapper>
-        
-        <IconWrapper 
-          title="Attach" 
-          onClick={handleAttachClick}
-        >
-          <FaPaperclip />
-        </IconWrapper>
-        
-        <InputField>
-          <Input 
-            placeholder="Type a message"
-            value={message}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-          />
-        </InputField>
-        
-        {message.trim() || selectedFile ? (
-          <SendButton onClick={handleSend} title="Send">
-            <FaPaperPlane />
-          </SendButton>
-        ) : (
-          <IconWrapper title="Voice message">
-            <FaMicrophone />
-          </IconWrapper>
-        )}
-        
-        {showEmojiPicker && (
-          <EmojiPickerContainer ref={emojiPickerRef}>
-            <EmojiPicker 
-              onEmojiClick={handleEmojiClick}
-              searchDisabled={false}
-              skinTonesDisabled={true}
-              width={300}
-              height={400}
-              previewConfig={{ showPreview: false }}
-            />
-          </EmojiPickerContainer>
-        )}
-        
-        <AttachmentMenu isOpen={showAttachMenu} ref={attachMenuRef}>
-          <AttachmentOption onClick={handleImageClick}>
-            <FaImage />
-            Photos & Videos
-          </AttachmentOption>
-          <AttachmentOption onClick={handleDocumentClick}>
-            <FaFile />
-            Documents
-          </AttachmentOption>
-          <AttachmentOption onClick={handleCameraClick}>
-            <FaCamera />
-            Camera
-          </AttachmentOption>
-        </AttachmentMenu>
-        
-        <HiddenFileInput 
-          type="file" 
-          ref={fileInputRef} 
-          onChange={handleFileSelect}
+      {isRecording ? (
+        <AudioRecorder 
+          onSendAudio={handleSendAudio}
+          onCancel={handleCancelRecording}
         />
-      </InputContainer>
-      
-      {selectedFile && (
-        <FilePreviewContainer>
-          <FilePreview>
-            {selectedFile.type.startsWith('image/') ? (
-              <FilePreviewImage 
-                src={URL.createObjectURL(selectedFile)} 
-                alt="Selected file"
+      ) : (
+        <>
+          <InputContainer>
+            <IconWrapper 
+              title="Emoji" 
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
+              <FaSmile />
+            </IconWrapper>
+            
+            <IconWrapper 
+              title="Attach" 
+              onClick={handleAttachClick}
+            >
+              <FaPaperclip />
+            </IconWrapper>
+            
+            <InputField>
+              <Input 
+                placeholder="Type a message"
+                value={message}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
               />
+            </InputField>
+            
+            {message.trim() || selectedFile ? (
+              <SendButton onClick={handleSend} title="Send">
+                <FaPaperPlane />
+              </SendButton>
             ) : (
-              <FaFile size={30} style={{ marginRight: '10px' }} />
+              <IconWrapper 
+                title="Voice message" 
+                onClick={handleStartRecording}
+              >
+                <FaMicrophone />
+              </IconWrapper>
             )}
-            <FileInfo>
-              <FileName>{selectedFile.name}</FileName>
-              <FileSize>{formatFileSize(selectedFile.size)}</FileSize>
-            </FileInfo>
-          </FilePreview>
-          <CloseButton onClick={handleClearFile}>
-            <FaTimes />
-          </CloseButton>
-        </FilePreviewContainer>
+            
+            {showEmojiPicker && (
+              <EmojiPickerContainer ref={emojiPickerRef}>
+                <EmojiPicker 
+                  onEmojiClick={handleEmojiClick}
+                  searchDisabled={false}
+                  skinTonesDisabled={true}
+                  width={300}
+                  height={400}
+                  previewConfig={{ showPreview: false }}
+                />
+              </EmojiPickerContainer>
+            )}
+            
+            <AttachmentMenu isOpen={showAttachMenu} ref={attachMenuRef}>
+              <AttachmentOption onClick={handleImageClick}>
+                <FaImage />
+                Photos & Videos
+              </AttachmentOption>
+              <AttachmentOption onClick={handleDocumentClick}>
+                <FaFile />
+                Documents
+              </AttachmentOption>
+              <AttachmentOption onClick={handleCameraClick}>
+                <FaCamera />
+                Camera
+              </AttachmentOption>
+            </AttachmentMenu>
+            
+            <HiddenFileInput 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileSelect}
+            />
+          </InputContainer>
+          
+          {selectedFile && (
+            <FilePreviewContainer>
+              <FilePreview>
+                {selectedFile.type.startsWith('image/') ? (
+                  <FilePreviewImage 
+                    src={URL.createObjectURL(selectedFile)} 
+                    alt="Selected file"
+                  />
+                ) : (
+                  <FaFile size={30} style={{ marginRight: '10px' }} />
+                )}
+                <FileInfo>
+                  <FileName>{selectedFile.name}</FileName>
+                  <FileSize>{formatFileSize(selectedFile.size)}</FileSize>
+                </FileInfo>
+              </FilePreview>
+              <CloseButton onClick={handleClearFile}>
+                <FaTimes />
+              </CloseButton>
+            </FilePreviewContainer>
+          )}
+        </>
       )}
     </>
   );

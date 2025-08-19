@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { formatMessageTime, getContactById, currentUser } from '../../data/mockData';
-import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar } from 'react-icons/fa';
+import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar, FaMicrophone } from 'react-icons/fa';
 import MessageContextMenu from './MessageContextMenu';
+import AudioPlayer from './AudioPlayer';
 
 const MessageContainer = styled.div`
   display: flex;
@@ -128,6 +129,20 @@ const MessageImage = styled.img`
   cursor: pointer;
 `;
 
+const AudioContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+`;
+
+const AudioIcon = styled.div`
+  margin-right: 8px;
+  color: var(--icon-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Message = ({ message, isSentByMe, onReply }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
@@ -203,9 +218,21 @@ const Message = ({ message, isSentByMe, onReply }) => {
         {message.image && (
           <MessageImage src={message.image} alt="Shared image" />
         )}
-        <MessageText>
-          {message.text}
-        </MessageText>
+        
+        {message.audio && (
+          <AudioContainer>
+            <AudioIcon>
+              <FaMicrophone />
+            </AudioIcon>
+            <AudioPlayer audioUrl={message.audio} />
+          </AudioContainer>
+        )}
+        
+        {message.text && (
+          <MessageText>
+            {message.text}
+          </MessageText>
+        )}
         <MessageMeta>
           <MessageTime>{formatMessageTime(message.timestamp)}</MessageTime>
           {message.isStarred && <StarredIcon title="Starred message" />}
