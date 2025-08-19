@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import SidebarHeader from './SidebarHeader';
 import SearchBar from './SearchBar';
 import ChatList from './ChatList';
+import Status from '../Status/Status';
 import { contacts } from '../../data/mockData';
 
 const SidebarContainer = styled.div`
@@ -24,6 +25,7 @@ const SidebarContainer = styled.div`
 
 const Sidebar = ({ setSelectedContact, selectedContact, isChatOpen, setIsChatOpen }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showStatus, setShowStatus] = useState(false);
   
   const filteredContacts = contacts.filter(contact => 
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -33,19 +35,32 @@ const Sidebar = ({ setSelectedContact, selectedContact, isChatOpen, setIsChatOpe
     setSelectedContact(contact);
     setIsChatOpen(true);
   };
+  
+  const handleStatusClick = () => {
+    setShowStatus(true);
+  };
+  
+  const handleStatusClose = () => {
+    setShowStatus(false);
+  };
 
   return (
     <SidebarContainer isChatOpen={isChatOpen}>
-      <SidebarHeader />
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <ChatList 
-        contacts={filteredContacts} 
-        onContactSelect={handleContactSelect}
-        selectedContactId={selectedContact?.id}
-      />
+      {showStatus ? (
+        <Status onClose={handleStatusClose} />
+      ) : (
+        <>
+          <SidebarHeader onStatusClick={handleStatusClick} />
+          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <ChatList 
+            contacts={filteredContacts} 
+            onContactSelect={handleContactSelect}
+            selectedContactId={selectedContact?.id}
+          />
+        </>
+      )}
     </SidebarContainer>
   );
 };
 
 export default Sidebar;
-

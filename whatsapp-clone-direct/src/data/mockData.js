@@ -369,3 +369,94 @@ export const formatChatListDate = (timestamp) => {
   }
 };
 
+// Status/Stories data
+export const stories = [
+  {
+    id: 1,
+    userId: 1, // Current user
+    content: [
+      {
+        id: 1,
+        type: 'image',
+        url: 'https://source.unsplash.com/random/800x1200?nature',
+        caption: 'Beautiful day!',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
+        viewers: [2, 5, 10]
+      }
+    ]
+  },
+  {
+    id: 2,
+    userId: 2, // Sarah Johnson
+    content: [
+      {
+        id: 1,
+        type: 'image',
+        url: 'https://source.unsplash.com/random/800x1200?beach',
+        caption: 'Beach day!',
+        timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(), // 2 hours ago
+        viewers: [1, 3, 5]
+      },
+      {
+        id: 2,
+        type: 'text',
+        text: 'Having a great time!',
+        backgroundColor: '#25D366',
+        fontColor: '#FFFFFF',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(), // 1 hour ago
+        viewers: [1, 3]
+      }
+    ]
+  },
+  {
+    id: 3,
+    userId: 5, // David Wilson
+    content: [
+      {
+        id: 1,
+        type: 'image',
+        url: 'https://source.unsplash.com/random/800x1200?city',
+        caption: 'City views',
+        timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(), // 3 hours ago
+        viewers: [1, 2]
+      }
+    ]
+  },
+  {
+    id: 4,
+    userId: 10, // Daniel Thompson
+    content: [
+      {
+        id: 1,
+        type: 'text',
+        text: 'Just finished a 10K run! 🏃‍♂️',
+        backgroundColor: '#075E54',
+        fontColor: '#FFFFFF',
+        timestamp: new Date(Date.now() - 1000 * 60 * 240).toISOString(), // 4 hours ago
+        viewers: [1]
+      }
+    ]
+  }
+];
+
+// Function to get stories by user ID
+export const getStoriesByUserId = (userId) => {
+  return stories.find(story => story.userId === userId);
+};
+
+// Function to get all contacts with stories
+export const getContactsWithStories = () => {
+  const storyUserIds = stories.map(story => story.userId);
+  return contacts.filter(contact => storyUserIds.includes(contact.id));
+};
+
+// Function to check if a user has viewed a story
+export const hasViewedStory = (storyId, contentId, userId) => {
+  const story = stories.find(s => s.id === storyId);
+  if (!story) return false;
+  
+  const content = story.content.find(c => c.id === contentId);
+  if (!content) return false;
+  
+  return content.viewers.includes(userId);
+};

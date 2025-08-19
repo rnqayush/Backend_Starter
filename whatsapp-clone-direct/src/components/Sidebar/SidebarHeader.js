@@ -4,6 +4,7 @@ import { FaEllipsisV, FaCommentAlt, FaCircleNotch, FaMoon, FaSun } from 'react-i
 import { currentUser } from '../../data/mockData';
 import ProfileModal from '../Modals/ProfileModal';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useStory } from '../../contexts/StoryContext';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -44,6 +45,21 @@ const IconWrapper = styled.div`
   }
 `;
 
+const StatusIconWrapper = styled(IconWrapper)`
+  position: relative;
+`;
+
+const StatusDot = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: ${props => props.hasUnviewedStories ? 'block' : 'none'};
+`;
+
 const DropdownMenu = styled.div`
   position: absolute;
   top: 100%;
@@ -71,10 +87,11 @@ const MenuItem = styled.div`
   }
 `;
 
-const SidebarHeader = () => {
+const SidebarHeader = ({ onStatusClick }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const { darkMode, toggleTheme } = useTheme();
+  const { hasUnviewedStories } = useStory();
 
   const handleMenuClick = () => {
     setShowDropdown(!showDropdown);
@@ -97,9 +114,10 @@ const SidebarHeader = () => {
       </UserInfo>
       
       <IconsContainer>
-        <IconWrapper title="Status">
+        <StatusIconWrapper title="Status" onClick={onStatusClick}>
           <FaCircleNotch />
-        </IconWrapper>
+          <StatusDot hasUnviewedStories={hasUnviewedStories(2) || hasUnviewedStories(5) || hasUnviewedStories(10)} />
+        </StatusIconWrapper>
         <IconWrapper title="New chat">
           <FaCommentAlt />
         </IconWrapper>
@@ -128,4 +146,3 @@ const SidebarHeader = () => {
 };
 
 export default SidebarHeader;
-
