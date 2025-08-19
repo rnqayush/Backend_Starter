@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useNewsContext } from '../context/NewsContext';
 import { formatDateTime, getDefaultImage } from '../utils/helpers';
-import { getArticleStatus } from '../utils/statusUtils';
+import { getMemoizedArticleStatus } from '../utils/statusUtils';
 import LoadingSpinner from '../components/LoadingSpinner';
 import StatusIndicator from '../components/StatusIndicator';
 
@@ -206,8 +206,8 @@ const ArticlePage = () => {
   // Determine category from source or default to general
   const category = article.category || 'general';
   
-  // Get article status using our utility function
-  const articleStatus = getArticleStatus(article);
+  // Get article status using our memoized utility function
+  const articleStatus = getMemoizedArticleStatus(article);
   
   return (
     <ArticleContainer>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { timeAgo, truncateText, getDefaultImage } from '../utils/helpers';
-import { getArticleStatus } from '../utils/statusUtils';
+import { getMemoizedArticleStatus } from '../utils/statusUtils';
 import { useNewsContext } from '../context/NewsContext';
 import StatusIndicator from './StatusIndicator';
 
@@ -139,8 +139,8 @@ const NewsCard = ({ article, featured = false }) => {
   // Determine category from source or default to general
   const category = article.category || 'general';
   
-  // Get article status
-  const articleStatus = getArticleStatus(article);
+  // Get article status using memoized function
+  const articleStatus = getMemoizedArticleStatus(article);
   
   // Handle click on article
   const handleArticleClick = () => {

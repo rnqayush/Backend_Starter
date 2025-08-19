@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { timeAgo, truncateText, getDefaultImage } from '../utils/helpers';
-import { getArticleStatus } from '../utils/statusUtils';
+import { getMemoizedArticleStatus } from '../utils/statusUtils';
 import { useNewsContext } from '../context/NewsContext';
 import StatusIndicator from './StatusIndicator';
 
@@ -168,9 +168,10 @@ const FeaturedNews = ({ articles }) => {
           >
             {mainArticle.title}
           </Link>
-          {getArticleStatus(mainArticle) && (
-            <StatusIndicator status={getArticleStatus(mainArticle)} />
-          )}
+          {(() => {
+            const status = getMemoizedArticleStatus(mainArticle);
+            return status && <StatusIndicator status={status} />;
+          })()}
         </ArticleTitle>
         <ArticleMeta>
           <ArticleSource>{mainArticle.source?.name || 'Unknown Source'}</ArticleSource>
@@ -201,9 +202,10 @@ const FeaturedNews = ({ articles }) => {
               >
                 {article.title}
               </Link>
-              {getArticleStatus(article) && (
-                <StatusIndicator status={getArticleStatus(article)} />
-              )}
+              {(() => {
+                const status = getMemoizedArticleStatus(article);
+                return status && <StatusIndicator status={status} />;
+              })()}
             </ArticleTitle>
             <ArticleMeta>
               <ArticleSource>{article.source?.name || 'Unknown Source'}</ArticleSource>
