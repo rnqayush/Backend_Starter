@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { stories as initialStories, currentUser, getContactById } from '../data/mockData';
+import { stories as initialStoriesRaw, currentUser, getContactById } from '../data/mockData';
 
 // Create the story context
 const StoryContext = createContext();
@@ -9,6 +9,23 @@ export const useStory = () => useContext(StoryContext);
 
 // Story provider component
 export const StoryProvider = ({ children }) => {
+  // Transform the initial stories to match our structure
+  const initialStories = initialStoriesRaw.map(story => {
+    return {
+      ...story,
+      content: story.content.map(item => {
+        return {
+          ...item,
+          content: item.url || item.text,
+          type: item.type,
+          backgroundColor: item.backgroundColor,
+          textColor: item.fontColor,
+          fontFamily: 'Arial, sans-serif'
+        };
+      })
+    };
+  });
+  
   const [stories, setStories] = useState(initialStories);
   const [activeStory, setActiveStory] = useState(null);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
@@ -161,4 +178,3 @@ export const StoryProvider = ({ children }) => {
 };
 
 export default StoryContext;
-

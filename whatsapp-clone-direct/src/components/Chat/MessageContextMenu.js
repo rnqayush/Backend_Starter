@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { 
   FaReply, 
@@ -6,8 +6,11 @@ import {
   FaStar, 
   FaTrash, 
   FaCopy, 
-  FaInfo 
+  FaInfo,
+  FaRegStar
 } from 'react-icons/fa';
+import { useChat } from '../../contexts/ChatContext';
+import { contacts } from '../../data/mockData';
 
 const ContextMenuContainer = styled.div`
   position: absolute;
@@ -46,12 +49,50 @@ const Divider = styled.div`
   margin: 4px 0;
 `;
 
-const MessageContextMenu = ({ position, onClose, message, isSentByMe }) => {
+const ForwardMenu = styled.div`
+  position: absolute;
+  background-color: var(--context-menu-background);
+  border-radius: 3px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  padding: 6px 0;
+  z-index: 1000;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  left: ${props => props.position.x + 180}px;
+  top: ${props => props.position.y}px;
+`;
+
+const ContactItem = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--context-menu-text);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    background-color: var(--context-menu-hover);
+  }
+  
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+`;
+
+const MessageContextMenu = ({ position, onClose, message, isSentByMe, onReply }) => {
   const menuRef = useRef(null);
+  const forwardMenuRef = useRef(null);
+  const [showForwardMenu, setShowForwardMenu] = useState(false);
+  const { toggleStarMessage, forwardMessage, deleteMessage } = useChat();
   
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target) &&
+          (!forwardMenuRef.current || !forwardMenuRef.current.contains(event.target))) {
         onClose();
       }
     };
@@ -63,26 +104,28 @@ const MessageContextMenu = ({ position, onClose, message, isSentByMe }) => {
   }, [onClose]);
 
   const handleReply = () => {
-    // Implement reply functionality
-    console.log('Reply to message:', message);
+    if (onReply) {
+      onReply(message);
+    }
     onClose();
   };
 
   const handleForward = () => {
-    // Implement forward functionality
-    console.log('Forward message:', message);
+    setShowForwardMenu(true);
+  };
+
+  const handleForwardToContact = (contactId) => {
+    forwardMessage(message, contactId);
     onClose();
   };
 
   const handleStar = () => {
-    // Implement star functionality
-    console.log('Star message:', message);
+    toggleStarMessage(message.chatId, message.id, !message.isStarred);
     onClose();
   };
 
   const handleDelete = () => {
-    // Implement delete functionality
-    console.log('Delete message:', message);
+    deleteMessage(message.chatId, message.id);
     onClose();
   };
 
@@ -98,40 +141,55 @@ const MessageContextMenu = ({ position, onClose, message, isSentByMe }) => {
   };
 
   return (
-    <ContextMenuContainer ref={menuRef} position={position}>
-      <MenuItem onClick={handleReply}>
-        <FaReply />
-        Reply
-      </MenuItem>
-      <MenuItem onClick={handleForward}>
-        <FaForward />
-        Forward
-      </MenuItem>
-      <MenuItem onClick={handleStar}>
-        <FaStar />
-        Star
-      </MenuItem>
-      {isSentByMe && (
-        <>
-          <Divider />
-          <MenuItem onClick={handleDelete}>
-            <FaTrash />
-            Delete
-          </MenuItem>
-        </>
+    <>
+      <ContextMenuContainer ref={menuRef} position={position}>
+        <MenuItem onClick={handleReply}>
+          <FaReply />
+          Reply
+        </MenuItem>
+        <MenuItem onClick={handleForward}>
+          <FaForward />
+          Forward
+        </MenuItem>
+        <MenuItem onClick={handleStar}>
+          {message.isStarred ? <FaRegStar /> : <FaStar />}
+          {message.isStarred ? 'Unstar' : 'Star'}
+        </MenuItem>
+        {isSentByMe && (
+          <>
+            <Divider />
+            <MenuItem onClick={handleDelete}>
+              <FaTrash />
+              Delete
+            </MenuItem>
+          </>
+        )}
+        <Divider />
+        <MenuItem onClick={handleCopy}>
+          <FaCopy />
+          Copy
+        </MenuItem>
+        <MenuItem onClick={handleInfo}>
+          <FaInfo />
+          Info
+        </MenuItem>
+      </ContextMenuContainer>
+      
+      {showForwardMenu && (
+        <ForwardMenu ref={forwardMenuRef} position={position}>
+          {contacts.map(contact => (
+            <ContactItem 
+              key={contact.id} 
+              onClick={() => handleForwardToContact(contact.id)}
+            >
+              <img src={contact.avatar} alt={contact.name} />
+              {contact.name}
+            </ContactItem>
+          ))}
+        </ForwardMenu>
       )}
-      <Divider />
-      <MenuItem onClick={handleCopy}>
-        <FaCopy />
-        Copy
-      </MenuItem>
-      <MenuItem onClick={handleInfo}>
-        <FaInfo />
-        Info
-      </MenuItem>
-    </ContextMenuContainer>
+    </>
   );
 };
 
 export default MessageContextMenu;
-

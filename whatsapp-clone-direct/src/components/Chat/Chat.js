@@ -6,6 +6,7 @@ import ChatInput from './ChatInput';
 import { getChatByContactId } from '../../data/mockData';
 import EmptyChat from './EmptyChat';
 import { useChat } from '../../contexts/ChatContext';
+import ReplyPreview from './ReplyPreview';
 
 const ChatContainer = styled.div`
   display: flex;
@@ -24,6 +25,7 @@ const ChatContainer = styled.div`
 const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
   const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null);
   const messagesEndRef = useRef(null);
   const { addMessage, chats } = useChat();
 
@@ -79,6 +81,18 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
       }
     }
     
+    // Add reply information if replying to a message
+    if (replyingTo) {
+      newMessage.replyTo = {
+        id: replyingTo.id,
+        text: replyingTo.text,
+        senderId: replyingTo.senderId
+      };
+      
+      // Clear the reply state
+      setReplyingTo(null);
+    }
+    
     // Add message to the chat context
     addMessage(selectedContact.id, newMessage);
     
@@ -88,6 +102,14 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
       id: messages.length + 1,
       timestamp: new Date().toISOString()
     }]);
+  };
+  
+  const handleReply = (message) => {
+    setReplyingTo(message);
+  };
+  
+  const handleCancelReply = () => {
+    setReplyingTo(null);
   };
 
   if (!selectedContact) {
@@ -104,8 +126,20 @@ const Chat = ({ selectedContact, isChatOpen, setIsChatOpen }) => {
         messages={messages} 
         contact={selectedContact}
         messagesEndRef={messagesEndRef}
+        onReply={handleReply}
       />
-      <ChatInput onSendMessage={handleSendMessage} />
+      {replyingTo && (
+        <ReplyPreview 
+          message={replyingTo} 
+          onCancel={handleCancelReply}
+          currentUserId={1}
+        />
+      )}
+      <ChatInput 
+        onSendMessage={handleSendMessage} 
+        contactId={selectedContact.id}
+        replyingTo={replyingTo}
+      />
     </ChatContainer>
   );
 };

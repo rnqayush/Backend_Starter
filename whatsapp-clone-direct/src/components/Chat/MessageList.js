@@ -27,7 +27,7 @@ const DateBadge = styled.span`
   display: inline-block;
 `;
 
-const MessageList = ({ messages, contact, messagesEndRef }) => {
+const MessageList = ({ messages, contact, messagesEndRef, onReply }) => {
   // Group messages by date
   const groupedMessages = messages.reduce((groups, message) => {
     const date = new Date(message.timestamp).toLocaleDateString();
@@ -71,7 +71,8 @@ const MessageList = ({ messages, contact, messagesEndRef }) => {
             <Message 
               key={message.id} 
               message={message} 
-              isOutgoing={message.senderId === 1}
+              isSentByMe={message.senderId === 1}
+              onReply={() => onReply && onReply(message)}
             />
           ))}
         </React.Fragment>
@@ -82,4 +83,3 @@ const MessageList = ({ messages, contact, messagesEndRef }) => {
 };
 
 export default MessageList;
-

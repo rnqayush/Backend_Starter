@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import StatusList from './StatusList';
 import StoryViewer from './StoryViewer';
-import StoryCreator from './StoryCreator';
+import StatusCreator from './StatusCreator';
 import { useStory } from '../../contexts/StoryContext';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaPlus } from 'react-icons/fa';
 
 const StatusContainer = styled.div`
   display: flex;
@@ -47,8 +47,38 @@ const HeaderTitle = styled.div`
   color: var(--text-primary);
 `;
 
+const CreateButton = styled.div`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+`;
+
 const Status = ({ onClose }) => {
-  const { showStoryViewer, showStoryCreator } = useStory();
+  const { showStoryViewer, showStoryCreator, setShowStoryCreator } = useStory();
+
+  const handleCreateStatus = () => {
+    setShowStoryCreator(true);
+  };
+
+  if (showStoryCreator) {
+    return <StatusCreator onClose={() => setShowStoryCreator(false)} />;
+  }
 
   return (
     <StatusContainer>
@@ -60,8 +90,11 @@ const Status = ({ onClose }) => {
       </StatusHeader>
       <StatusList onClose={onClose} />
       
+      <CreateButton onClick={handleCreateStatus}>
+        <FaPlus />
+      </CreateButton>
+      
       {showStoryViewer && <StoryViewer />}
-      {showStoryCreator && <StoryCreator />}
     </StatusContainer>
   );
 };
