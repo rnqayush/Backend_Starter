@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaPhone, FaVideo, FaPhoneSlash } from 'react-icons/fa';
 
@@ -56,7 +56,7 @@ const CallType = styled.div`
 
 const CallControls = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   padding: 24px;
 `;
 
@@ -77,13 +77,68 @@ const ControlButton = styled.div`
   }
 `;
 
-const IncomingCall = ({ contact, isVideo = false, onAccept, onDecline }) => {
+const RingingDots = styled.div`
+  display: flex;
+  margin-top: 16px;
+`;
+
+const Dot = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+  margin: 0 4px;
+  opacity: ${props => props.active ? 1 : 0.3};
+  transition: opacity 0.3s ease;
+`;
+
+const OutgoingCall = ({ contact, isVideo = false, onCancel, onConnect }) => {
+  const [activeDot, setActiveDot] = useState(0);
+  const [callStatus, setCallStatus] = useState('calling'); // calling, connecting, connected
+  
+  // Simulate ringing animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveDot(prev => (prev + 1) % 3);
+    }, 500);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Simulate call connecting
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      // Randomly decide if call connects or not
+      const connects = Math.random() > 0.3; // 70% chance to connect
+      
+      if (connects) {
+        setCallStatus('connecting');
+        setTimeout(() => {
+          setCallStatus('connected');
+          if (onConnect) onConnect();
+        }, 1500);
+      }
+    }, 3000);
+    
+    return () => clearTimeout(timeout);
+  }, [onConnect]);
+  
   return (
     <CallContainer>
       <CallInfo>
         <Avatar src={contact.avatar} alt={contact.name} />
         <Name>{contact.name}</Name>
-        <Status>Incoming call</Status>
+        <Status>
+          {callStatus === 'calling' ? 'Calling' : 
+           callStatus === 'connecting' ? 'Connecting' : 'Connected'}
+        </Status>
+        {callStatus === 'calling' && (
+          <RingingDots>
+            <Dot active={activeDot === 0} />
+            <Dot active={activeDot === 1} />
+            <Dot active={activeDot === 2} />
+          </RingingDots>
+        )}
         <CallType>
           {isVideo ? <FaVideo /> : <FaPhone />}
           {isVideo ? 'Video Call' : 'Voice Call'}
@@ -91,16 +146,13 @@ const IncomingCall = ({ contact, isVideo = false, onAccept, onDecline }) => {
       </CallInfo>
       
       <CallControls>
-        <ControlButton onClick={onDecline} color="#FF3B30">
+        <ControlButton onClick={onCancel} color="#FF3B30">
           <FaPhoneSlash />
-        </ControlButton>
-        <ControlButton onClick={onAccept} color="#4CD964">
-          {isVideo ? <FaVideo /> : <FaPhone />}
         </ControlButton>
       </CallControls>
     </CallContainer>
   );
 };
 
-export default IncomingCall;
+export default OutgoingCall;
 

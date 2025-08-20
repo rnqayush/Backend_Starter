@@ -1,99 +1,85 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaArrowLeft, FaArchive } from 'react-icons/fa';
-import { useChat } from '../../contexts/ChatContext';
-import { getContactById } from '../../data/mockData';
+import { FaArrowLeft, FaSearch, FaArchive } from 'react-icons/fa';
+import { chats, contacts, formatChatListDate } from '../../data/mockData';
+import ChatListItem from './ChatListItem';
 
 const ArchivedContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 30%;
-  min-width: 300px;
-  max-width: 450px;
-  height: 100%;
-  background-color: var(--sidebar-background);
-  border-right: 1px solid var(--border-color);
-
-  @media (max-width: 768px) {
-    flex: 100%;
-    max-width: 100%;
-  }
+  height: 100vh;
+  background-color: var(--background);
 `;
 
-const ArchivedHeader = styled.div`
+const Header = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  background-color: var(--sidebar-header);
+  background-color: var(--primary-color);
+  color: white;
   height: 60px;
 `;
 
-const BackButton = styled.div`
-  color: var(--icon-color);
-  font-size: 20px;
-  cursor: pointer;
-  margin-right: 20px;
-  
-  &:hover {
-    color: var(--primary-color);
-  }
-`;
-
 const HeaderTitle = styled.div`
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--text-primary);
-  flex: 1;
-`;
-
-const ArchivedList = styled.div`
-  flex: 1;
-  overflow-y: auto;
-`;
-
-const ArchivedItem = styled.div`
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  cursor: pointer;
   
-  &:hover {
-    background-color: var(--hover-background);
+  h1 {
+    font-size: 19px;
+    font-weight: 500;
+    margin-left: 24px;
   }
 `;
 
-const ChatAvatar = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
+const BackButton = styled.div`
+  cursor: pointer;
+  font-size: 18px;
 `;
 
-const ChatInfo = styled.div`
-  flex: 1;
+const HeaderActions = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
 `;
 
-const ChatName = styled.div`
-  font-size: 16px;
-  color: var(--text-primary);
-  margin-bottom: 4px;
+const ActionButton = styled.div`
+  margin-left: 24px;
+  cursor: pointer;
 `;
 
-const LastMessage = styled.div`
-  font-size: 13px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
+const SearchContainer = styled.div`
+  padding: 8px 12px;
+  background-color: var(--background);
 `;
 
-const ChatTime = styled.div`
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-left: 10px;
+const SearchInput = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: var(--search-input-background);
+  border-radius: 8px;
+  padding: 8px 12px;
+  
+  svg {
+    color: var(--text-secondary);
+    margin-right: 12px;
+  }
+  
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+`;
+
+const ChatsList = styled.div`
+  flex: 1;
+  overflow-y: auto;
 `;
 
 const EmptyState = styled.div`
@@ -102,112 +88,123 @@ const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 20px;
+  padding: 32px;
   text-align: center;
+  color: var(--text-secondary);
 `;
 
 const EmptyStateIcon = styled.div`
-  font-size: 50px;
+  font-size: 80px;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  opacity: 0.5;
+  margin-bottom: 16px;
 `;
 
 const EmptyStateTitle = styled.div`
   font-size: 20px;
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `;
 
 const EmptyStateText = styled.div`
   font-size: 14px;
-  color: var(--text-secondary);
   max-width: 300px;
   line-height: 1.5;
 `;
 
-const ArchivedChats = ({ onClose, onSelectContact }) => {
-  const { archivedChats, unarchiveChat } = useChat();
+const ArchivedChats = ({ onClose, onChatSelect }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   
-  const formatLastMessageTime = (timestamp) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+  // For demo purposes, let's assume some chats are archived
+  // In a real app, this would be part of the chat data
+  const archivedChatIds = [2, 4]; // IDs of archived chats
+  
+  const archivedChats = chats.filter(chat => archivedChatIds.includes(chat.id));
+  
+  const filteredChats = archivedChats.filter(chat => {
+    const contact = contacts.find(c => c.id === chat.contactId);
+    if (!contact) return false;
     
-    if (diffDays === 0) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else if (diffDays === 1) {
-      return 'Yesterday';
-    } else if (diffDays < 7) {
-      return date.toLocaleDateString([], { weekday: 'short' });
-    } else {
-      return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-    }
+    const lastMessage = chat.messages[chat.messages.length - 1];
+    const matchesName = contact.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesMessage = lastMessage && lastMessage.text && 
+      lastMessage.text.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesName || matchesMessage;
+  });
+  
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
   
-  const getLastMessage = (chat) => {
-    if (!chat.messages || chat.messages.length === 0) {
-      return { text: 'No messages yet', timestamp: new Date().toISOString() };
+  const handleChatClick = (chatId) => {
+    if (onChatSelect) {
+      onChatSelect(chatId);
     }
-    return chat.messages[chat.messages.length - 1];
-  };
-  
-  const handleUnarchive = (chatId, event) => {
-    event.stopPropagation();
-    unarchiveChat(chatId);
-  };
-  
-  const handleSelectChat = (chat) => {
-    const contact = getContactById(chat.contactId);
-    if (contact && onSelectContact) {
-      onSelectContact(contact);
-      onClose();
-    }
+    onClose();
   };
   
   return (
     <ArchivedContainer>
-      <ArchivedHeader>
-        <BackButton onClick={onClose}>
-          <FaArrowLeft />
-        </BackButton>
-        <HeaderTitle>Archived</HeaderTitle>
-      </ArchivedHeader>
+      <Header>
+        <HeaderTitle>
+          <BackButton onClick={onClose}>
+            <FaArrowLeft />
+          </BackButton>
+          <h1>Archived</h1>
+        </HeaderTitle>
+        <HeaderActions>
+          <ActionButton>
+            <FaSearch />
+          </ActionButton>
+        </HeaderActions>
+      </Header>
       
-      <ArchivedList>
-        {archivedChats.length > 0 ? (
-          archivedChats.map(chat => {
-            const contact = getContactById(chat.contactId);
-            const lastMessage = getLastMessage(chat);
+      <SearchContainer>
+        <SearchInput>
+          <FaSearch />
+          <input 
+            placeholder="Search archived chats"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </SearchInput>
+      </SearchContainer>
+      
+      {filteredChats.length > 0 ? (
+        <ChatsList>
+          {filteredChats.map(chat => {
+            const contact = contacts.find(c => c.id === chat.contactId);
+            const lastMessage = chat.messages[chat.messages.length - 1];
             
             return (
-              <ArchivedItem 
+              <ChatListItem 
                 key={chat.id}
-                onClick={() => handleSelectChat(chat)}
-              >
-                <ChatAvatar src={contact.avatar} alt={contact.name} />
-                <ChatInfo>
-                  <ChatName>{contact.name}</ChatName>
-                  <LastMessage>
-                    {lastMessage.text}
-                  </LastMessage>
-                </ChatInfo>
-                <ChatTime>{formatLastMessageTime(lastMessage.timestamp)}</ChatTime>
-              </ArchivedItem>
+                avatar={contact.avatar}
+                name={contact.name}
+                message={lastMessage.text}
+                time={formatChatListDate(lastMessage.timestamp)}
+                unreadCount={chat.unreadCount}
+                isGroup={contact.isGroup}
+                onClick={() => handleChatClick(chat.id)}
+              />
             );
-          })
-        ) : (
-          <EmptyState>
-            <EmptyStateIcon>
-              <FaArchive />
-            </EmptyStateIcon>
-            <EmptyStateTitle>No archived chats</EmptyStateTitle>
-            <EmptyStateText>
-              Archive chats to keep your chat list organized. Archived chats will appear here.
-            </EmptyStateText>
-          </EmptyState>
-        )}
-      </ArchivedList>
+          })}
+        </ChatsList>
+      ) : (
+        <EmptyState>
+          <EmptyStateIcon>
+            <FaArchive />
+          </EmptyStateIcon>
+          <EmptyStateTitle>No archived chats</EmptyStateTitle>
+          <EmptyStateText>
+            {searchQuery 
+              ? `No archived chats found for "${searchQuery}"`
+              : "When you archive a chat, it will appear here."}
+          </EmptyStateText>
+        </EmptyState>
+      )}
     </ArchivedContainer>
   );
 };
