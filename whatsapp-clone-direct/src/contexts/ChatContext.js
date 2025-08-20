@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { chats as initialChats, getChatByContactId } from '../data/mockData';
+import { chats as initialChats, getChatByContactId, currentUser } from '../data/mockData';
 
 // Create the chat context
 const ChatContext = createContext();

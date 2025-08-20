@@ -10,7 +10,8 @@ import {
   FaCheck,
   FaTimes,
   FaInfoCircle,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaSearch
 } from 'react-icons/fa';
 import { useChat } from '../../contexts/ChatContext';
 import { contacts, currentUser } from '../../data/mockData';
@@ -683,4 +684,3 @@ const GroupSettings = ({ group, onClose }) => {
 };
 
 export default GroupSettings;
-
