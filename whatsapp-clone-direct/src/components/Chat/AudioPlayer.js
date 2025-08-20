@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaPause } from 'react-icons/fa';
+import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
+import { formatAudioTime, generateWaveformData } from '../../utils/audioRecorder';
 
 const PlayerContainer = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const ProgressContainer = styled.div`
   border-radius: 2px;
   position: relative;
   cursor: pointer;
+  margin: 0 4px;
 `;
 
 const ProgressBar = styled.div`
@@ -70,15 +72,88 @@ const TimeDisplay = styled.div`
   text-align: right;
 `;
 
-const AudioPlayer = ({ audioUrl }) => {
+const WaveformContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 2px;
+  margin: 0 8px;
+`;
+
+const WaveformBar = styled.div`
+  flex: 1;
+  background-color: ${props => 
+    props.progress > props.index 
+      ? 'var(--primary-color)' 
+      : 'var(--audio-player-track)'};
+  height: ${props => props.height * 100}%;
+  border-radius: 1px;
+`;
+
+const SpeedButton = styled.div`
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background-color: ${props => props.isActive ? 'var(--primary-color)' : 'transparent'};
+  color: ${props => props.isActive ? 'white' : 'var(--text-secondary)'};
+  cursor: pointer;
+  margin-left: 8px;
+  
+  &:hover {
+    background-color: ${props => props.isActive ? 'var(--primary-color)' : 'var(--hover-background)'};
+  }
+`;
+
+const SpeedControls = styled.div`
+  display: flex;
+  position: absolute;
+  bottom: -24px;
+  left: 0;
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+  opacity: ${props => props.isVisible ? 1 : 0};
+  transition: opacity 0.2s ease;
+  pointer-events: ${props => props.isVisible ? 'auto' : 'none'};
+`;
+
+const ControlsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
+const AudioPlayer = ({ audioUrl, isVoiceMessage = true, showWaveform = true }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [waveformData, setWaveformData] = useState(Array(20).fill(0.3));
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [showSpeedControls, setShowSpeedControls] = useState(false);
   
   const audioRef = useRef(null);
   const progressRef = useRef(null);
+  
+  // Generate waveform data when component mounts
+  useEffect(() => {
+    if (isVoiceMessage && showWaveform) {
+      const fetchAudioAndGenerateWaveform = async () => {
+        try {
+          const response = await fetch(audioUrl);
+          const blob = await response.blob();
+          const waveform = await generateWaveformData(blob);
+          setWaveformData(waveform);
+        } catch (error) {
+          console.error('Error generating waveform:', error);
+        }
+      };
+      
+      fetchAudioAndGenerateWaveform();
+    }
+  }, [audioUrl, isVoiceMessage, showWaveform]);
   
   useEffect(() => {
     const audio = audioRef.current;
@@ -112,6 +187,13 @@ const AudioPlayer = ({ audioUrl }) => {
     };
   }, [isDragging]);
   
+  // Update playback speed when it changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackSpeed;
+    }
+  }, [playbackSpeed]);
+  
   const togglePlay = () => {
     const audio = audioRef.current;
     
@@ -137,11 +219,26 @@ const AudioPlayer = ({ audioUrl }) => {
     setProgress(percentage);
   };
   
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  const handleSpeedChange = (speed) => {
+    setPlaybackSpeed(speed);
   };
+  
+  const toggleSpeedControls = () => {
+    setShowSpeedControls(!showSpeedControls);
+  };
+  
+  const skipForward = () => {
+    const audio = audioRef.current;
+    audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+  };
+  
+  const skipBackward = () => {
+    const audio = audioRef.current;
+    audio.currentTime = Math.max(0, audio.currentTime - 5);
+  };
+  
+  // Calculate which waveform bars should be highlighted based on progress
+  const progressIndex = Math.floor((progress / 100) * waveformData.length);
   
   return (
     <PlayerContainer>
@@ -151,20 +248,62 @@ const AudioPlayer = ({ audioUrl }) => {
         {isPlaying ? <FaPause /> : <FaPlay />}
       </PlayButton>
       
-      <ProgressContainer 
-        ref={progressRef}
-        onClick={handleProgressClick}
-      >
-        <ProgressBar progress={progress} />
-        <ProgressThumb 
-          progress={progress} 
-          dragging={isDragging}
-        />
-      </ProgressContainer>
+      {isVoiceMessage && showWaveform ? (
+        <WaveformContainer>
+          {waveformData.map((height, index) => (
+            <WaveformBar 
+              key={index} 
+              height={height}
+              index={index}
+              progress={progressIndex}
+            />
+          ))}
+        </WaveformContainer>
+      ) : (
+        <ProgressContainer 
+          ref={progressRef}
+          onClick={handleProgressClick}
+        >
+          <ProgressBar progress={progress} />
+          <ProgressThumb 
+            progress={progress} 
+            dragging={isDragging}
+          />
+        </ProgressContainer>
+      )}
       
-      <TimeDisplay>
-        {formatTime(currentTime)}
-      </TimeDisplay>
+      <ControlsContainer>
+        <TimeDisplay onClick={toggleSpeedControls}>
+          {formatAudioTime(currentTime)}
+        </TimeDisplay>
+        
+        <SpeedControls isVisible={showSpeedControls}>
+          <SpeedButton 
+            isActive={playbackSpeed === 0.5} 
+            onClick={() => handleSpeedChange(0.5)}
+          >
+            0.5x
+          </SpeedButton>
+          <SpeedButton 
+            isActive={playbackSpeed === 1} 
+            onClick={() => handleSpeedChange(1)}
+          >
+            1x
+          </SpeedButton>
+          <SpeedButton 
+            isActive={playbackSpeed === 1.5} 
+            onClick={() => handleSpeedChange(1.5)}
+          >
+            1.5x
+          </SpeedButton>
+          <SpeedButton 
+            isActive={playbackSpeed === 2} 
+            onClick={() => handleSpeedChange(2)}
+          >
+            2x
+          </SpeedButton>
+        </SpeedControls>
+      </ControlsContainer>
     </PlayerContainer>
   );
 };

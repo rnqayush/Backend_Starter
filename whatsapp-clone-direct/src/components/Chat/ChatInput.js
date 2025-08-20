@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa';
 import EmojiPicker from 'emoji-picker-react';
 import { useChat } from '../../contexts/ChatContext';
-import AudioRecorder from './AudioRecorder';
+import VoiceRecorder from './VoiceRecorder';
 
 const InputContainer = styled.div`
   display: flex;
@@ -286,8 +286,8 @@ const ChatInput = ({ onSendMessage, contactId }) => {
   return (
     <>
       {isRecording ? (
-        <AudioRecorder 
-          onSendAudio={handleSendAudio}
+        <VoiceRecorder 
+          onSend={handleSendAudio}
           onCancel={handleCancelRecording}
         />
       ) : (
