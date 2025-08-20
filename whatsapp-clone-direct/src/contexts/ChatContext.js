@@ -424,6 +424,89 @@ export const ChatProvider = ({ children }) => {
     return false;
   };
 
+  // Poll functions
+  const addPoll = (chatId, poll) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat) {
+      // Initialize polls array if it doesn't exist
+      const polls = chat.polls || [];
+      
+      // Create new poll with ID
+      const newPoll = {
+        ...poll,
+        id: polls.length + 1,
+        totalVotes: 0
+      };
+      
+      // Add poll to chat
+      updateChat(chatId, { polls: [...polls, newPoll] });
+      
+      // Add system message about poll
+      const message = {
+        id: chat.messages.length + 1,
+        senderId: currentUser.id,
+        type: 'poll',
+        pollId: newPoll.id,
+        text: `Poll: ${poll.question}`,
+        timestamp: new Date().toISOString(),
+        status: 'sent'
+      };
+      
+      addMessage(chat.contactId, message);
+      
+      return newPoll;
+    }
+    
+    return null;
+  };
+  
+  const votePoll = (chatId, pollId, optionIds) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat && chat.polls) {
+      const updatedPolls = chat.polls.map(poll => {
+        if (poll.id === pollId) {
+          // Update options with new votes
+          const updatedOptions = poll.options.map(option => {
+            if (optionIds.includes(option.id)) {
+              return {
+                ...option,
+                votes: option.votes + 1,
+                voters: [...option.voters, currentUser.id]
+              };
+            }
+            return option;
+          });
+          
+          return {
+            ...poll,
+            options: updatedOptions,
+            totalVotes: (poll.totalVotes || 0) + optionIds.length
+          };
+        }
+        return poll;
+      });
+      
+      updateChat(chatId, { polls: updatedPolls });
+      return true;
+    }
+    
+    return false;
+  };
+  
+  const deletePoll = (chatId, pollId) => {
+    const chat = chats.find(c => c.id === chatId);
+    
+    if (chat && chat.polls) {
+      const updatedPolls = chat.polls.filter(poll => poll.id !== pollId);
+      updateChat(chatId, { polls: updatedPolls });
+      return true;
+    }
+    
+    return false;
+  };
+
   // Context value
   const value = {
     chats,
@@ -447,7 +530,11 @@ export const ChatProvider = ({ children }) => {
     deleteGroup,
     addGroupMember,
     removeGroupMember,
-    updateGroupInfo
+    updateGroupInfo,
+    // Poll functions
+    addPoll,
+    votePoll,
+    deletePoll
   };
 
   return (

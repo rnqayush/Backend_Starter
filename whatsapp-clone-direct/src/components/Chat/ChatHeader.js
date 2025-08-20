@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaArrowLeft, FaEllipsisV, FaSearch, FaInfoCircle, FaVideo, FaPhone } from 'react-icons/fa';
+import { 
+  FaArrowLeft, 
+  FaEllipsisV, 
+  FaSearch, 
+  FaInfoCircle, 
+  FaVideo, 
+  FaPhone, 
+  FaPoll, 
+  FaCog,
+  FaImage
+} from 'react-icons/fa';
 import { useChat } from '../../contexts/ChatContext';
 import TypingIndicator from './TypingIndicator';
 import MessageSearch from './MessageSearch';
 import GroupInfo from './GroupInfo';
+import GroupSettings from './GroupSettings';
+import GroupPoll from './GroupPoll';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -105,6 +117,10 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showGroupInfo, setShowGroupInfo] = useState(false);
+  const [showGroupSettings, setShowGroupSettings] = useState(false);
+  const [showGroupPoll, setShowGroupPoll] = useState(false);
+  const [pollMode, setPollMode] = useState('create');
+  const [selectedPollId, setSelectedPollId] = useState(null);
   
   const isTyping = typingStatus[contact.id];
   
@@ -126,6 +142,18 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
     setShowDropdown(false);
   };
   
+  const handleGroupSettingsClick = () => {
+    setShowGroupSettings(true);
+    setShowDropdown(false);
+  };
+  
+  const handleCreatePollClick = () => {
+    setShowGroupPoll(true);
+    setPollMode('create');
+    setSelectedPollId(null);
+    setShowDropdown(false);
+  };
+  
   const handleVideoCallClick = () => {
     // In a real app, this would initiate a video call
     console.log('Video call with', contact.name);
@@ -135,6 +163,12 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   const handleVoiceCallClick = () => {
     // In a real app, this would initiate a voice call
     console.log('Voice call with', contact.name);
+    setShowDropdown(false);
+  };
+  
+  const handleChangeWallpaperClick = () => {
+    // In a real app, this would open wallpaper settings
+    console.log('Change wallpaper');
     setShowDropdown(false);
   };
 
@@ -171,10 +205,20 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
             <FaEllipsisV />
             <DropdownMenu isOpen={showDropdown}>
               {contact.isGroup && (
-                <MenuItem onClick={handleGroupInfoClick}>
-                  <FaInfoCircle />
-                  Group info
-                </MenuItem>
+                <>
+                  <MenuItem onClick={handleGroupInfoClick}>
+                    <FaInfoCircle />
+                    Group info
+                  </MenuItem>
+                  <MenuItem onClick={handleGroupSettingsClick}>
+                    <FaCog />
+                    Group settings
+                  </MenuItem>
+                  <MenuItem onClick={handleCreatePollClick}>
+                    <FaPoll />
+                    Create poll
+                  </MenuItem>
+                </>
               )}
               <MenuItem onClick={handleVideoCallClick}>
                 <FaVideo />
@@ -183,6 +227,10 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
               <MenuItem onClick={handleVoiceCallClick}>
                 <FaPhone />
                 Voice call
+              </MenuItem>
+              <MenuItem onClick={handleChangeWallpaperClick}>
+                <FaImage />
+                Change wallpaper
               </MenuItem>
             </DropdownMenu>
           </IconWrapper>
@@ -194,6 +242,22 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
         <GroupInfo 
           group={contact} 
           onClose={() => setShowGroupInfo(false)} 
+        />
+      )}
+      
+      {showGroupSettings && contact.isGroup && (
+        <GroupSettings 
+          group={contact} 
+          onClose={() => setShowGroupSettings(false)} 
+        />
+      )}
+      
+      {showGroupPoll && contact.isGroup && (
+        <GroupPoll 
+          chatId={contact.id}
+          pollId={selectedPollId}
+          mode={pollMode}
+          onClose={() => setShowGroupPoll(false)} 
         />
       )}
     </>

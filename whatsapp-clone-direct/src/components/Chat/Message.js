@@ -6,6 +6,7 @@ import MessageContextMenu from './MessageContextMenu';
 import AudioPlayer from './AudioPlayer';
 import MessageReactions from './MessageReactions';
 import ReactionsPopup from './ReactionsPopup';
+import PollMessage from './PollMessage';
 import { formatMessageText, renderFormattedText } from '../../utils/messageFormatter';
 
 const MessageContainer = styled.div`
@@ -319,6 +320,15 @@ const Message = ({ message, isSentByMe, onReply }) => {
             </AudioIcon>
             <AudioPlayer audioUrl={message.audio} />
           </AudioContainer>
+        )}
+        
+        {message.type === 'poll' && (
+          <PollMessage 
+            poll={message.poll} 
+            pollId={message.pollId}
+            chatId={message.chatId || 1}
+            isSentByMe={isSentByMe}
+          />
         )}
         
         {message.text && (
