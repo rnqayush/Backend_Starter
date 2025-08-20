@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { formatMessageTime, getContactById, currentUser } from '../../data/mockData';
-import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar, FaMicrophone, FaSmile } from 'react-icons/fa';
+import { FaCheck, FaCheckDouble, FaClock, FaReply, FaStar, FaMicrophone, FaSmile, FaLock } from 'react-icons/fa';
 import MessageContextMenu from './MessageContextMenu';
 import AudioPlayer from './AudioPlayer';
-import { ReactionsPopup, MessageReactions } from './MessageReactions';
+import MessageReactions from './MessageReactions';
+import ReactionsPopup from './ReactionsPopup';
+import { formatMessageText, renderFormattedText } from '../../utils/messageFormatter';
 
 const MessageContainer = styled.div`
   display: flex;
@@ -101,6 +103,39 @@ const MessageText = styled.div`
   line-height: 1.4;
   white-space: pre-wrap;
   word-wrap: break-word;
+  
+  strong {
+    font-weight: bold;
+  }
+  
+  em {
+    font-style: italic;
+  }
+  
+  del {
+    text-decoration: line-through;
+  }
+  
+  code {
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+`;
+
+const EncryptionIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  
+  svg {
+    margin-right: 4px;
+    font-size: 10px;
+  }
 `;
 
 const MessageMeta = styled.div`
@@ -144,9 +179,49 @@ const AudioIcon = styled.div`
   justify-content: center;
 `;
 
+const MessageActions = styled.div`
+  position: absolute;
+  top: -30px;
+  right: ${props => props.isSentByMe ? '0' : 'auto'};
+  left: ${props => props.isSentByMe ? 'auto' : '0'};
+  background-color: var(--dropdown-background);
+  border-radius: 15px;
+  display: ${props => props.show ? 'flex' : 'none'};
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  z-index: 5;
+`;
+
+const ActionButton = styled.div`
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-color);
+  cursor: pointer;
+  
+  &:hover {
+    color: var(--primary-color);
+  }
+`;
+
+const EncryptionIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  
+  svg {
+    font-size: 8px;
+    margin-right: 4px;
+  }
+`;
+
 const Message = ({ message, isSentByMe, onReply }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [showReactionsPopup, setShowReactionsPopup] = useState(false);
+  const [showActions, setShowActions] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const messageRef = useRef(null);
 
@@ -160,6 +235,14 @@ const Message = ({ message, isSentByMe, onReply }) => {
     setShowContextMenu(true);
   };
 
+  const handleMouseEnter = () => {
+    setShowActions(true);
+  };
+  
+  const handleMouseLeave = () => {
+    setShowActions(false);
+  };
+  
   const handleClick = () => {
     if (showContextMenu) {
       setShowContextMenu(false);
@@ -210,8 +293,10 @@ const Message = ({ message, isSentByMe, onReply }) => {
       ref={messageRef}
       onContextMenu={handleContextMenu}
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <MessageActions isSentByMe={isSentByMe}>
+      <MessageActions isSentByMe={isSentByMe} show={showActions}>
         <ActionButton onClick={() => onReply(message)} title="Reply">
           <FaReply />
         </ActionButton>
@@ -238,9 +323,14 @@ const Message = ({ message, isSentByMe, onReply }) => {
         
         {message.text && (
           <MessageText>
-            {message.text}
+            {renderFormattedText(formatMessageText(message.text))}
           </MessageText>
         )}
+        
+        <EncryptionIndicator>
+          <FaLock />
+          End-to-end encrypted
+        </EncryptionIndicator>
         <MessageMeta>
           <MessageTime>{formatMessageTime(message.timestamp)}</MessageTime>
           {message.isStarred && <StarredIcon title="Starred message" />}
@@ -258,8 +348,7 @@ const Message = ({ message, isSentByMe, onReply }) => {
         {showReactionsPopup && (
           <ReactionsPopup 
             message={message} 
-            isSentByMe={isSentByMe} 
-            onClose={() => setShowReactionsPopup(false)} 
+            onClose={() => setShowReactionsPopup(false)}
           />
         )}
       </MessageBubble>

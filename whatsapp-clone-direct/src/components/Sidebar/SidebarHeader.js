@@ -95,14 +95,22 @@ const MenuItem = styled.div`
   }
 `;
 
-const SidebarHeader = ({ onStatusClick, onCallsClick, onArchivedClick }) => {
+const SidebarHeader = ({ onStatusClick, onCallsClick, onArchivedClick, onNewChat, onNewGroup }) => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showChatDropdown, setShowChatDropdown] = useState(false);
   const { darkMode, toggleTheme } = useTheme();
   const { hasUnviewedStories } = useStory();
 
   const handleMenuClick = () => {
     setShowDropdown(!showDropdown);
+    setShowChatDropdown(false);
+  };
+  
+  const handleChatMenuClick = (e) => {
+    e.stopPropagation();
+    setShowChatDropdown(!showChatDropdown);
+    setShowDropdown(false);
   };
 
   const handleProfileClick = () => {
@@ -129,8 +137,12 @@ const SidebarHeader = ({ onStatusClick, onCallsClick, onArchivedClick }) => {
         <IconWrapper title="Calls" onClick={onCallsClick}>
           <FaPhone />
         </IconWrapper>
-        <IconWrapper title="New chat">
+        <IconWrapper title="New chat" onClick={handleChatMenuClick}>
           <FaCommentAlt />
+          <DropdownMenu isOpen={showChatDropdown}>
+            <MenuItem onClick={onNewChat}>New chat</MenuItem>
+            <MenuItem onClick={onNewGroup}>New group</MenuItem>
+          </DropdownMenu>
         </IconWrapper>
         <IconWrapper title="Menu" onClick={handleMenuClick}>
           <FaEllipsisV />

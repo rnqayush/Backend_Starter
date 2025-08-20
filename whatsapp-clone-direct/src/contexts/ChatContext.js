@@ -294,6 +294,136 @@ export const ChatProvider = ({ children }) => {
     return false;
   };
 
+  // Group chat functions
+  const createGroup = (name, members, avatar = null) => {
+    const newGroup = {
+      id: chats.length + 1,
+      name,
+      isGroup: true,
+      avatar: avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+      members: [1, ...members], // 1 is currentUser.id
+      adminId: 1, // currentUser.id
+      messages: [],
+      createdAt: new Date().toISOString(),
+      description: '',
+      lastMessageTimestamp: new Date().toISOString()
+    };
+    
+    setChats([...chats, newGroup]);
+    return newGroup;
+  };
+  
+  const leaveGroup = (groupId) => {
+    const group = chats.find(c => c.id === groupId && c.isGroup);
+    
+    if (group) {
+      // If user is the only member or admin, delete the group
+      if (group.members.length === 1 || (group.adminId === 1 && group.members.length <= 2)) {
+        deleteGroup(groupId);
+        return true;
+      }
+      
+      // Remove user from members
+      const updatedMembers = group.members.filter(id => id !== 1);
+      
+      // If user is admin, assign admin role to another member
+      let updatedAdminId = group.adminId;
+      if (group.adminId === 1) {
+        updatedAdminId = updatedMembers[0];
+      }
+      
+      // Add system message about leaving
+      const updatedMessages = [...group.messages, {
+        id: group.messages.length + 1,
+        type: 'system',
+        text: `You left`,
+        timestamp: new Date().toISOString()
+      }];
+      
+      updateChat(groupId, {
+        members: updatedMembers,
+        adminId: updatedAdminId,
+        messages: updatedMessages
+      });
+      
+      return true;
+    }
+    
+    return false;
+  };
+  
+  const deleteGroup = (groupId) => {
+    const group = chats.find(c => c.id === groupId && c.isGroup);
+    
+    if (group && group.adminId === 1) {
+      setChats(chats.filter(c => c.id !== groupId));
+      return true;
+    }
+    
+    return false;
+  };
+  
+  const addGroupMember = (groupId, memberId) => {
+    const group = chats.find(c => c.id === groupId && c.isGroup);
+    
+    if (group && !group.members.includes(memberId)) {
+      const updatedMembers = [...group.members, memberId];
+      
+      // Add system message about new member
+      const updatedMessages = [...group.messages, {
+        id: group.messages.length + 1,
+        type: 'system',
+        text: `New member was added`,
+        timestamp: new Date().toISOString()
+      }];
+      
+      updateChat(groupId, {
+        members: updatedMembers,
+        messages: updatedMessages
+      });
+      
+      return true;
+    }
+    
+    return false;
+  };
+  
+  const removeGroupMember = (groupId, memberId) => {
+    const group = chats.find(c => c.id === groupId && c.isGroup);
+    
+    if (group && group.members.includes(memberId) && group.adminId === 1) {
+      const updatedMembers = group.members.filter(id => id !== memberId);
+      
+      // Add system message about removed member
+      const updatedMessages = [...group.messages, {
+        id: group.messages.length + 1,
+        type: 'system',
+        text: `A member was removed`,
+        timestamp: new Date().toISOString()
+      }];
+      
+      updateChat(groupId, {
+        members: updatedMembers,
+        messages: updatedMessages
+      });
+      
+      return true;
+    }
+    
+    return false;
+  };
+  
+  const updateGroupInfo = (groupId, updates) => {
+    const group = chats.find(c => c.id === groupId && c.isGroup);
+    
+    if (group && (group.adminId === 1 || updates.description)) {
+      updateChat(groupId, updates);
+      return true;
+    }
+    
+    return false;
+  };
+
   // Context value
   const value = {
     chats,
@@ -310,7 +440,14 @@ export const ChatProvider = ({ children }) => {
     archiveChat,
     unarchiveChat,
     addReaction,
-    removeReaction
+    removeReaction,
+    // Group functions
+    createGroup,
+    leaveGroup,
+    deleteGroup,
+    addGroupMember,
+    removeGroupMember,
+    updateGroupInfo
   };
 
   return (

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaArrowLeft, FaEllipsisV, FaSearch } from 'react-icons/fa';
+import { FaArrowLeft, FaEllipsisV, FaSearch, FaInfoCircle, FaVideo, FaPhone } from 'react-icons/fa';
 import { useChat } from '../../contexts/ChatContext';
 import TypingIndicator from './TypingIndicator';
 import MessageSearch from './MessageSearch';
+import GroupInfo from './GroupInfo';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -65,15 +66,45 @@ const IconWrapper = styled.div`
   margin-left: 22px;
   cursor: pointer;
   font-size: 20px;
+  position: relative;
   
   &:hover {
     color: var(--primary-color);
   }
 `;
 
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--dropdown-background);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  border-radius: 3px;
+  width: 200px;
+  z-index: 100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+`;
+
+const MenuItem = styled.div`
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  
+  &:hover {
+    background-color: var(--dropdown-hover);
+  }
+  
+  svg {
+    margin-right: 10px;
+  }
+`;
+
 const ChatHeader = ({ contact, setIsChatOpen }) => {
   const { typingStatus } = useChat();
   const [showSearch, setShowSearch] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showGroupInfo, setShowGroupInfo] = useState(false);
   
   const isTyping = typingStatus[contact.id];
   
@@ -83,6 +114,28 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   
   const handleSearchClick = () => {
     setShowSearch(!showSearch);
+    setShowDropdown(false);
+  };
+  
+  const handleMenuClick = () => {
+    setShowDropdown(!showDropdown);
+  };
+  
+  const handleGroupInfoClick = () => {
+    setShowGroupInfo(true);
+    setShowDropdown(false);
+  };
+  
+  const handleVideoCallClick = () => {
+    // In a real app, this would initiate a video call
+    console.log('Video call with', contact.name);
+    setShowDropdown(false);
+  };
+  
+  const handleVoiceCallClick = () => {
+    // In a real app, this would initiate a voice call
+    console.log('Voice call with', contact.name);
+    setShowDropdown(false);
   };
 
   return (
@@ -114,16 +167,37 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
           <IconWrapper title="Search" onClick={handleSearchClick}>
             <FaSearch />
           </IconWrapper>
-          <IconWrapper title="Menu">
+          <IconWrapper title="Menu" onClick={handleMenuClick}>
             <FaEllipsisV />
+            <DropdownMenu isOpen={showDropdown}>
+              {contact.isGroup && (
+                <MenuItem onClick={handleGroupInfoClick}>
+                  <FaInfoCircle />
+                  Group info
+                </MenuItem>
+              )}
+              <MenuItem onClick={handleVideoCallClick}>
+                <FaVideo />
+                Video call
+              </MenuItem>
+              <MenuItem onClick={handleVoiceCallClick}>
+                <FaPhone />
+                Voice call
+              </MenuItem>
+            </DropdownMenu>
           </IconWrapper>
         </IconsContainer>
       </HeaderContainer>
       
       {showSearch && <MessageSearch onClose={() => setShowSearch(false)} />}
+      {showGroupInfo && contact.isGroup && (
+        <GroupInfo 
+          group={contact} 
+          onClose={() => setShowGroupInfo(false)} 
+        />
+      )}
     </>
   );
 };
 
 export default ChatHeader;
-
