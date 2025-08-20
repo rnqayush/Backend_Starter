@@ -8,11 +8,15 @@ import {
   FaTimes,
   FaImage,
   FaFile,
-  FaCamera
+  FaCamera,
+  FaMapMarkerAlt,
+  FaUser,
+  FaGift
 } from 'react-icons/fa';
 import EmojiPicker from 'emoji-picker-react';
 import { useChat } from '../../contexts/ChatContext';
 import VoiceRecorder from './VoiceRecorder';
+import CameraInterface from './CameraInterface';
 
 const InputContainer = styled.div`
   display: flex;
@@ -161,6 +165,7 @@ const ChatInput = ({ onSendMessage, contactId }) => {
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const fileInputRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const attachMenuRef = useRef(null);
@@ -239,9 +244,37 @@ const ChatInput = ({ onSendMessage, contactId }) => {
   };
   
   const handleCameraClick = () => {
-    fileInputRef.current.accept = 'image/*';
-    fileInputRef.current.capture = 'camera';
-    fileInputRef.current.click();
+    setShowCamera(true);
+    setShowAttachMenu(false);
+  };
+  
+  const handleCameraCapture = (media) => {
+    if (media.type === 'image') {
+      const file = dataURLtoFile(media.data, media.name);
+      setSelectedFile(file);
+    } else if (media.type === 'video') {
+      // For video, we'd need to handle the blob URL differently
+      // This is a simplified version
+      fetch(media.data)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], media.name, { type: 'video/webm' });
+          setSelectedFile(file);
+        });
+    }
+  };
+  
+  // Helper function to convert data URL to File object
+  const dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
   };
   
   const handleClearFile = () => {
@@ -289,6 +322,11 @@ const ChatInput = ({ onSendMessage, contactId }) => {
         <VoiceRecorder 
           onSend={handleSendAudio}
           onCancel={handleCancelRecording}
+        />
+      ) : showCamera ? (
+        <CameraInterface 
+          onCapture={handleCameraCapture}
+          onClose={() => setShowCamera(false)}
         />
       ) : (
         <>
@@ -354,6 +392,27 @@ const ChatInput = ({ onSendMessage, contactId }) => {
               <AttachmentOption onClick={handleCameraClick}>
                 <FaCamera />
                 Camera
+              </AttachmentOption>
+              <AttachmentOption onClick={() => {
+                console.log('Location sharing clicked');
+                setShowAttachMenu(false);
+              }}>
+                <FaMapMarkerAlt />
+                Location
+              </AttachmentOption>
+              <AttachmentOption onClick={() => {
+                console.log('Contact sharing clicked');
+                setShowAttachMenu(false);
+              }}>
+                <FaUser />
+                Contact
+              </AttachmentOption>
+              <AttachmentOption onClick={() => {
+                console.log('GIF clicked');
+                setShowAttachMenu(false);
+              }}>
+                <FaGift />
+                GIF
               </AttachmentOption>
             </AttachmentMenu>
             
