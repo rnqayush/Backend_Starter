@@ -6,6 +6,7 @@ import ChatList from './ChatList';
 import Status from '../Status/Status';
 import Calls from '../Calls/Calls';
 import ArchivedChats from './ArchivedChats';
+import CreateGroup from './CreateGroup';
 import { contacts } from '../../data/mockData';
 
 const SidebarContainer = styled.div`
@@ -30,6 +31,7 @@ const Sidebar = ({ setSelectedContact, selectedContact, isChatOpen, setIsChatOpe
   const [showStatus, setShowStatus] = useState(false);
   const [showCalls, setShowCalls] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
   
   const filteredContacts = contacts.filter(contact => 
     contact.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -68,6 +70,22 @@ const Sidebar = ({ setSelectedContact, selectedContact, isChatOpen, setIsChatOpe
   const handleArchivedClose = () => {
     setShowArchived(false);
   };
+  
+  const handleNewChat = () => {
+    // In a real app, this would open a contact picker
+    console.log('New chat');
+  };
+  
+  const handleNewGroup = () => {
+    setShowCreateGroup(true);
+    setShowStatus(false);
+    setShowCalls(false);
+    setShowArchived(false);
+  };
+  
+  const handleCreateGroupClose = () => {
+    setShowCreateGroup(false);
+  };
 
   return (
     <SidebarContainer isChatOpen={isChatOpen}>
@@ -80,12 +98,16 @@ const Sidebar = ({ setSelectedContact, selectedContact, isChatOpen, setIsChatOpe
           onClose={handleArchivedClose} 
           onSelectContact={handleContactSelect}
         />
+      ) : showCreateGroup ? (
+        <CreateGroup onClose={handleCreateGroupClose} />
       ) : (
         <>
           <SidebarHeader 
             onStatusClick={handleStatusClick} 
             onCallsClick={handleCallsClick}
             onArchivedClick={handleArchivedClick}
+            onNewChat={handleNewChat}
+            onNewGroup={handleNewGroup}
           />
           <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           <ChatList 
