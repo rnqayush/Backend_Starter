@@ -7,6 +7,12 @@ import AudioPlayer from './AudioPlayer';
 import MessageReactions from './MessageReactions';
 import ReactionsPopup from './ReactionsPopup';
 import PollMessage from './PollMessage';
+import DocumentMessage from './DocumentMessage';
+import MediaMessage from './MediaMessage';
+import LocationMessage from './LocationMessage';
+import ContactMessage from './ContactMessage';
+import GifMessage from './GifMessage';
+import StickerMessage from './StickerMessage';
 import { formatMessageText, renderFormattedText } from '../../utils/messageFormatter';
 
 const MessageContainer = styled.div`
@@ -309,11 +315,11 @@ const Message = ({ message, isSentByMe, onReply }) => {
       <MessageBubble isSentByMe={isSentByMe}>
         {renderReplyPreview()}
         
-        {message.image && (
+        {message.image && !message.type && (
           <MessageImage src={message.image} alt="Shared image" />
         )}
         
-        {message.audio && (
+        {message.audio && !message.type && (
           <AudioContainer>
             <AudioIcon>
               <FaMicrophone />
@@ -322,6 +328,45 @@ const Message = ({ message, isSentByMe, onReply }) => {
           </AudioContainer>
         )}
         
+        {message.type === 'document' && (
+          <DocumentMessage document={message.document || {
+            name: message.name,
+            url: message.url || message.file,
+            size: message.size,
+            type: message.fileType
+          }} />
+        )}
+        
+        {message.type === 'media' && (
+          <MediaMessage media={message.media || {
+            url: message.url || message.image || message.video,
+            name: message.name,
+            size: message.size,
+            type: message.image ? 'image/jpeg' : 'video/mp4'
+          }} />
+        )}
+        
+        {message.type === 'location' && (
+          <LocationMessage location={message.location} />
+        )}
+        
+        {message.type === 'contact' && (
+          <ContactMessage contact={message.contact} />
+        )}
+        
+        {message.type === 'gif' && (
+          <GifMessage gif={message.gif || {
+            url: message.url,
+            name: message.name
+          }} />
+        )}
+        
+        {message.type === 'sticker' && (
+          <StickerMessage sticker={message.sticker || {
+            url: message.url,
+            name: message.name
+          }} />
+        )}
         {message.type === 'poll' && (
           <PollMessage 
             poll={message.poll} 
