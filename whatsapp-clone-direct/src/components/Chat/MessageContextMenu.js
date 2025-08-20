@@ -7,7 +7,8 @@ import {
   FaTrash, 
   FaCopy, 
   FaInfo,
-  FaRegStar
+  FaRegStar,
+  FaSmile
 } from 'react-icons/fa';
 import { useChat } from '../../contexts/ChatContext';
 import { contacts } from '../../data/mockData';
@@ -63,6 +64,34 @@ const ForwardMenu = styled.div`
   top: ${props => props.position.y}px;
 `;
 
+const ReactionsMenu = styled.div`
+  position: absolute;
+  background-color: var(--context-menu-background);
+  border-radius: 30px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26), 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  padding: 8px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  left: ${props => props.position.x + 180}px;
+  top: ${props => props.position.y}px;
+`;
+
+const ReactionOption = styled.div`
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
+`;
+
 const ContactItem = styled.div`
   padding: 8px 16px;
   cursor: pointer;
@@ -87,12 +116,16 @@ const MessageContextMenu = ({ position, onClose, message, isSentByMe, onReply })
   const menuRef = useRef(null);
   const forwardMenuRef = useRef(null);
   const [showForwardMenu, setShowForwardMenu] = useState(false);
-  const { toggleStarMessage, forwardMessage, deleteMessage } = useChat();
+  const [showReactionsMenu, setShowReactionsMenu] = useState(false);
+  const { toggleStarMessage, forwardMessage, deleteMessage, addReaction } = useChat();
   
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target) &&
-          (!forwardMenuRef.current || !forwardMenuRef.current.contains(event.target))) {
+      const isClickOutsideMenu = menuRef.current && !menuRef.current.contains(event.target);
+      const isClickOutsideForwardMenu = !forwardMenuRef.current || !forwardMenuRef.current.contains(event.target);
+      const isClickOutsideReactionsMenu = !event.target.closest('.reactions-menu');
+      
+      if (isClickOutsideMenu && isClickOutsideForwardMenu && isClickOutsideReactionsMenu) {
         onClose();
       }
     };
@@ -139,6 +172,19 @@ const MessageContextMenu = ({ position, onClose, message, isSentByMe, onReply })
     console.log('Message info:', message);
     onClose();
   };
+  
+  const handleReactClick = () => {
+    setShowReactionsMenu(true);
+  };
+  
+  const handleReactionSelect = (emoji) => {
+    addReaction(message.chatId, message.id, {
+      emoji,
+      userId: 1, // Current user ID
+      userName: 'You'
+    });
+    onClose();
+  };
 
   return (
     <>
@@ -146,6 +192,10 @@ const MessageContextMenu = ({ position, onClose, message, isSentByMe, onReply })
         <MenuItem onClick={handleReply}>
           <FaReply />
           Reply
+        </MenuItem>
+        <MenuItem onClick={handleReactClick}>
+          <FaSmile />
+          React
         </MenuItem>
         <MenuItem onClick={handleForward}>
           <FaForward />
@@ -187,6 +237,19 @@ const MessageContextMenu = ({ position, onClose, message, isSentByMe, onReply })
             </ContactItem>
           ))}
         </ForwardMenu>
+      )}
+      
+      {showReactionsMenu && (
+        <ReactionsMenu position={position} className="reactions-menu">
+          {['👍', '❤️', '😂', '😮', '😢', '🙏'].map(emoji => (
+            <ReactionOption 
+              key={emoji} 
+              onClick={() => handleReactionSelect(emoji)}
+            >
+              {emoji}
+            </ReactionOption>
+          ))}
+        </ReactionsMenu>
       )}
     </>
   );
