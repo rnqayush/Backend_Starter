@@ -13,6 +13,7 @@ import LocationMessage from './LocationMessage';
 import ContactMessage from './ContactMessage';
 import GifMessage from './GifMessage';
 import StickerMessage from './StickerMessage';
+import VoiceMessage from './VoiceMessage';
 import { formatMessageText, renderFormattedText } from '../../utils/messageFormatter';
 
 const MessageContainer = styled.div`
@@ -308,7 +309,9 @@ const Message = ({ message, isSentByMe, onReply }) => {
           <MessageImage src={message.image} alt="Shared image" />
         )}
         
-        {message.audio && !message.type && (
+        {message.type === 'voice' ? (
+          <VoiceMessage message={message} isSentByMe={isSentByMe} />
+        ) : message.audio && !message.type && (
           <AudioContainer>
             <AudioIcon>
               <FaMicrophone />
