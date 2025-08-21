@@ -11,7 +11,11 @@ import {
   FaCamera,
   FaMapMarkerAlt,
   FaUser,
-  FaGift
+  FaGift,
+  FaBold,
+  FaItalic,
+  FaStrikethrough,
+  FaCode
 } from 'react-icons/fa';
 import EmojiPicker from 'emoji-picker-react';
 import { useChat } from '../../contexts/ChatContext';
@@ -20,10 +24,23 @@ import CameraInterface from './CameraInterface';
 
 const InputContainer = styled.div`
   display: flex;
-  align-items: center;
-  padding: 10px 16px;
+  flex-direction: column;
   background-color: var(--sidebar-header);
   position: relative;
+`;
+
+const InputRow = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+`;
+
+const FormattingToolbar = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 5px 16px;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--sidebar-header);
 `;
 
 const IconWrapper = styled.div`
@@ -34,6 +51,19 @@ const IconWrapper = styled.div`
   
   &:hover {
     color: var(--secondary-color);
+  }
+`;
+
+const FormatButton = styled.div`
+  color: ${props => props.active ? 'var(--primary-color)' : 'var(--icon-color)'};
+  font-size: 16px;
+  margin: 0 8px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  
+  &:hover {
+    background-color: var(--hover-background);
   }
 `;
 
@@ -166,9 +196,13 @@ const ChatInput = ({ onSendMessage, contactId }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+  const [showFormatting, setShowFormatting] = useState(false);
+  const [selectionStart, setSelectionStart] = useState(0);
+  const [selectionEnd, setSelectionEnd] = useState(0);
   const fileInputRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const attachMenuRef = useRef(null);
+  const inputRef = useRef(null);
   const { setTyping } = useChat();
   
   useEffect(() => {
@@ -186,6 +220,43 @@ const ChatInput = ({ onSendMessage, contactId }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  
+  // Add keyboard shortcuts for formatting
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Only process if input is focused
+      if (document.activeElement !== inputRef.current) return;
+      
+      // Bold: Ctrl+B
+      if (e.ctrlKey && e.key === 'b') {
+        e.preventDefault();
+        applyBold();
+      }
+      
+      // Italic: Ctrl+I
+      if (e.ctrlKey && e.key === 'i') {
+        e.preventDefault();
+        applyItalic();
+      }
+      
+      // Strikethrough: Ctrl+S (note: this might conflict with save in some browsers)
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        applyStrikethrough();
+      }
+      
+      // Code: Ctrl+Shift+C
+      if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+        e.preventDefault();
+        applyCode();
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [message, selectionStart, selectionEnd]);
   
   const handleSend = () => {
     if ((message.trim() || selectedFile) && onSendMessage) {
@@ -296,6 +367,95 @@ const ChatInput = ({ onSendMessage, contactId }) => {
     }
   };
   
+  const handleInputSelect = (e) => {
+    setSelectionStart(e.target.selectionStart);
+    setSelectionEnd(e.target.selectionEnd);
+  };
+  
+  const applyFormatting = (formatChar) => {
+    if (!inputRef.current) return;
+    
+    const start = selectionStart;
+    const end = selectionEnd;
+    
+    if (start === end) {
+      // No text selected, just insert the formatting characters
+      const newMessage = 
+        message.substring(0, start) + 
+        formatChar + formatChar + 
+        message.substring(end);
+      
+      setMessage(newMessage);
+      
+      // Set cursor position between the formatting characters
+      setTimeout(() => {
+        inputRef.current.selectionStart = start + 1;
+        inputRef.current.selectionEnd = start + 1;
+        inputRef.current.focus();
+      }, 0);
+    } else {
+      // Text selected, wrap it with formatting characters
+      const selectedText = message.substring(start, end);
+      const newMessage = 
+        message.substring(0, start) + 
+        formatChar + selectedText + formatChar + 
+        message.substring(end);
+      
+      setMessage(newMessage);
+      
+      // Set cursor position after the formatted text
+      setTimeout(() => {
+        inputRef.current.selectionStart = end + 2;
+        inputRef.current.selectionEnd = end + 2;
+        inputRef.current.focus();
+      }, 0);
+    }
+  };
+  
+  const applyBold = () => applyFormatting('*');
+  const applyItalic = () => applyFormatting('_');
+  const applyStrikethrough = () => applyFormatting('~');
+  
+  const applyCode = () => {
+    if (!inputRef.current) return;
+    
+    const start = selectionStart;
+    const end = selectionEnd;
+    
+    if (start === end) {
+      // No text selected
+      const newMessage = 
+        message.substring(0, start) + 
+        '```' + '```' + 
+        message.substring(end);
+      
+      setMessage(newMessage);
+      
+      // Set cursor position between the code markers
+      setTimeout(() => {
+        inputRef.current.selectionStart = start + 3;
+        inputRef.current.selectionEnd = start + 3;
+        inputRef.current.focus();
+      }, 0);
+    } else {
+      // Text selected
+      const selectedText = message.substring(start, end);
+      const newMessage = 
+        message.substring(0, start) + 
+        '```' + selectedText + '```' + 
+        message.substring(end);
+      
+      setMessage(newMessage);
+      
+      // Set cursor position after the formatted text
+      setTimeout(() => {
+        inputRef.current.selectionStart = end + 6;
+        inputRef.current.selectionEnd = end + 6;
+        inputRef.current.focus();
+      }, 0);
+    }
+  };
+  
   const handleStartRecording = () => {
     setIsRecording(true);
   };
@@ -331,40 +491,81 @@ const ChatInput = ({ onSendMessage, contactId }) => {
       ) : (
         <>
           <InputContainer>
-            <IconWrapper 
-              title="Emoji" 
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-            >
-              <FaSmile />
-            </IconWrapper>
-            
-            <IconWrapper 
-              title="Attach" 
-              onClick={handleAttachClick}
-            >
-              <FaPaperclip />
-            </IconWrapper>
-            
-            <InputField>
-              <Input 
-                placeholder="Type a message"
-                value={message}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-              />
-            </InputField>
-            
-            {message.trim() || selectedFile ? (
-              <SendButton onClick={handleSend} title="Send">
-                <FaPaperPlane />
-              </SendButton>
-            ) : (
+            <InputRow>
               <IconWrapper 
-                title="Voice message" 
-                onClick={handleStartRecording}
+                title="Emoji" 
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
-                <FaMicrophone />
+                <FaSmile />
               </IconWrapper>
+              
+              <IconWrapper 
+                title="Attach" 
+                onClick={handleAttachClick}
+              >
+                <FaPaperclip />
+              </IconWrapper>
+              
+              <InputField>
+                <Input 
+                  ref={inputRef}
+                  placeholder="Type a message"
+                  value={message}
+                  onChange={handleInputChange}
+                  onKeyPress={handleKeyPress}
+                  onSelect={handleInputSelect}
+                />
+              </InputField>
+              
+              {message.trim() || selectedFile ? (
+                <SendButton onClick={handleSend} title="Send">
+                  <FaPaperPlane />
+                </SendButton>
+              ) : (
+                <>
+                  <IconWrapper 
+                    title="Formatting" 
+                    onClick={() => setShowFormatting(!showFormatting)}
+                  >
+                    <FaBold />
+                  </IconWrapper>
+                  <IconWrapper 
+                    title="Voice message" 
+                    onClick={handleStartRecording}
+                  >
+                    <FaMicrophone />
+                  </IconWrapper>
+                </>
+              )}
+            </InputRow>
+            
+            {showFormatting && (
+              <FormattingToolbar>
+                <FormatButton 
+                  title="Bold (Ctrl+B)" 
+                  onClick={applyBold}
+                >
+                  <FaBold />
+                </FormatButton>
+                <FormatButton 
+                  title="Italic (Ctrl+I)" 
+                  onClick={applyItalic}
+                >
+                  <FaItalic />
+                </FormatButton>
+                <FormatButton 
+                  title="Strikethrough (Ctrl+S)" 
+                  onClick={applyStrikethrough}
+                >
+                  <FaStrikethrough />
+                </FormatButton>
+                <FormatButton 
+                  title="Code (Ctrl+Shift+C)" 
+                  onClick={applyCode}
+                >
+                  <FaCode />
+                </FormatButton>
+              </FormattingToolbar>
             )}
             
             {showEmojiPicker && (
