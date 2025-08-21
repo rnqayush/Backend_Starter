@@ -304,13 +304,13 @@ const ChatInput = ({ onSendMessage, contactId }) => {
     setIsRecording(false);
   };
   
-  const handleSendAudio = (audioUrl) => {
+  const handleSendAudio = (audioData) => {
     if (onSendMessage) {
       onSendMessage('', {
-        type: 'audio',
-        url: audioUrl,
-        name: 'Voice message',
-        size: 0 // Size would be determined in a real app
+        type: 'voice',
+        audio: audioData.url,
+        duration: audioData.duration,
+        name: 'Voice message'
       });
       setIsRecording(false);
     }

@@ -48,6 +48,17 @@ export const ChatProvider = ({ children }) => {
     
     return false;
   };
+  
+  // Function to add a voice message
+  const addVoiceMessage = (contactId, audioData) => {
+    return addMessage(contactId, {
+      senderId: 1, // Current user
+      type: 'voice',
+      audio: audioData.url,
+      duration: audioData.duration,
+      status: 'sent'
+    });
+  };
 
   // Function to set typing status
   const setTyping = (contactId, isTyping) => {
@@ -513,6 +524,7 @@ export const ChatProvider = ({ children }) => {
     archivedChats,
     typingStatus,
     addMessage,
+    addVoiceMessage,
     updateChat,
     setTyping,
     markMessagesAsRead,
