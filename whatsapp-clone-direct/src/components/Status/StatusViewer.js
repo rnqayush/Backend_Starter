@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { FaArrowLeft, FaEye, FaReply, FaEllipsisV } from 'react-icons/fa';
 import { formatMessageTime, getContactById, currentUser } from '../../data/mockData';
 import StatusProgress from './StatusProgress';
+import StatusReplyInput from './StatusReplyInput';
+import StatusRemainingTime from './StatusRemainingTime';
 import { useStory } from '../../contexts/StoryContext';
+import { isStoryExpired } from '../../utils/statusUtils';
 
 const ViewerContainer = styled.div`
   position: fixed;
@@ -84,6 +87,14 @@ const UserName = styled.div`
 `;
 
 const Timestamp = styled.div`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  margin-top: 2px;
+`;
+
+const TimeRemainingContainer = styled.div`
+  display: flex;
+  align-items: center;
   color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
   margin-top: 2px;
@@ -221,11 +232,13 @@ const StatusViewer = ({ onClose }) => {
     activeStory, 
     activeStoryIndex, 
     setActiveStoryIndex,
-    viewStory 
+    viewStory,
+    addReply
   } = useStory();
   
   const [isPaused, setIsPaused] = useState(false);
   const [showViewers, setShowViewers] = useState(false);
+  const [showReplyInput, setShowReplyInput] = useState(false);
   const [currentContentIndex, setCurrentContentIndex] = useState(0);
   const contentRef = useRef(null);
   
@@ -299,11 +312,26 @@ const StatusViewer = ({ onClose }) => {
   const toggleViewers = () => {
     setIsPaused(true);
     setShowViewers(!showViewers);
+    if (showReplyInput) setShowReplyInput(false);
   };
   
   const closeViewers = () => {
     setShowViewers(false);
     setIsPaused(false);
+  };
+  
+  const toggleReplyInput = () => {
+    setIsPaused(true);
+    setShowReplyInput(!showReplyInput);
+    if (showViewers) setShowViewers(false);
+  };
+  
+  const handleSendReply = (replyText) => {
+    if (story && content) {
+      addReply(story.id, content.id, replyText);
+      setShowReplyInput(false);
+      setIsPaused(false);
+    }
   };
   
   if (!story || !content) {
@@ -335,6 +363,9 @@ const StatusViewer = ({ onClose }) => {
             <div>
               <UserName>{user.name}</UserName>
               <Timestamp>{formatMessageTime(content.timestamp)}</Timestamp>
+              <TimeRemainingContainer>
+                <StatusRemainingTime timestamp={content.timestamp} showIndicator={false} />
+              </TimeRemainingContainer>
             </div>
           </UserInfo>
           <Actions>
@@ -365,7 +396,7 @@ const StatusViewer = ({ onClose }) => {
         )}
         
         <Footer>
-          <ReplyContainer>
+          <ReplyContainer onClick={toggleReplyInput}>
             <FaReply />
             <ReplyText>Reply</ReplyText>
           </ReplyContainer>
@@ -376,6 +407,16 @@ const StatusViewer = ({ onClose }) => {
             </ViewCount>
           )}
         </Footer>
+        
+        {showReplyInput && (
+          <StatusReplyInput 
+            onSendReply={handleSendReply} 
+            onClose={() => {
+              setShowReplyInput(false);
+              setIsPaused(false);
+            }}
+          />
+        )}
         
         <NavigationOverlay>
           <NavigationArea 
@@ -409,4 +450,3 @@ const StatusViewer = ({ onClose }) => {
 };
 
 export default StatusViewer;
-

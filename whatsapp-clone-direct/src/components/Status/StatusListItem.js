@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { formatMessageTime, currentUser } from '../../data/mockData';
 import { useStory } from '../../contexts/StoryContext';
+import { FaVolumeMute } from 'react-icons/fa';
+import StatusRemainingTime from './StatusRemainingTime';
 
 const ListItemContainer = styled.div`
   display: flex;
@@ -58,10 +60,21 @@ const InfoContainer = styled.div`
   flex: 1;
 `;
 
+const NameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+`;
+
 const Name = styled.div`
   font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 4px;
+`;
+
+const MuteIcon = styled.div`
+  margin-left: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
 `;
 
 const StatusInfo = styled.div`
@@ -141,4 +154,3 @@ const StatusListItem = ({ story, isOwn, onClick }) => {
 };
 
 export default StatusListItem;
-

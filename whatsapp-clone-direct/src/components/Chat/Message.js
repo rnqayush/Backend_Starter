@@ -186,7 +186,7 @@ const AudioIcon = styled.div`
   justify-content: center;
 `;
 
-const MessageActions = styled.div`
+const MessageActionButtons = styled.div`
   position: absolute;
   top: -30px;
   right: ${props => props.isSentByMe ? '0' : 'auto'};
@@ -198,7 +198,7 @@ const MessageActions = styled.div`
   z-index: 5;
 `;
 
-const ActionButton = styled.div`
+const ActionButtonItem = styled.div`
   width: 30px;
   height: 30px;
   display: flex;
@@ -212,18 +212,7 @@ const ActionButton = styled.div`
   }
 `;
 
-const EncryptionIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 10px;
-  color: var(--text-secondary);
-  margin-top: 4px;
-  
-  svg {
-    font-size: 8px;
-    margin-right: 4px;
-  }
-`;
+
 
 const Message = ({ message, isSentByMe, onReply }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
@@ -303,14 +292,14 @@ const Message = ({ message, isSentByMe, onReply }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <MessageActions isSentByMe={isSentByMe} show={showActions}>
-        <ActionButton onClick={() => onReply(message)} title="Reply">
+      <MessageActionButtons isSentByMe={isSentByMe} show={showActions}>
+        <ActionButtonItem onClick={() => onReply(message)} title="Reply">
           <FaReply />
-        </ActionButton>
-        <ActionButton onClick={() => setShowReactionsPopup(true)} title="React">
+        </ActionButtonItem>
+        <ActionButtonItem onClick={() => setShowReactionsPopup(true)} title="React">
           <FaSmile />
-        </ActionButton>
-      </MessageActions>
+        </ActionButtonItem>
+      </MessageActionButtons>
       
       <MessageBubble isSentByMe={isSentByMe}>
         {renderReplyPreview()}

@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { stories as initialStoriesRaw, currentUser, getContactById } from '../data/mockData';
+import { isStoryExpired, getTimeRemaining } from '../utils/statusUtils';
 
 // Create the story context
 const StoryContext = createContext();
@@ -9,22 +10,36 @@ export const useStory = () => useContext(StoryContext);
 
 // Story provider component
 export const StoryProvider = ({ children }) => {
-  // Transform the initial stories to match our structure
+  // Transform the initial stories to match our structure and filter out expired content
   const initialStories = initialStoriesRaw.map(story => {
-    return {
-      ...story,
-      content: story.content.map(item => {
+    // Filter out expired content
+    const validContent = story.content
+      .filter(item => !isStoryExpired(item.timestamp))
+      .map(item => {
         return {
           ...item,
           content: item.url || item.text,
           type: item.type,
           backgroundColor: item.backgroundColor,
           textColor: item.fontColor,
-          fontFamily: 'Arial, sans-serif'
+          fontFamily: 'Arial, sans-serif',
+          timeRemaining: getTimeRemaining(item.timestamp)
         };
-      })
+      });
+      
+    // Only include stories that have valid content
+    if (validContent.length === 0) {
+      return null;
+    }
+    
+    return {
+      ...story,
+      content: validContent,
+      privacy: story.privacy || 'my_contacts', // Default privacy setting
+      muted: story.muted || false, // Default mute setting
+      replies: story.replies || [] // Initialize replies array
     };
-  });
+  }).filter(Boolean); // Remove null stories (those with all expired content)
   
   const [stories, setStories] = useState(initialStories);
   const [activeStory, setActiveStory] = useState(null);
@@ -33,9 +48,18 @@ export const StoryProvider = ({ children }) => {
   const [showStoryCreator, setShowStoryCreator] = useState(false);
 
   // Function to add a new story
-  const addStory = (content) => {
+  const addStory = (content, privacy = 'my_contacts', selectedContacts = []) => {
     // Find if the user already has a story
     const userStory = stories.find(story => story.userId === currentUser.id);
+    
+    const timestamp = new Date().toISOString();
+    const newContent = {
+      id: userStory ? userStory.content.length + 1 : 1,
+      ...content,
+      timestamp: timestamp,
+      viewers: [],
+      timeRemaining: getTimeRemaining(timestamp)
+    };
     
     if (userStory) {
       // Add content to existing story
@@ -43,15 +67,10 @@ export const StoryProvider = ({ children }) => {
         if (story.userId === currentUser.id) {
           return {
             ...story,
-            content: [
-              ...story.content,
-              {
-                id: story.content.length + 1,
-                ...content,
-                timestamp: new Date().toISOString(),
-                viewers: []
-              }
-            ]
+            content: [...story.content, newContent],
+            privacy: privacy,
+            selectedContacts: selectedContacts,
+            lastUpdated: timestamp
           };
         }
         return story;
@@ -63,14 +82,12 @@ export const StoryProvider = ({ children }) => {
       const newStory = {
         id: stories.length + 1,
         userId: currentUser.id,
-        content: [
-          {
-            id: 1,
-            ...content,
-            timestamp: new Date().toISOString(),
-            viewers: []
-          }
-        ]
+        content: [newContent],
+        privacy: privacy,
+        selectedContacts: selectedContacts,
+        lastUpdated: timestamp,
+        replies: [],
+        muted: false
       };
       
       setStories([...stories, newStory]);
@@ -151,6 +168,99 @@ export const StoryProvider = ({ children }) => {
     
     return userStory.content.some(item => !item.viewers.includes(currentUser.id));
   };
+  
+  // Function to update story time remaining
+  const updateTimeRemaining = () => {
+    const updatedStories = stories.map(story => {
+      // Skip if story is null
+      if (!story) return null;
+      
+      // Update time remaining for each content item
+      const updatedContent = story.content.map(item => ({
+        ...item,
+        timeRemaining: getTimeRemaining(item.timestamp)
+      }));
+      
+      // Filter out expired content
+      const validContent = updatedContent.filter(item => !isStoryExpired(item.timestamp));
+      
+      // If no valid content, return null to filter out the story
+      if (validContent.length === 0) return null;
+      
+      return {
+        ...story,
+        content: validContent
+      };
+    }).filter(Boolean); // Remove null stories
+    
+    setStories(updatedStories);
+  };
+  
+  // Update time remaining every minute
+  useEffect(() => {
+    const interval = setInterval(updateTimeRemaining, 60000);
+    return () => clearInterval(interval);
+  }, [stories]);
+  
+  // Function to add a reply to a story
+  const addReply = (storyId, contentId, replyText) => {
+    const updatedStories = stories.map(story => {
+      if (story.id === storyId) {
+        const reply = {
+          id: story.replies ? story.replies.length + 1 : 1,
+          userId: currentUser.id,
+          contentId: contentId,
+          text: replyText,
+          timestamp: new Date().toISOString()
+        };
+        
+        return {
+          ...story,
+          replies: [...(story.replies || []), reply]
+        };
+      }
+      return story;
+    });
+    
+    setStories(updatedStories);
+  };
+  
+  // Function to mute/unmute a user's stories
+  const toggleMuteStory = (userId) => {
+    const updatedStories = stories.map(story => {
+      if (story.userId === userId) {
+        return {
+          ...story,
+          muted: !story.muted
+        };
+      }
+      return story;
+    });
+    
+    setStories(updatedStories);
+  };
+  
+  // Function to update privacy settings
+  const updatePrivacySettings = (privacy, selectedContacts = []) => {
+    const updatedStories = stories.map(story => {
+      if (story.userId === currentUser.id) {
+        return {
+          ...story,
+          privacy: privacy,
+          selectedContacts: selectedContacts
+        };
+      }
+      return story;
+    });
+    
+    setStories(updatedStories);
+  };
+  
+  // Function to get replies for a story
+  const getStoryReplies = (storyId) => {
+    const story = stories.find(s => s.id === storyId);
+    return story?.replies || [];
+  };
 
   // Context value
   const value = {
@@ -167,7 +277,12 @@ export const StoryProvider = ({ children }) => {
     viewStory,
     deleteStoryContent,
     getContactsWithStories,
-    hasUnviewedStories
+    hasUnviewedStories,
+    addReply,
+    getStoryReplies,
+    toggleMuteStory,
+    updatePrivacySettings,
+    updateTimeRemaining
   };
 
   return (

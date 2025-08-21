@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FaArrowLeft, FaCheck, FaUserFriends, FaUserAlt, FaUserSlash } from 'react-icons/fa';
+import ContactSelectionModal from './ContactSelectionModal';
+import { useStory } from '../../contexts/StoryContext';
 
 const SettingsContainer = styled.div`
   position: fixed;
@@ -96,79 +98,115 @@ const CheckIcon = styled.div`
 `;
 
 const StatusPrivacySettings = ({ onClose, currentPrivacy = 'my_contacts', onPrivacyChange }) => {
+  const { updatePrivacySettings } = useStory();
   const [selectedPrivacy, setSelectedPrivacy] = useState(currentPrivacy);
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [showContactSelection, setShowContactSelection] = useState(false);
+  const [selectionMode, setSelectionMode] = useState('');
   
   const handlePrivacySelect = (privacy) => {
     setSelectedPrivacy(privacy);
+    
+    if (privacy === 'contacts_except' || privacy === 'only_share') {
+      setSelectionMode(privacy);
+      setShowContactSelection(true);
+    } else {
+      // For 'my_contacts', no contact selection needed
+      updatePrivacySettings(privacy, []);
+      if (onPrivacyChange) {
+        onPrivacyChange(privacy);
+      }
+    }
+  };
+  
+  const handleContactsSelected = (contacts) => {
+    setSelectedContacts(contacts);
+    setShowContactSelection(false);
+    
+    // Update privacy settings with selected contacts
+    updatePrivacySettings(selectedPrivacy, contacts);
+    
     if (onPrivacyChange) {
-      onPrivacyChange(privacy);
+      onPrivacyChange(selectedPrivacy, contacts);
     }
   };
   
   return (
-    <SettingsContainer>
-      <Header>
-        <BackButton onClick={onClose}>
-          <FaArrowLeft />
-        </BackButton>
-        <HeaderTitle>Status privacy</HeaderTitle>
-      </Header>
-      
-      <SettingsContent>
-        <SettingsDescription>
-          Choose who can see your status updates. Updates to your privacy settings won't affect status updates that you've already sent.
-        </SettingsDescription>
+    <>
+      <SettingsContainer>
+        <Header>
+          <BackButton onClick={onClose}>
+            <FaArrowLeft />
+          </BackButton>
+          <HeaderTitle>Status privacy</HeaderTitle>
+        </Header>
         
-        <OptionsList>
-          <OptionItem onClick={() => handlePrivacySelect('my_contacts')}>
-            <OptionIcon color="#128C7E">
-              <FaUserFriends />
-            </OptionIcon>
-            <OptionInfo>
-              <OptionTitle>My contacts</OptionTitle>
-              <OptionDescription>
-                Only contacts saved in your phone can see your status updates
-              </OptionDescription>
-            </OptionInfo>
-            <CheckIcon isSelected={selectedPrivacy === 'my_contacts'}>
-              <FaCheck />
-            </CheckIcon>
-          </OptionItem>
+        <SettingsContent>
+          <SettingsDescription>
+            Choose who can see your status updates. Updates to your privacy settings won't affect status updates that you've already sent.
+          </SettingsDescription>
           
-          <OptionItem onClick={() => handlePrivacySelect('contacts_except')}>
-            <OptionIcon color="#FF9800">
-              <FaUserSlash />
-            </OptionIcon>
-            <OptionInfo>
-              <OptionTitle>My contacts except...</OptionTitle>
-              <OptionDescription>
-                Only share with selected contacts
-              </OptionDescription>
-            </OptionInfo>
-            <CheckIcon isSelected={selectedPrivacy === 'contacts_except'}>
-              <FaCheck />
-            </CheckIcon>
-          </OptionItem>
-          
-          <OptionItem onClick={() => handlePrivacySelect('only_share')}>
-            <OptionIcon color="#2196F3">
-              <FaUserAlt />
-            </OptionIcon>
-            <OptionInfo>
-              <OptionTitle>Only share with...</OptionTitle>
-              <OptionDescription>
-                Only share with selected contacts
-              </OptionDescription>
-            </OptionInfo>
-            <CheckIcon isSelected={selectedPrivacy === 'only_share'}>
-              <FaCheck />
-            </CheckIcon>
-          </OptionItem>
-        </OptionsList>
-      </SettingsContent>
-    </SettingsContainer>
+          <OptionsList>
+            <OptionItem onClick={() => handlePrivacySelect('my_contacts')}>
+              <OptionIcon color="#128C7E">
+                <FaUserFriends />
+              </OptionIcon>
+              <OptionInfo>
+                <OptionTitle>My contacts</OptionTitle>
+                <OptionDescription>
+                  Only contacts saved in your phone can see your status updates
+                </OptionDescription>
+              </OptionInfo>
+              <CheckIcon isSelected={selectedPrivacy === 'my_contacts'}>
+                <FaCheck />
+              </CheckIcon>
+            </OptionItem>
+            
+            <OptionItem onClick={() => handlePrivacySelect('contacts_except')}>
+              <OptionIcon color="#FF9800">
+                <FaUserSlash />
+              </OptionIcon>
+              <OptionInfo>
+                <OptionTitle>My contacts except...</OptionTitle>
+                <OptionDescription>
+                  Only share with selected contacts
+                </OptionDescription>
+              </OptionInfo>
+              <CheckIcon isSelected={selectedPrivacy === 'contacts_except'}>
+                <FaCheck />
+              </CheckIcon>
+            </OptionItem>
+            
+            <OptionItem onClick={() => handlePrivacySelect('only_share')}>
+              <OptionIcon color="#2196F3">
+                <FaUserAlt />
+              </OptionIcon>
+              <OptionInfo>
+                <OptionTitle>Only share with...</OptionTitle>
+                <OptionDescription>
+                  Only share with selected contacts
+                </OptionDescription>
+              </OptionInfo>
+              <CheckIcon isSelected={selectedPrivacy === 'only_share'}>
+                <FaCheck />
+              </CheckIcon>
+            </OptionItem>
+          </OptionsList>
+        </SettingsContent>
+      </SettingsContainer>
+      
+      {showContactSelection && (
+        <ContactSelectionModal
+          title={selectionMode === 'contacts_except' 
+            ? 'Hide status from...' 
+            : 'Share status with...'}
+          selectedContacts={selectedContacts}
+          onSave={handleContactsSelected}
+          onClose={() => setShowContactSelection(false)}
+        />
+      )}
+    </>
   );
 };
 
 export default StatusPrivacySettings;
-
