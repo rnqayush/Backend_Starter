@@ -10,7 +10,8 @@ import {
   FaPoll, 
   FaCog,
   FaImage,
-  FaStar
+  FaStar,
+  FaSmile
 } from 'react-icons/fa';
 import { useChat } from '../../contexts/ChatContext';
 import TypingIndicator from './TypingIndicator';
@@ -19,6 +20,7 @@ import GroupInfo from './GroupInfo';
 import GroupSettings from './GroupSettings';
 import GroupPoll from './GroupPoll';
 import StarredMessages from './StarredMessages';
+import AllReactionsView from './AllReactionsView';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -122,6 +124,7 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   const [showGroupSettings, setShowGroupSettings] = useState(false);
   const [showGroupPoll, setShowGroupPoll] = useState(false);
   const [showStarredMessages, setShowStarredMessages] = useState(false);
+  const [showAllReactions, setShowAllReactions] = useState(false);
   const [pollMode, setPollMode] = useState('create');
   const [selectedPollId, setSelectedPollId] = useState(null);
   
@@ -177,6 +180,11 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   
   const handleStarredMessagesClick = () => {
     setShowStarredMessages(true);
+    setShowDropdown(false);
+  };
+  
+  const handleAllReactionsClick = () => {
+    setShowAllReactions(true);
     setShowDropdown(false);
   };
 
@@ -240,6 +248,10 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
                 <FaStar />
                 Starred messages
               </MenuItem>
+              <MenuItem onClick={handleAllReactionsClick}>
+                <FaSmile />
+                Message reactions
+              </MenuItem>
               <MenuItem onClick={handleChangeWallpaperClick}>
                 <FaImage />
                 Change wallpaper
@@ -279,6 +291,17 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
           onJumpToChat={(chatId, messageId) => {
             // In a real app, this would scroll to the message
             console.log(`Jump to message ${messageId} in chat ${chatId}`);
+          }}
+        />
+      )}
+      
+      {showAllReactions && (
+        <AllReactionsView 
+          contact={contact}
+          onClose={() => setShowAllReactions(false)}
+          onJumpToMessage={(messageId) => {
+            // In a real app, this would scroll to the message
+            console.log(`Jump to message ${messageId}`);
           }}
         />
       )}
