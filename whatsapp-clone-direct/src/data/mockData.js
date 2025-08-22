@@ -333,13 +333,25 @@ export const chats = [
 
 // Function to get chat by contact ID
 export const getChatByContactId = (contactId) => {
-  return chats.find(chat => chat.contactId === contactId) || {
+  const existingChat = chats.find(chat => chat.contactId === contactId);
+  
+  if (existingChat) {
+    return existingChat;
+  }
+  
+  // Create a new chat if it doesn't exist
+  const newChat = {
     id: Math.max(...chats.map(c => c.id)) + 1,
     contactId,
     messages: [],
     unreadCount: 0,
     lastMessageTimestamp: new Date().toISOString()
   };
+  
+  // Add the new chat to the chats array
+  chats.push(newChat);
+  
+  return newChat;
 };
 
 // Function to get contact by ID

@@ -9,7 +9,8 @@ import {
   FaPhone, 
   FaPoll, 
   FaCog,
-  FaImage
+  FaImage,
+  FaStar
 } from 'react-icons/fa';
 import { useChat } from '../../contexts/ChatContext';
 import TypingIndicator from './TypingIndicator';
@@ -17,6 +18,7 @@ import MessageSearch from './MessageSearch';
 import GroupInfo from './GroupInfo';
 import GroupSettings from './GroupSettings';
 import GroupPoll from './GroupPoll';
+import StarredMessages from './StarredMessages';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -119,6 +121,7 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   const [showGroupInfo, setShowGroupInfo] = useState(false);
   const [showGroupSettings, setShowGroupSettings] = useState(false);
   const [showGroupPoll, setShowGroupPoll] = useState(false);
+  const [showStarredMessages, setShowStarredMessages] = useState(false);
   const [pollMode, setPollMode] = useState('create');
   const [selectedPollId, setSelectedPollId] = useState(null);
   
@@ -169,6 +172,11 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
   const handleChangeWallpaperClick = () => {
     // In a real app, this would open wallpaper settings
     console.log('Change wallpaper');
+    setShowDropdown(false);
+  };
+  
+  const handleStarredMessagesClick = () => {
+    setShowStarredMessages(true);
     setShowDropdown(false);
   };
 
@@ -228,6 +236,10 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
                 <FaPhone />
                 Voice call
               </MenuItem>
+              <MenuItem onClick={handleStarredMessagesClick}>
+                <FaStar />
+                Starred messages
+              </MenuItem>
               <MenuItem onClick={handleChangeWallpaperClick}>
                 <FaImage />
                 Change wallpaper
@@ -258,6 +270,16 @@ const ChatHeader = ({ contact, setIsChatOpen }) => {
           pollId={selectedPollId}
           mode={pollMode}
           onClose={() => setShowGroupPoll(false)} 
+        />
+      )}
+      
+      {showStarredMessages && (
+        <StarredMessages 
+          onClose={() => setShowStarredMessages(false)}
+          onJumpToChat={(chatId, messageId) => {
+            // In a real app, this would scroll to the message
+            console.log(`Jump to message ${messageId} in chat ${chatId}`);
+          }}
         />
       )}
     </>

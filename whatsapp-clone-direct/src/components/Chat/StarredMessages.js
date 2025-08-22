@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaArrowLeft, FaSearch, FaStar, FaEllipsisV } from 'react-icons/fa';
-import { chats, contacts, formatMessageTime, currentUser } from '../../data/mockData';
+import { formatMessageTime, currentUser, getContactById } from '../../data/mockData';
+import { useChat } from '../../contexts/ChatContext';
 
 const StarredContainer = styled.div`
   display: flex;
@@ -203,29 +204,32 @@ const EmptyStateText = styled.div`
 
 const StarredMessages = ({ onClose, onJumpToChat }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [starredMessages, setStarredMessages] = useState([]);
+  const { chats, toggleStarMessage } = useChat();
   
-  // For demo purposes, let's assume some messages are starred
-  // In a real app, this would be part of the message data
-  const starredMessages = [];
-  
-  // Collect starred messages from all chats
-  chats.forEach(chat => {
-    const contact = contacts.find(c => c.id === chat.contactId);
-    if (!contact) return;
+  useEffect(() => {
+    // Collect all starred messages from all chats
+    const allStarredMessages = [];
     
-    // For demo, let's star some random messages
-    const chatStarredMessages = chat.messages
-      .filter((_, index) => index % 5 === 0) // Star every 5th message for demo
-      .map(msg => ({
-        ...msg,
-        chatId: chat.id,
-        contactName: contact.name,
-        contactAvatar: contact.avatar,
-        isGroup: contact.isGroup
-      }));
+    chats.forEach(chat => {
+      const contact = getContactById(chat.contactId);
+      if (!contact) return;
+      
+      const chatStarredMessages = chat.messages
+        .filter(msg => msg.isStarred)
+        .map(msg => ({
+          ...msg,
+          chatId: chat.id,
+          contactName: contact.name,
+          contactAvatar: contact.avatar,
+          isGroup: contact.isGroup
+        }));
+      
+      allStarredMessages.push(...chatStarredMessages);
+    });
     
-    starredMessages.push(...chatStarredMessages);
-  });
+    setStarredMessages(allStarredMessages);
+  }, [chats]);
   
   // Filter starred messages based on search query
   const filteredMessages = starredMessages.filter(msg => 
@@ -259,9 +263,8 @@ const StarredMessages = ({ onClose, onJumpToChat }) => {
     onClose();
   };
   
-  const handleUnstar = (messageId) => {
-    // In a real app, this would update the message in the database
-    console.log(`Unstarred message ${messageId}`);
+  const handleUnstar = (chatId, messageId) => {
+    toggleStarMessage(chatId, messageId, false);
   };
   
   return (
@@ -316,7 +319,7 @@ const StarredMessages = ({ onClose, onJumpToChat }) => {
                       className="message-actions"
                       isOutgoing={message.senderId === currentUser.id}
                     >
-                      <MessageAction onClick={() => handleUnstar(message.id)}>
+                      <MessageAction onClick={() => handleUnstar(message.chatId, message.id)}>
                         <FaStar />
                       </MessageAction>
                     </MessageActions>
@@ -344,4 +347,3 @@ const StarredMessages = ({ onClose, onJumpToChat }) => {
 };
 
 export default StarredMessages;
-
