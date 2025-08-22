@@ -144,7 +144,12 @@ export const chats = [
         senderId: 2,
         text: "Perfect! See you then.",
         timestamp: "2023-08-18T10:36:00",
-        status: "read"
+        status: "read",
+        reactions: {
+          "1": "👍",
+          "3": "❤️",
+          "4": "👍"
+        }
       }
     ],
     unreadCount: 0,
@@ -180,7 +185,12 @@ export const chats = [
         senderId: 3,
         text: "Will do. Thanks!",
         timestamp: "2023-08-17T14:27:00",
-        status: "read"
+        status: "read",
+        reactions: {
+          "1": "🙏",
+          "2": "👍",
+          "5": "👍"
+        }
       }
     ],
     unreadCount: 0,
@@ -230,7 +240,14 @@ export const chats = [
         senderId: 4,
         text: "Also, don't forget to bring your laptop for the presentation.",
         timestamp: "2023-08-18T09:22:00",
-        status: "delivered"
+        status: "delivered",
+        reactions: {
+          "1": "👍",
+          "2": "👍",
+          "3": "👍",
+          "5": "👍",
+          "10": "👍"
+        }
       }
     ],
     unreadCount: 1,
@@ -280,7 +297,16 @@ export const chats = [
         senderId: 2,
         text: "Thanks David! Everyone please review it by tomorrow.",
         timestamp: "2023-08-16T11:12:00",
-        status: "read"
+        status: "read",
+        reactions: {
+          "1": "👍",
+          "3": "👍",
+          "4": "👍",
+          "5": "❤️",
+          "8": "👍",
+          "9": "👍",
+          "10": "👍"
+        }
       }
     ],
     unreadCount: 0,
@@ -323,7 +349,14 @@ export const chats = [
         senderId: 5,
         text: "By the way, are you joining us for lunch?",
         timestamp: "2023-08-18T13:47:00",
-        status: "delivered"
+        status: "delivered",
+        reactions: {
+          "1": "😂",
+          "2": "👍",
+          "3": "❤️",
+          "4": "😮",
+          "10": "🙏"
+        }
       }
     ],
     unreadCount: 1,

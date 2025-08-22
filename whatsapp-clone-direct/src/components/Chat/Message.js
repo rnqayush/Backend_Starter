@@ -6,6 +6,7 @@ import MessageContextMenu from './MessageContextMenu';
 import AudioPlayer from './AudioPlayer';
 import MessageReactions from './MessageReactions';
 import ReactionsPopup from './ReactionsPopup';
+import QuickReactionBar from './QuickReactionBar';
 import PollMessage from './PollMessage';
 import DocumentMessage from './DocumentMessage';
 import MediaMessage from './MediaMessage';
@@ -219,6 +220,7 @@ const Message = ({ message, isSentByMe, onReply }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [showReactionsPopup, setShowReactionsPopup] = useState(false);
   const [showActions, setShowActions] = useState(false);
+  const [showQuickReactions, setShowQuickReactions] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const messageRef = useRef(null);
 
@@ -234,10 +236,12 @@ const Message = ({ message, isSentByMe, onReply }) => {
 
   const handleMouseEnter = () => {
     setShowActions(true);
+    setShowQuickReactions(true);
   };
   
   const handleMouseLeave = () => {
     setShowActions(false);
+    setShowQuickReactions(false);
   };
   
   const handleClick = () => {
@@ -301,6 +305,12 @@ const Message = ({ message, isSentByMe, onReply }) => {
           <FaSmile />
         </ActionButtonItem>
       </MessageActionButtons>
+      
+      <QuickReactionBar 
+        message={message} 
+        isSentByMe={isSentByMe} 
+        show={showQuickReactions} 
+      />
       
       <MessageBubble isSentByMe={isSentByMe}>
         {renderReplyPreview()}

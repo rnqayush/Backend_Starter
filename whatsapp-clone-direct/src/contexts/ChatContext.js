@@ -244,33 +244,22 @@ export const ChatProvider = ({ children }) => {
   };
 
   // Function to add a reaction to a message
-  const addReaction = (chatId, messageId, reaction) => {
+  const addReaction = (chatId, messageId, userId, emoji) => {
     const chat = chats.find(c => c.id === chatId);
     
     if (chat) {
       const updatedMessages = chat.messages.map(message => {
         if (message.id === messageId) {
-          // Initialize reactions array if it doesn't exist
-          const reactions = message.reactions || [];
+          // Initialize reactions object if it doesn't exist
+          const reactions = message.reactions || {};
           
-          // Check if user already reacted with this emoji
-          const existingReaction = reactions.find(
-            r => r.userId === reaction.userId && r.emoji === reaction.emoji
-          );
-          
-          if (existingReaction) {
-            // User already reacted with this emoji, do nothing
-            return message;
-          }
-          
-          // Add the new reaction
+          // Add or update the user's reaction
           return {
             ...message,
-            reactions: [...reactions, {
-              id: Date.now(), // Generate a unique ID
-              ...reaction,
-              timestamp: new Date().toISOString()
-            }]
+            reactions: {
+              ...reactions,
+              [userId]: emoji
+            }
           };
         }
         return message;
@@ -284,15 +273,21 @@ export const ChatProvider = ({ children }) => {
   };
   
   // Function to remove a reaction from a message
-  const removeReaction = (chatId, messageId, reactionId) => {
+  const removeReaction = (chatId, messageId, userId) => {
     const chat = chats.find(c => c.id === chatId);
     
     if (chat) {
       const updatedMessages = chat.messages.map(message => {
         if (message.id === messageId && message.reactions) {
+          // Create a copy of the reactions object
+          const updatedReactions = { ...message.reactions };
+          
+          // Delete the user's reaction
+          delete updatedReactions[userId];
+          
           return {
             ...message,
-            reactions: message.reactions.filter(r => r.id !== reactionId)
+            reactions: updatedReactions
           };
         }
         return message;
